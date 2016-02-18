@@ -1,0 +1,946 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Custom User Registration Form Builder\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: Sat Nov 21 2015 12:05:51 GMT+0530 (India Standard Time)\n"
+"PO-Revision-Date: Sat Nov 21 2015 12:25:29 GMT+0530 (India Standard Time)\n"
+"Last-Translator: admin <vikas.arora@alcanttor.com>\n"
+"Language-Team: \n"
+"Language: Turkish\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-KeywordsList: _:1;gettext:1;dgettext:2;ngettext:1,2;dngettext:2,3;"
+"__:1;_e:1;_c:1;_n:1,2;_n_noop:1,2;_nc:1,2;__ngettext:1,2;__ngettext_noop:1,2;"
+"_x:1,2c;_ex:1,2c;_nx:1,2,4c;_nx_noop:1,2,3c;_n_js:1,2;_nx_js:1,2,3c;"
+"esc_attr__:1;esc_html__:1;esc_attr_e:1;esc_html_e:1;esc_attr_x:1,2c;"
+"esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
+"X-Generator: Loco - https://localise.biz/\n"
+"X-Loco-Target-Locale: tr_TR"
+
+#: ../add-form.php:112
+msgid "New Form"
+msgstr ""
+
+#: ../add-form.php:114
+msgid "Edit Form"
+msgstr ""
+
+#: ../add-form.php:122
+msgid "Title:"
+msgstr ""
+
+#: ../add-form.php:133 ../add_field.php:179
+msgid "Description:"
+msgstr ""
+
+#: ../add-form.php:144
+msgid "Also create WP User account? "
+msgstr ""
+
+#: ../add-form.php:144
+msgid "(This will add Username and Password fields to this form):"
+msgstr ""
+
+#: ../add-form.php:173
+msgid "Automatically Assigned WP User Role:"
+msgstr ""
+
+#: ../add-form.php:193
+msgid "Or Let Users Pick Their Role:"
+msgstr ""
+
+#: ../add-form.php:205
+msgid "WP User Role Field Label:"
+msgstr ""
+
+#: ../add-form.php:216
+msgid "Allowed WP Roles for Users:"
+msgstr ""
+
+#: ../add-form.php:235
+msgid "Content Above The Form"
+msgstr ""
+
+#: ../add-form.php:247
+msgid "Success Message:"
+msgstr ""
+
+#: ../add-form.php:259
+msgid "After Submission, Redirect User to:"
+msgstr ""
+
+#: ../add-form.php:265
+msgid "None"
+msgstr ""
+
+#: ../add-form.php:268
+msgid "Page"
+msgstr ""
+
+#: ../add-form.php:271
+msgid "URL"
+msgstr ""
+
+#: ../add-form.php:277
+msgid "Page:"
+msgstr ""
+
+#: ../add-form.php:302
+msgid "URL:"
+msgstr ""
+
+#: ../add-form.php:313
+msgid "Auto-Reply the User:"
+msgstr ""
+
+#: ../add-form.php:324
+msgid "Auto-Reply Email Subject:"
+msgstr ""
+
+#: ../add-form.php:334
+msgid "Auto-Reply Email Body:"
+msgstr ""
+
+#: ../add-form.php:334
+msgid "(Mail Merge and HTML Supported):"
+msgstr ""
+
+#: ../add-form.php:348
+msgid "Submit Button Label:"
+msgstr ""
+
+#: ../add-form.php:359
+msgid "Submit Button Label Color:"
+msgstr ""
+
+#: ../add-form.php:360 ../add-form.php:372
+msgid "(Does not works with Classic form style):"
+msgstr ""
+
+#: ../add-form.php:371
+msgid "Submit Button Background Color:"
+msgstr ""
+
+#: ../add-form.php:387
+msgid "Send To MailChimp List:"
+msgstr ""
+
+#: ../add-form.php:420
+msgid "Map With MailChimp Email Field:"
+msgstr ""
+
+#: ../add-form.php:436
+msgid "Map With MailChimp First Name Field:"
+msgstr ""
+
+#: ../add-form.php:449
+msgid "Map With MailChimp Last Name Field:"
+msgstr ""
+
+#: ../add-form.php:461
+msgid "Show Opt-In Checkbox:"
+msgstr ""
+
+#: ../add-form.php:473
+msgid "Opt-In Box Text:"
+msgstr ""
+
+#: ../add-form.php:488
+msgid " Auto Expires?:"
+msgstr ""
+
+#: ../add-form.php:501
+msgid "Expiry Type:"
+msgstr ""
+
+#: ../add-form.php:507
+msgid "By Submissions"
+msgstr ""
+
+#: ../add-form.php:510
+msgid "By Date"
+msgstr ""
+
+#: ../add-form.php:513
+msgid "Set Both <small>(Whichever is earlier)</small>"
+msgstr ""
+
+#: ../add-form.php:520
+msgid "Submissions Limit:"
+msgstr ""
+
+#: ../add-form.php:532
+msgid "Expiry Date:"
+msgstr ""
+
+#: ../add-form.php:544
+msgid "Display Message in Place of the Form After Expiry"
+msgstr ""
+
+#: ../add-form.php:558 ../anti_spam_settings.php:85 ../auto_responder_settings.
+#: php:93 ../crfoption.php:307 ../general_settings.php:155 ..
+#: third_party_integration_settings.php:96 ../user_account_settings.php:69
+msgid "Save"
+msgstr ""
+
+#: ../add-form.php:560 ../add_shortcode_button.php:41 ../anti_spam_settings.php:
+#: 86 ../auto_responder_settings.php:94 ../crfoption.php:308 ../general_settings.
+#: php:156 ../third_party_integration_settings.php:98 ../user_account_settings.
+#: php:70
+msgid "Cancel"
+msgstr ""
+
+#: ../add_field.php:86
+msgid "Edit Field:"
+msgstr ""
+
+#: ../add_field.php:88
+msgid "New Field:"
+msgstr ""
+
+#: ../add_field.php:98
+msgid "Select Type:"
+msgstr ""
+
+#: ../add_field.php:103
+msgid "Select A Field"
+msgstr ""
+
+#: ../add_field.php:104
+msgid "Heading"
+msgstr ""
+
+#: ../add_field.php:105
+msgid "Paragraph"
+msgstr ""
+
+#: ../add_field.php:106
+msgid "Text"
+msgstr ""
+
+#: ../add_field.php:107
+msgid "Drop Down"
+msgstr ""
+
+#: ../add_field.php:108
+msgid "Radio Button"
+msgstr ""
+
+#: ../add_field.php:109
+msgid "Text Area"
+msgstr ""
+
+#: ../add_field.php:110
+msgid "Check Box"
+msgstr ""
+
+#: ../add_field.php:111
+msgid "Date"
+msgstr ""
+
+#: ../add_field.php:112
+msgid "Email"
+msgstr ""
+
+#: ../add_field.php:113
+msgid "Number"
+msgstr ""
+
+#: ../add_field.php:114
+msgid "Country"
+msgstr ""
+
+#: ../add_field.php:115
+msgid "Timezone"
+msgstr ""
+
+#: ../add_field.php:116
+msgid "T&C Checkbox"
+msgstr ""
+
+#: ../add_field.php:117
+msgid "File Upload"
+msgstr ""
+
+#: ../add_field.php:124
+msgid "Label:"
+msgstr ""
+
+#: ../add_field.php:135 ../add_field.php:146
+msgid "Options:"
+msgstr ""
+
+#: ../add_field.php:136
+msgid "(value seprated by comma \",\")"
+msgstr ""
+
+#: ../add_field.php:188
+msgid "Advance Options"
+msgstr ""
+
+#: ../add_field.php:195
+msgid "Default Value:"
+msgstr ""
+
+#: ../add_field.php:205
+msgid "CSS Class Attribute:"
+msgstr ""
+
+#: ../add_field.php:215
+msgid "Maximum Length:"
+msgstr ""
+
+#: ../add_field.php:226
+msgid "Columns:"
+msgstr ""
+
+#: ../add_field.php:237
+msgid "Rows:"
+msgstr ""
+
+#: ../add_field.php:246
+msgid "Rules"
+msgstr ""
+
+#: ../add_field.php:251
+msgid "Is Required:"
+msgstr ""
+
+#: ../add_field.php:261
+msgid "Is Read Only:"
+msgstr ""
+
+#: ../add_field.php:271
+msgid "Visibility:"
+msgstr ""
+
+#: ../add_shortcode_button.php:12
+msgid "Select a Form"
+msgstr ""
+
+#: ../add_shortcode_button.php:40
+msgid "Insert"
+msgstr ""
+
+#: ../anti_spam_settings.php:25
+msgid "Anti Spam"
+msgstr ""
+
+#: ../anti_spam_settings.php:32
+msgid "Enable reCAPTCHA:"
+msgstr ""
+
+#: ../anti_spam_settings.php:46
+msgid "reCAPTCHA under User Login:"
+msgstr ""
+
+#: ../anti_spam_settings.php:58
+msgid "Site Key:"
+msgstr ""
+
+#: ../anti_spam_settings.php:68 ../crfoption.php:99
+msgid "Secret Key:"
+msgstr ""
+
+#: ../auto_responder_settings.php:29
+msgid "Email Notification"
+msgstr ""
+
+#: ../auto_responder_settings.php:37
+msgid "Send Notification To Site Admin:"
+msgstr ""
+
+#: ../auto_responder_settings.php:49
+msgid "Or Define Recipients Manually:"
+msgstr ""
+
+#: ../auto_responder_settings.php:80
+msgid "From Email:"
+msgstr ""
+
+#: ../check_crf_field_name.php:13
+msgid "Warning! Field label is required. Please enter a unique label."
+msgstr ""
+
+#: ../check_crf_field_name.php:22 ../check_crf_field_name.php:31
+msgid "Warning! Field label already exists. Please choose a unique label."
+msgstr ""
+
+#: ../check_crf_form_name.php:14
+msgid "Warning! Form label is required. Please enter a unique label."
+msgstr ""
+
+#: ../check_crf_form_name.php:23 ../check_crf_form_name.php:32
+msgid "Warning! Form label already exists. Please choose a unique label."
+msgstr ""
+
+#: ../crfoption.php:56 ../settings.php:18
+msgid "Global Settings"
+msgstr ""
+
+#: ../crfoption.php:62
+msgid "Form Theme:"
+msgstr ""
+
+#: ../crfoption.php:76
+msgid "Enable Recaptcha:"
+msgstr ""
+
+#: ../crfoption.php:89
+msgid "Site key:"
+msgstr ""
+
+#: ../crfoption.php:112
+msgid "Enable Facebook Login:"
+msgstr ""
+
+#: ../crfoption.php:124
+msgid "Facebook App Id:"
+msgstr ""
+
+#: ../crfoption.php:134 ../third_party_integration_settings.php:58
+msgid "Facebook App Secret:"
+msgstr ""
+
+#: ../crfoption.php:147
+msgid "Enable MailChimp Integration:"
+msgstr ""
+
+#: ../crfoption.php:162
+msgid "Mailchimp API:"
+msgstr ""
+
+#: ../crfoption.php:179 ../user_account_settings.php:31
+msgid "Auto Generated Password:"
+msgstr ""
+
+#: ../crfoption.php:191 ../general_settings.php:50
+msgid "Capture IP and Browser Info:"
+msgstr ""
+
+#: ../crfoption.php:203
+msgid "User Registration Auto approval:"
+msgstr ""
+
+#: ../crfoption.php:215
+msgid "Send Username and Password in Email:"
+msgstr ""
+
+#: ../crfoption.php:227
+msgid "Email Notification:"
+msgstr ""
+
+#: ../crfoption.php:239
+msgid "Email Address:"
+msgstr ""
+
+#: ../crfoption.php:270
+msgid "From Email Address:"
+msgstr ""
+
+#: ../crfoption.php:281 ../general_settings.php:62
+msgid "Define allowed file types (file extensions)"
+msgstr ""
+
+#: ../crfoption.php:282 ../general_settings.php:63
+msgid "(Separate multiple values by “|”. For example PDF|JPEG|XLS)"
+msgstr ""
+
+#: ../crfoption.php:293
+msgid "Use Repeated File fields:"
+msgstr ""
+
+#: ../crf_functions.php:487 ../crf_functions.php:535 ../view-form-classic.php:349
+#: ../view-form-classic.php:400 ../classes/class_basic_options.php:570 ..
+#: classes/class_basic_options.php:620
+msgid "Thank you for your submission."
+msgstr ""
+
+#: ../crf_functions.php:530 ../view-form-classic.php:395 ..
+#: classes/class_basic_options.php:615
+msgid "Thank you for registration."
+msgstr ""
+
+#: ../crf_functions.php:541 ../view-form-classic.php:405 ..
+#: classes/class_basic_options.php:626
+msgid "You can use following details for login."
+msgstr ""
+
+#: ../crf_functions.php:543 ../view-form-classic.php:406 ..
+#: classes/class_basic_options.php:628
+msgid "Username : "
+msgstr ""
+
+#: ../crf_functions.php:545 ../classes/class_basic_options.php:630
+msgid "Password : "
+msgstr ""
+
+#: ../crf_functions.php:698 ../manage_entries_old.php:267 ../stats.php:140 ..
+#: classes/class_basic_options.php:824
+msgid "&laquo;"
+msgstr ""
+
+#: ../crf_functions.php:699 ../manage_entries_old.php:268 ../stats.php:141 ..
+#: classes/class_basic_options.php:825
+msgid "&raquo;"
+msgstr ""
+
+#: ../crf_login.php:81 ../view-form-classic.php:521 ../classes/class_basic_fields.
+#: php:134
+msgid "Username"
+msgstr ""
+
+#: ../crf_login.php:92 ../view-form-classic.php:545 ../classes/class_basic_fields.
+#: php:226
+msgid "Password"
+msgstr ""
+
+#: ../crf_login.php:108
+msgid "Remember Me"
+msgstr ""
+
+#: ../crf_login.php:128
+msgid "Login"
+msgstr ""
+
+#: ../crf_migrate_submission.php:8
+msgid "This will upgrade your old version content to new version"
+msgstr ""
+
+#: ../crf_migrate_submission.php:9
+msgid ""
+"It may take few minutes to complete. Please do not interrupt the\n"
+"process once started."
+msgstr ""
+
+#: ../crf_migrate_submission.php:23
+msgid "Upgrading in progress. Please wait."
+msgstr ""
+
+#: ../crf_migrate_submission.php:24
+msgid "Do not close or refresh the window."
+msgstr ""
+
+#: ../crf_migrate_submission.php:34
+msgid "All Done! Thank you."
+msgstr ""
+
+#: ../crf_migrate_submission.php:40
+msgid "Sorry, the migration failed! Please try again."
+msgstr ""
+
+#: ../crf_support.php:12
+msgid "Support, Feature Requests and Feedback"
+msgstr ""
+
+#: ../crf_support.php:16
+msgid "Support is available through our forums. Here are the relevant links:"
+msgstr ""
+
+#: ../crf_support.php:19
+msgid "GENERAL QUESTIONS"
+msgstr ""
+
+#: ../crf_support.php:20
+msgid "INSTALLATION ISSUES"
+msgstr ""
+
+#: ../crf_support.php:21
+msgid "FEATURE REQUESTS"
+msgstr ""
+
+#: ../crf_support.php:22
+msgid "BUG REPORTS"
+msgstr ""
+
+#: ../field_chart.php:26
+msgid "Field Analytics"
+msgstr ""
+
+#: ../field_chart.php:140
+msgid ""
+"No data found for analysis. This could happen if there are not enough "
+"submissions or if the form does not contains statistical fields like "
+"checkbox or radio button."
+msgstr ""
+
+#: ../frontendjs.php:115 ../view-form-classic.php:945
+msgid "This file type is not allowed."
+msgstr ""
+
+#: ../general_settings.php:30 ../settings.php:31
+msgid "General"
+msgstr ""
+
+#: ../general_settings.php:36
+msgid "Form Style:"
+msgstr ""
+
+#: ../general_settings.php:74
+msgid "Allow Multiple Attachments:"
+msgstr ""
+
+#: ../general_settings.php:86
+msgid "Default WP Registration Page:"
+msgstr ""
+
+#: ../general_settings.php:120
+msgid "After Login Redirect User to:"
+msgstr ""
+
+#. Name of the plugin
+msgid "Custom User Registration Form Builder"
+msgstr ""
+
+#. URI of the plugin
+msgid ""
+"https://wordpress.org/plugins/custom-registration-form-builder-with-"
+"submission-manager"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"An easy to use, simple but powerful registration form system that also "
+"tracks your registrations through a nifty interface. You can create "
+"unlimited forms with custom fields and use them through shortcode system."
+msgstr ""
+
+#. Author of the plugin
+msgid "CMSHelpLive"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://profiles.wordpress.org/cmshelplive"
+msgstr ""
+
+#: ../index.php:275
+msgid ""
+"Your Custom Registration form builder has old version content. You will need "
+"to <a href=\"admin.php?page=crf_migrate_submission\"> upgrade</a>"
+msgstr ""
+
+#: ../manage-form-fields.php:25 ../manage-form-fields_old.php:24
+msgid "Form Fields"
+msgstr ""
+
+#: ../manage-form-fields.php:31 ../manage-form-fields_old.php:30
+msgid "Add Field"
+msgstr ""
+
+#: ../manage-form-fields.php:61 ../manage-form-fields_old.php:60
+msgid "Common Fields"
+msgstr ""
+
+#: ../manage-form-fields.php:69 ../manage-form-fields_old.php:68
+msgid "Special Fields"
+msgstr ""
+
+#: ../manage-form-fields.php:120
+msgid ""
+"There are no fields yet. Why don’t you chose one from above and start "
+"building your form now!"
+msgstr ""
+
+#: ../manage-form-fields_old.php:119
+msgid "This form does not have any custom fields yet."
+msgstr ""
+
+#: ../manage-form.php:8
+msgid "To show login box on a page, you can use Shortcode [CRF_Login]"
+msgstr ""
+
+#: ../manage-form.php:64
+msgid "All Forms"
+msgstr ""
+
+#: ../manage-form.php:70
+msgid "Add New"
+msgstr ""
+
+#: ../manage-form.php:88
+msgid "Add A"
+msgstr ""
+
+#: ../manage-form.php:88
+msgid "Quick Form"
+msgstr ""
+
+#: ../manage-form.php:94
+msgid "New Form Name"
+msgstr ""
+
+#: ../manage-form.php:120
+msgid ""
+"You have not created any forms yet. Once you have created a new form, it "
+"will appear here."
+msgstr ""
+
+#: ../manage-form.php:153 ../manage_entries.php:38 ../manage_entries_old.php:68
+msgid "Submissions"
+msgstr ""
+
+#: ../manage-form.php:155
+msgid "Shortcode"
+msgstr ""
+
+#: ../manage-form.php:157
+msgid "WP Registration"
+msgstr ""
+
+#: ../manage-form.php:159
+msgid "On"
+msgstr ""
+
+#: ../manage-form.php:159
+msgid "Off"
+msgstr ""
+
+#: ../manage-form.php:162
+msgid "Edit"
+msgstr ""
+
+#: ../manage-form.php:163
+msgid "Fields"
+msgstr ""
+
+#: ../manage-form.php:180 ../manage-form.php:192
+msgid "Prev"
+msgstr ""
+
+#: ../manage-form.php:181 ../manage-form.php:193
+msgid "Next"
+msgstr ""
+
+#: ../manage-form.php:275
+msgid "This will delete the form(s) permanently. Please confirm."
+msgstr ""
+
+#: ../manage_entries.php:131 ../manage_entries_old.php:138
+msgid "No submissions for this form have been recorded."
+msgstr ""
+
+#: ../manage_entries.php:161 ../manage_entries_old.php:298
+msgid "Are you sure you want to remove?"
+msgstr ""
+
+#: ../search_entries.php:7
+msgid "Search Submissions"
+msgstr ""
+
+#: ../search_entries.php:14
+msgid "From Date"
+msgstr ""
+
+#: ../search_entries.php:18
+msgid "To Date"
+msgstr ""
+
+#: ../search_entries.php:26
+msgid "Select Field"
+msgstr ""
+
+#: ../search_entries.php:28
+msgid "All Fields"
+msgstr ""
+
+#: ../search_entries.php:53
+msgid "Match Value"
+msgstr ""
+
+#: ../search_entries.php:66
+msgid "Search"
+msgstr ""
+
+#: ../settings.php:32
+msgid "Form look, Default pages, Attachment settings etc."
+msgstr ""
+
+#: ../settings.php:44
+msgid "Security"
+msgstr ""
+
+#: ../settings.php:45
+msgid "reCAPTCHA placement, Google reCAPTCHA keys"
+msgstr ""
+
+#: ../settings.php:57 ../user_account_settings.php:24
+msgid "User Accounts"
+msgstr ""
+
+#: ../settings.php:58
+msgid "Password behavior, Manual approvals etc."
+msgstr ""
+
+#: ../settings.php:70
+msgid "Email Notifications"
+msgstr ""
+
+#: ../settings.php:71
+msgid "Admin notifications, multiple email notifications, From email"
+msgstr ""
+
+#: ../settings.php:83 ../third_party_integration_settings.php:29
+msgid "Third Party Integrations"
+msgstr ""
+
+#: ../settings.php:84
+msgid "Facebook, MailChimp (more coming soon!)"
+msgstr ""
+
+#: ../stats.php:32
+msgid "Form Analytics"
+msgstr ""
+
+#: ../stats.php:81
+msgid ""
+"Sorry, insufficient data captured to generate graphs. Check back after few "
+"more submissions have been recorded."
+msgstr ""
+
+#: ../stats.php:89
+msgid "#"
+msgstr ""
+
+#: ../stats.php:90
+msgid "Visitor IP"
+msgstr ""
+
+#: ../stats.php:91
+msgid "Submission"
+msgstr ""
+
+#: ../stats.php:92
+msgid "Visited On (UTC)"
+msgstr ""
+
+#: ../stats.php:93
+msgid "Submitted On (UTC)"
+msgstr ""
+
+#: ../stats.php:94
+msgid "Form Filling Time"
+msgstr ""
+
+#: ../third_party_integration_settings.php:36
+msgid "Allow User to Login using Facebook:"
+msgstr ""
+
+#: ../third_party_integration_settings.php:48
+msgid "Facebook App ID:"
+msgstr ""
+
+#: ../third_party_integration_settings.php:69
+msgid "MailChimp Integration:"
+msgstr ""
+
+#: ../third_party_integration_settings.php:82
+msgid "MailChimp API:"
+msgstr ""
+
+#: ../user_account_settings.php:43
+msgid "WP Registration Auto Approval:"
+msgstr ""
+
+#: ../user_account_settings.php:55
+msgid "Send Username and Password To User Through Email:"
+msgstr ""
+
+#: ../view-form-classic.php:151 ../classes/class_basic_fields.php:15
+msgid "Sorry, you didn't enter the correct captcha code."
+msgstr ""
+
+#: ../view-form-classic.php:325
+msgid "User already exists.  Password inherited."
+msgstr ""
+
+#: ../view-form-classic.php:330
+msgid "Sorry, the username or e-mail is already taken."
+msgstr ""
+
+#: ../view-form-classic.php:333
+msgid "Go back to Registration."
+msgstr ""
+
+#: ../view-form-classic.php:335
+msgid "Go back to Home-Page."
+msgstr ""
+
+#: ../view-form-classic.php:407
+msgid "password : "
+msgstr ""
+
+#: ../view-form-classic.php:531 ../classes/class_basic_fields.php:160
+msgid "E-mail"
+msgstr ""
+
+#: ../view-form-classic.php:551 ../classes/class_basic_fields.php:220 ..
+#: classes/class_basic_fields.php:232
+msgid "At least 7 characters please!"
+msgstr ""
+
+#: ../view-form-classic.php:558 ../classes/class_basic_fields.php:239
+msgid "Confirm Password"
+msgstr ""
+
+#: ../view-form-classic.php:564 ../classes/class_basic_fields.php:245
+msgid "Enter the password again to confirm"
+msgstr ""
+
+#: ../view-form-classic.php:857 ../view-form-default.php:215
+msgid "Sorry, username already exist"
+msgstr ""
+
+#: ../view-form-classic.php:877 ../view-form-default.php:235
+msgid "Sorry, email already exist"
+msgstr ""
+
+#: ../view-form-classic.php:913
+msgid "Your password should be at least 7 characters long."
+msgstr ""
+
+#: ../view-form-classic.php:918
+msgid "Password and confirm password do not match."
+msgstr ""
+
+#: ../view-form-classic.php:928
+msgid "Please enter a valid e-mail address."
+msgstr ""
+
+#: ../view-form-classic.php:954
+msgid "Please enter a valid number"
+msgstr ""
+
+#: ../view-form-classic.php:963 ../view-form-classic.php:972 ../view-form-classic.
+#: php:981 ../view-form-classic.php:992 ../view-form-classic.php:1004 ../view-
+#: form-classic.php:1016
+msgid "This is a required field."
+msgstr ""
+
+#: ../view_entry.php:127
+msgid "Entry Id :"
+msgstr ""
+
+#: ../view_entry.php:128
+msgid "Entry Type :"
+msgstr ""
+
+#: ../classes/class_basic_fields.php:471
+msgid "Add"
+msgstr ""
+
+#: ../classes/class_basic_fields.php:471
+msgid "Remove"
+msgstr ""
+
+#: ../classes/class_basic_options.php:10
+msgid ""
+"Some of the options below require selecting fields from your form. Since you "
+"are creating new form from scratch, there are no fields in this form yet. "
+"You can come back later and modify these field specific options. You can "
+"safely ignore them for now and save the settings."
+msgstr ""
