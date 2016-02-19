@@ -22,9 +22,6 @@ $is_there_any_product_to_sell = false;
 				$product = new WC_Product( $ticket->ID );
 			}
 
-			$firephp = FirePHP::getInstance(true);
-			$firephp->log( $this->get_price_html( $product ), 'get_price_html');
-			$firephp->log( $product, 'product');
 
 
 
