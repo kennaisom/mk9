@@ -18,7 +18,7 @@ function tesseract_do_import_packages() {
 }
 
 function tesseract_get_packages_url() {
-	$packages_url = 'https://s3-us-west-2.amazonaws.com/updates.tyler.com/TESSERACT/packages.json';
+	$packages_url = 'https://s3.amazonaws.com/tesseracttheme/packages.json';
 	$request  = wp_remote_get( $packages_url );
 	$content = wp_remote_retrieve_body( $request );
 

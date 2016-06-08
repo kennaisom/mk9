@@ -4,7 +4,7 @@ global $layout_loop;
 global $layout_product;
 global $isloop;
 $layout_loop = get_theme_mod('tesseract_woocommerce_loop_layout');
-$isloop = ( is_shop() || is_product_category() || is_product_tag() ) ? true : false;
+$isloop = ( function_exists( 'WC' ) && (is_shop() || is_product_category() || is_product_tag()) ) ? true : false;
 
 // Basic integration config
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10);
@@ -18,7 +18,7 @@ function tesseract_woocommerce_wrapper_start() {
 	$layout_loop = get_theme_mod('tesseract_woocommerce_loop_layout');
 	$layout_product = get_theme_mod('tesseract_woocommerce_product_layout');
 
-	if ( is_shop() || is_product_category() || is_product_tag() ) {
+	if ( function_exists( 'WC' ) && (is_shop() || is_product_category() || is_product_tag()) ) {
 		if ( ( $layout_loop == 'sidebar-left' ) || ( $layout_loop == 'sidebar-right' ) ) {
 			$primclass = 'with-sidebar';
 			$primclass .= ( $layout_loop == 'sidebar-left' ) ? ' sidebar-left' : ' sidebar-right';

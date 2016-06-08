@@ -91,6 +91,10 @@
 								</p>	
 							</blockquote>
 						</div>
+						<div class="easy-t-cycle-controls">				
+							<div class="cycle-prev easy-t-cycle-prev">&lt;&lt; Previous</div>							<div class="easy-t-cycle-pager"><span class="">•</span><span class="">•</span><span class="">•</span><span class="cycle-pager-active">•</span><span class="">•</span></div>
+										<div class="cycle-next easy-t-cycle-next">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Next &gt;&gt;</div>			
+						</div>
 					</div>
 				</td>
 			</tr>
@@ -101,4 +105,3 @@
 		</p>
 		
 		</form>
-	</div>

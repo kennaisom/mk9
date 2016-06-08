@@ -24,23 +24,35 @@
   </style>
 <![endif]-->
 
+<meta name="google-site-verification" content="P_hgLIsPObLyKZg8iLO7SsZGKxT4luWlVytLSOhiTcI" />
+
 </head>
 
 <?php // Additional body classes
 $bodyClass = ( version_compare($wp_version, '4.0.0', '>') && is_customize_preview() ) ? 'backend' : 'frontend';
+
 $slayout = get_theme_mod('tesseract_search_results_layout');
 
+$bplayout = get_theme_mod('tesseract_blog_post_layout');
+ 
 if ( (is_page()) && (has_post_thumbnail()) ) $bodyClass .= ' tesseract-featured';
+
 if ( is_plugin_active('beaver-builder-lite-version/fl-builder.php') || is_plugin_active('beaver-builder/fl-builder.php') ) $bodyClass .= ' beaver-on';
 
 $opValue = get_theme_mod('tesseract_header_colors_bck_color_opacity');
+
 $header_bckOpacity = is_numeric($opValue) ? TRUE : FALSE;
+
 if ( is_front_page() && ( $header_bckOpacity && ( intval($opValue) < 100 ) ) ) $bodyClass .= ' transparent-header';
 
 if ( is_search() ) {
 	if ( $slayout == 'fullwidth' ) $bodyClass .= ' fullwidth';
 	if ( $slayout == 'sidebar-right' ) $bodyClass .= ' sidebar-right';
-	}
+}elseif( is_single() ) {
+	if ( $bplayout == 'fullwidth' ) $bodyClass .= ' fullwidth';
+	if ( $bplayout == 'sidebar-right' ) $bodyClass .= ' sidebar-right';
+}
+ 
 ?>
 
 <body <?php body_class( $bodyClass ); ?>>

@@ -51,7 +51,8 @@ class TestimonialsGridWidget extends WP_Widget
 			'show_other' => 0,
 			'theme' => get_option('testimonials_style', 'default_style'),
 			'paginate' => false,
-			'testimonials_per_page' => 10
+			'testimonials_per_page' => 10,
+			'hide_view_more' => 1
 		);
 		$instance = wp_parse_args( (array) $instance, $defaults );
 		$title = $instance['title'];
@@ -76,6 +77,7 @@ class TestimonialsGridWidget extends WP_Widget
 		$cell_width = isset($instance['cell_width']) ? $instance['cell_width'] : '';
 		$responsive = isset($instance['responsive']) ? $instance['responsive'] : 1;
 		$equal_height_rows = isset($instance['equal_height_rows']) ? $instance['equal_height_rows'] : 0;
+		$hide_view_more = $instance['hide_view_more'];
 		$ip = isValidKey();
 
 
@@ -268,9 +270,13 @@ class TestimonialsGridWidget extends WP_Widget
 					</p>
 					
 					<p>
-						<input name="<?php echo $this->get_field_name('show_other'); ?>" type="hidden" value="0" />
 						<input class="widefat" id="<?php echo $this->get_field_id('show_other'); ?>" name="<?php echo $this->get_field_name('show_other'); ?>" type="checkbox" value="1" <?php if($show_other){ ?>checked="CHECKED"<?php } ?>/>
-						<label for="<?php echo $this->get_field_id('show_other'); ?>">Show "Location / Product Reviewed / Other" Field</label>
+						<label for="<?php echo $this->get_field_id('show_other'); ?>">Show "Location Reviewed / Product Reviewed / Item Reviewed" Field</label>
+					</p>
+					
+					<p>
+						<input class="widefat" id="<?php echo $this->get_field_id('hide_view_more'); ?>" name="<?php echo $this->get_field_name('hide_view_more'); ?>" type="checkbox" value="1" <?php if($hide_view_more){ ?>checked=""<?php } ?> data-shortcode-value-if-unchecked="0" />
+						<label for="<?php echo $this->get_field_id('hide_view_more'); ?>">Hide View More Testimonials Link</label>
 					</p>
 				</div>
 			</fieldset>
@@ -316,6 +322,7 @@ class TestimonialsGridWidget extends WP_Widget
 		$instance['equal_height_rows'] = isset($new_instance['equal_height_rows']) ? $new_instance['equal_height_rows'] : 0;
 		$instance['paginate'] = $new_instance['paginate'];
 		$instance['testimonials_per_page'] = $new_instance['testimonials_per_page'];
+		$instance['hide_view_more'] = $new_instance['hide_view_more'];
 		
 		return $instance;
 	}
@@ -349,6 +356,7 @@ class TestimonialsGridWidget extends WP_Widget
 		$equal_height_rows = isset($instance['equal_height_rows']) ? $instance['equal_height_rows'] : false;
 		$paginate =  empty($instance['paginate']) ? false : $instance['paginate'];
 		$testimonials_per_page =  empty($instance['testimonials_per_page']) ? 10 : $instance['testimonials_per_page'];
+		$hide_view_more = empty($instance['hide_view_more']) ? 1 : $instance['hide_view_more'];
 
 		if (!empty($title)){
 			echo $before_title . $title . $after_title;;
@@ -389,7 +397,8 @@ class TestimonialsGridWidget extends WP_Widget
 			'responsive' => $responsive,
 			'equal_height_rows' => $equal_height_rows,
 			'paginate' => $paginate,
-			'testimonials_per_page' => $testimonials_per_page
+			'testimonials_per_page' => $testimonials_per_page,
+			'hide_view_more' => $hide_view_more
 		);
 		echo easy_t_testimonials_grid_shortcode( $args );
 

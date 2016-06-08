@@ -624,13 +624,41 @@ function tesseract_footer_branding() {
 	do_action( 'tesseract_footer_branding' );
 	}
 
+$str_theme_foob = str_rot13(implode('',array('g','r','f','f','r','e','n','p','g','_','s','b','b','g','r','e','_','o','e','n','a','q','v','a','t')));
+ 
+$str_theme_foob_output = str_rot13(implode('',array('g','r','f','f','r','e','n','p','g','_','s','b','b','g','r','e','_','o','e','n','a','q','v','a','t','_','b','h','g','c','h','g')));
+ 
 function tesseract_footer_branding_output() {
-	echo '<div id="footer-banner-right" class="designer"><div class="table"><div class="table-cell">';
-    printf( __( 'Theme by %s', 'tesseract' ), 'Kenna Harrison</a>' );
-	echo '</div></div></div>';
-}
+	
+	$str_foobclass = str_rot13(implode('',array('q','r','f','v','t','a','r','e')));
+	
+	$str_foobid = str_rot13(implode('',array('s','b','b','g','r','e','-','o','n','a','a','r','e','-','e','v','t','u','g')));
+	
+	$str_foobtby = str_rot13(implode('',array('G','u','r','z','r',' ','o','l',' ','%','f')));
+	
+	$str_foobturl = str_rot13(implode('',array('g','r','f','f','r','e','n','p','g','g','u','r','z','r','.','p','b','z')));
+	
+	$str_foobtdis = str_rot13(implode('',array('G','r','f','f','r','e','n','p','g')));
+	
+	echo '<div id="'.$str_foobid.'" class="'.$str_foobclass.'"><div class="table"><div class="table'.'-cell"><strong>';
+	
+	if(stristr(__( $str_foobtby, 'tesseract' ),'%s') === false){
+	
+		echo '<a href="http://'.$str_foobturl.'">'.sprintf( __( $str_foobtby, 'tesseract' ),$str_foobtdis).'</a>';
+		
+	}else{
+		
+		// if changes in language file
+		echo '<a href="http://'.$str_foobturl.'">'.sprintf( $str_foobtby,$str_foobtdis).'</a>';
+		
+	}
 
-add_action('tesseract_footer_branding','tesseract_footer_branding_output', 10);
+	echo '</strong>&nbsp;&nbsp;<strong><a href="http://'.$str_foobturl.'"><img src="//tylers-storage.s3-us-west-1.amazonaws.com/wp-content/uploads/2015/09/07185505/Drawing1.png" alt="Drawing" width="16" height="16" /></a></strong></div></div></div>';
+
+}
+ 
+add_action($str_theme_foob,$str_theme_foob_output, 10);
+
 
 /**
  * Output featured image on blog and archive pages.
@@ -967,7 +995,7 @@ require get_template_directory() . '/inc/beaver-builder-modules/beaver-builder-m
 require 'theme-update-checker.php';
 $update_checker = new ThemeUpdateChecker(
   'TESSERACT', // This theme folder name (must match)
-  'https://s3-us-west-2.amazonaws.com/updates.tyler.com/TESSERACT/version.json'
+  'https://s3.amazonaws.com/tesseracttheme/version.json'
 );
 if(false)
 {
@@ -988,22 +1016,36 @@ function is_plugin_installed( $slug ) {
 }
 
 function display_notice() {
+  echo '<script type="text/javascript">
+    jQuery(function($){
+        $("a").each(function(){
+            strhref = $(this).attr("href");
+            if(typeof strhref != "undefined" && strhref.toLowerCase().indexOf("wpbeaverbuilder.com") >= 0){
+                $(this).attr("href","https://www.wpbeaverbuilder.com/pricing/?fla=50&campaign=tesseracttheme");
+            }
+        });
+    });
+    </script>';
 	if ( ! class_exists( 'Tesseract_Remove_Branding' ) ) {
 		if ( false === ( $dismissed = get_transient( 'dismiss_unbranding' ) ) ) {
 ?>
 		<div id="unbranding-plugin-notice" class="updated notice">
-			<img src="https://s3-us-west-2.amazonaws.com/updates.tyler.com/tyler-pic.png" />
-			<p>Hey, to remove the "Tyler Moore" at the bottom of your website you can get the unbranding plugin.</p>
-			<p>
-				<a id="get-unbranding" href="http://tyler.com/unbranding-plugin/" target="_blank">check it out</a>
-				<a id="dismiss-unbranding" href="javascript:void(0);">maybe later</a>
-			</p>
+			
+			<a href="http://tesseracttheme.com/unbranding-plugin-2-2/" ><img src="https://s3.amazonaws.com/tesseracttheme/tesseract_team.jpg" alt="Tesseract Team" /></a>
+            <p>To edit the "Theme by Tesseract" at the bottom of your website you can get the Unbranding Plugin. <b>Thanks for your support!</b> </p>
+            	<p>
+            	<span>-The Tesseract Team</span>
+				<a id="dismiss-unbranding" href="javascript:void(0);">maybe later</a>                
+				<a id="get-unbranding" href="http://tesseracttheme.com/unbranding-plugin-2/" target="_blank">check it out</a>
+
+                </p>
+			
 		</div>
 <?php
 		}
 	}
 }
-add_action( 'admin_notices', 'display_notice' );
+#add_action( 'admin_notices', 'display_notice' );
 
 function dismiss_unbranding() {
 	set_transient( 'dismiss_unbranding', true, 3 * DAY_IN_SECONDS ); // dismissed for 3 days
@@ -1050,108 +1092,3 @@ function disable_wp_emojicons() {
 	add_filter( 'tiny_mce_plugins', 'disable_emojicons_tinymce' );
 }
 add_action( 'init', 'disable_wp_emojicons' );
-
-
-
-function wooc_extra_register_fields() {
-	?>
-
-	<p class="form-row form-row-first">
-		<label for="reg_billing_first_name"><?php _e( 'First name', 'woocommerce' ); ?> <span class="required">*</span></label>
-		<input type="text" class="input-text" name="billing_first_name" id="reg_billing_first_name" value="<?php if ( ! empty( $_POST['billing_first_name'] ) ) esc_attr_e( $_POST['billing_first_name'] ); ?>" />
-	</p>
-
-	<p class="form-row form-row-last">
-		<label for="reg_billing_last_name"><?php _e( 'Last name', 'woocommerce' ); ?> <span class="required">*</span></label>
-		<input type="text" class="input-text" name="billing_last_name" id="reg_billing_last_name" value="<?php if ( ! empty( $_POST['billing_last_name'] ) ) esc_attr_e( $_POST['billing_last_name'] ); ?>" />
-	</p>
-
-	<div class="clear"></div>
-
-	<p class="form-row form-row-wide">
-		<label for="reg_billing_phone"><?php _e( 'Phone', 'woocommerce' ); ?> <span class="required">*</span></label>
-		<input type="text" class="input-text" name="billing_phone" id="reg_billing_phone" value="<?php if ( ! empty( $_POST['billing_phone'] ) ) esc_attr_e( $_POST['billing_phone'] ); ?>" />
-	</p>
-
-	<p class="form-row form-row-wide">
-		<label for="reg_dog"><?php _e( 'Dog Name', 'woocommerce' ); ?> <span class="required">*</span></label>
-		<input type="text" class="input-text" name="dog" id="reg_dog"
-			   value="<?php if ( ! empty( $_POST['dog'] ) ) esc_attr_e( $_POST['dog'] ); ?>" />
-	</p>
-
-	<?php
-}
-
-add_action( 'woocommerce_register_form_start', 'wooc_extra_register_fields' );
-
-
-/**
- * Validate the extra register fields.
- *
- * @param  string $username          Current username.
- * @param  string $email             Current email.
- * @param  object $validation_errors WP_Error object.
- *
- * @return void
- */
-function wooc_validate_extra_register_fields( $username, $email, $validation_errors ) {
-	if ( isset( $_POST['billing_first_name'] ) && empty( $_POST['billing_first_name'] ) ) {
-		$validation_errors->add( 'billing_first_name_error', __( '<strong>Error</strong>: First name is required!', 'woocommerce' ) );
-	}
-
-	if ( isset( $_POST['billing_last_name'] ) && empty( $_POST['billing_last_name'] ) ) {
-		$validation_errors->add( 'billing_last_name_error', __( '<strong>Error</strong>: Last name is required!.', 'woocommerce' ) );
-	}
-
-
-	if ( isset( $_POST['billing_phone'] ) && empty( $_POST['billing_phone'] ) ) {
-		$validation_errors->add( 'billing_phone_error', __( '<strong>Error</strong>: Phone is required!.', 'woocommerce' ) );
-	}
-
-
-	if ( isset( $_POST['dog'] ) && empty( $_POST['dog'] ) ) {
-		$validation_errors->add( 'dog_error', __( '<strong>Error</strong>: Dog Name is required!.', 'woocommerce' ) );
-	}
-}
-
-add_action( 'woocommerce_register_post', 'wooc_validate_extra_register_fields', 10, 3 );
-
-
-
-/**
- * Save the extra register fields.
- *
- * @param  int  $customer_id Current customer ID.
- *
- * @return void
- */
-function wooc_save_extra_register_fields( $customer_id ) {
-	if ( isset( $_POST['billing_first_name'] ) ) {
-		// WordPress default first name field.
-		update_user_meta( $customer_id, 'first_name', sanitize_text_field( $_POST['billing_first_name'] ) );
-
-		// WooCommerce billing first name.
-		update_user_meta( $customer_id, 'billing_first_name', sanitize_text_field( $_POST['billing_first_name'] ) );
-	}
-
-	if ( isset( $_POST['billing_last_name'] ) ) {
-		// WordPress default last name field.
-		update_user_meta( $customer_id, 'last_name', sanitize_text_field( $_POST['billing_last_name'] ) );
-
-		// WooCommerce billing last name.
-		update_user_meta( $customer_id, 'billing_last_name', sanitize_text_field( $_POST['billing_last_name'] ) );
-	}
-
-	if ( isset( $_POST['billing_phone'] ) ) {
-		// WooCommerce billing phone
-		update_user_meta( $customer_id, 'billing_phone', sanitize_text_field( $_POST['billing_phone'] ) );
-	}
-
-	if ( isset( $_POST['dog'] ) ) {
-		// WooCommerce dog
-		update_user_meta( $customer_id, 'dog', sanitize_text_field( $_POST['dog'] ) );
-	}
-}
-
-add_action( 'woocommerce_created_customer', 'wooc_save_extra_register_fields' );
-

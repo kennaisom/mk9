@@ -11,7 +11,7 @@
  * Version 0.1.0
  */
 
-if ( class_exists( dismissible_notice ) ) {
+if ( class_exists( 'Caldera_Warnings_Dismissible_Notice' ) ) {
 	return;
 
 }

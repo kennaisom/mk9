@@ -1,5 +1,5 @@
 <?php
-
+if(!class_exists("Gold_Plugins_Media_Button")){
 	class Gold_Plugins_Media_Button
 	{
 		var $buttons = array();
@@ -36,7 +36,8 @@
 		function enqueue_admin_scripts()
 		{
 			global $pagenow;
-			if( 'edit.php' == $pagenow || 'post-new.php' == $pagenow  || 'post.php' == $pagenow )
+						
+			if( 'edit.php' == $pagenow || 'post-new.php' == $pagenow  || 'post.php' == $pagenow || (('admin.php' == $pagenow) && (strpos($_GET['page'], 'shortcode-generator') !== false)) )//RWG: add check for SC generator pages
 			{
 				wp_enqueue_script( 'jquery' );
 				wp_enqueue_script( 'jquery-ui-core' );
@@ -167,3 +168,4 @@
 		}
 		
 	} // end class Gold_Plugins_Media_Button
+}

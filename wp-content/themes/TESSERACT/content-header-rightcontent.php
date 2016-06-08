@@ -6,19 +6,28 @@ $wc_headercart = ( get_theme_mod('tesseract_woocommerce_headercart') == 1 ) ? tr
 
 ?>
 
-
+<div id="site-banner-right" class="banner-right <?php echo $headright_content; ?>">
 
 <?php if ( $is_headright_content ) : ?>            
 
-	                  
+	<?php tesseract_header_right_content($headright_content); ?>                    
 			
 <?php elseif ( !$is_headright_content && $headright_content_default_button ) : ?>            
 
- 
+    <div id="header-button-container">
+        <div id="header-button-container-inner">
+            <?php echo $headright_content_default_button; ?>
+        </div>
+    </div>
 		
 <?php else : ?>
 	  
-    
+<!--    <div id="header-button-container">
+        <div id="header-button-container-inner">
+            <a href="/" class="button primary-button">Primary Button</a>
+            <a href="/" class="button secondary-button">Secondary Button</a>
+        </div>
+    </div>-->
 		
 <?php endif; ?>   
 

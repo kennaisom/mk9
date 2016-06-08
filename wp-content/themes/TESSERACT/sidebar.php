@@ -15,7 +15,7 @@ if ( is_plugin_active('woocommerce/woocommerce.php') ) {
 	$layout_product = get_theme_mod('tesseract_woocommerce_product_layout');
 	$layout_default = get_theme_mod('tesseract_woocommerce_default_layout');	
 	
-	if ( ( is_shop() || is_product_category() || is_product_tag() ) && ( $layout_loop == 'sidebar-right' ) ) { 	
+	if ( ( function_exists( 'WC' ) && (is_shop() || is_product_category() || is_product_tag()) ) && ( $layout_loop == 'sidebar-right' ) ) { 	
 		$sidebarClass = 'woo-archive woo-right-sidebar'; 
 	} else if ( is_product() && $layout_product == 'sidebar-right' ) {
 		$sidebarClass = 'woo-product woo-right-sidebar';

@@ -16,7 +16,7 @@ function tesseract_register_required_plugins() {
 	$config = array(
 		'id' => 'tesseract_tgmpa',
 		'has_notices'  => true, 				// Show admin notices or not.
-		'dismissable'  => false,				// If false, a user cannot dismiss the nag message.
+		'dismissable'  => true,				// If false, a user cannot dismiss the nag message.
 		'is_automatic' => true,				// Automatically activate plugins after installation or not.
 	);
 

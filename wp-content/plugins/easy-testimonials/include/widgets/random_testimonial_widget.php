@@ -49,7 +49,8 @@ class randomTestimonialWidget extends WP_Widget
 			'order' => 'ASC',
 			'order_by' => 'date',
 			'show_other' => 0,
-			'theme' => get_option('testimonials_style', 'default_style')
+			'theme' => get_option('testimonials_style', 'default_style'),
+			'hide_view_more' => 0
 		);
 		$instance = wp_parse_args( (array) $instance, $defaults );
 		$title = $instance['title'];
@@ -65,7 +66,8 @@ class randomTestimonialWidget extends WP_Widget
 		$order_by = $instance['order_by'];
 		$show_other = $instance['show_other'];
 		$theme = $instance['theme'];
-		$testimonial_categories = get_terms( 'easy-testimonial-category', 'orderby=title&hide_empty=0' );				
+		$testimonial_categories = get_terms( 'easy-testimonial-category', 'orderby=title&hide_empty=0' );
+		$hide_view_more = $instance['hide_view_more'];				
 		$ip = isValidKey();
 		?>
 		<div class="gp_widget_form_wrapper">
@@ -152,7 +154,7 @@ class randomTestimonialWidget extends WP_Widget
 					</p>	
 					
 					<p>
-						<input class="widefat" id="<?php echo $this->get_field_id('show_testimonial_image'); ?>" name="<?php echo $this->get_field_name('show_testimonial_image'); ?>" type="checkbox" value="1" <?php if($show_testimonial_image){ ?>checked="CHECKED"<?php } ?>/>
+						<input class="widefat" id="<?php echo $this->get_field_id('show_testimonial_image'); ?>" name="<?php echo $this->get_field_name('show_testimonial_image'); ?>" type="checkbox" value="1" <?php if($show_testimonial_image){ ?>checked="CHECKED"<?php } ?> data-shortcode-key="show_thumbs" />
 						<label for="<?php echo $this->get_field_id('show_testimonial_image'); ?>">Show Featured Image</label>
 					</p>
 					
@@ -163,7 +165,12 @@ class randomTestimonialWidget extends WP_Widget
 					
 					<p>
 						<input class="widefat" id="<?php echo $this->get_field_id('show_other'); ?>" name="<?php echo $this->get_field_name('show_other'); ?>" type="checkbox" value="1" <?php if($show_other){ ?>checked="CHECKED"<?php } ?>/>
-						<label for="<?php echo $this->get_field_id('show_other'); ?>">Show "Location / Product Reviewed / Other" Field</label>
+						<label for="<?php echo $this->get_field_id('show_other'); ?>">Show "Location Reviewed / Product Reviewed / Item Reviewed" Field</label>
+					</p>
+					
+					<p>
+						<input class="widefat" id="<?php echo $this->get_field_id('hide_view_more'); ?>" name="<?php echo $this->get_field_name('hide_view_more'); ?>" type="checkbox" value="1" <?php if($hide_view_more){ ?>checked=""<?php } ?> data-shortcode-value-if-unchecked="0" />
+						<label for="<?php echo $this->get_field_id('hide_view_more'); ?>">Hide View More Testimonials Link</label>
 					</p>
 				</div>
 			</fieldset>
@@ -199,6 +206,7 @@ class randomTestimonialWidget extends WP_Widget
 		$instance['show_testimonial_image'] = $new_instance['show_testimonial_image'];
 		$instance['show_other'] = $new_instance['show_other'];
 		$instance['theme'] = $new_instance['theme'];
+		$instance['hide_view_more'] = $new_instance['hide_view_more'];
 		
 		return $instance;
 	}
@@ -221,6 +229,7 @@ class randomTestimonialWidget extends WP_Widget
 		$show_testimonial_image = empty($instance['show_testimonial_image']) ? 0 : $instance['show_testimonial_image'];
 		$show_other = empty($instance['show_other']) ? 0 : $instance['show_other'];
 		$theme = empty($instance['theme']) ? '' : $instance['theme'];
+		$hide_view_more = empty($instance['hide_view_more']) ? 0 : $instance['hide_view_more'];
 
 		if (!empty($title)){
 			echo $before_title . $title . $after_title;;
@@ -238,6 +247,7 @@ class randomTestimonialWidget extends WP_Widget
 			'show_other' => $show_other,
 			'show_thumbs' => $show_testimonial_image,
 			'theme' => $theme,
+			'hide_view_more' => $hide_view_more
 		);
 		echo outputRandomTestimonial( $args );
 

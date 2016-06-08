@@ -61,7 +61,8 @@ class cycledTestimonialWidget extends WP_Widget
 			'paused' => 0,
 			'prev_next' => 1,
 			'auto_height' => 1,
-			'display_pagers_above' => false
+			'display_pagers_above' => false,
+			'hide_view_more' => 0
 		);
 		$instance = wp_parse_args( (array) $instance, $defaults );
 		$title = $instance['title'];
@@ -90,6 +91,7 @@ class cycledTestimonialWidget extends WP_Widget
 		$prev_next = $instance['prev_next'];
 		$auto_height = $instance['auto_height'];
 		$display_pagers_above = $instance['display_pagers_above'];
+		$hide_view_more = $instance['hide_view_more'];
 		?>
 		<div class="gp_widget_form_wrapper">
 			<p class="hide_in_popup">
@@ -189,7 +191,7 @@ class cycledTestimonialWidget extends WP_Widget
 					</p>	
 					
 					<p>
-						<input class="widefat" id="<?php echo $this->get_field_id('show_testimonial_image'); ?>" name="<?php echo $this->get_field_name('show_testimonial_image'); ?>" type="checkbox" value="1" <?php if($show_testimonial_image){ ?>checked="CHECKED"<?php } ?>/>
+						<input class="widefat" id="<?php echo $this->get_field_id('show_testimonial_image'); ?>" name="<?php echo $this->get_field_name('show_testimonial_image'); ?>" type="checkbox" value="1" <?php if($show_testimonial_image){ ?>checked="CHECKED"<?php } ?> data-shortcode-key="show_thumbs" />
 						<label for="<?php echo $this->get_field_id('show_testimonial_image'); ?>">Show Featured Image</label>
 					</p>
 					
@@ -200,7 +202,12 @@ class cycledTestimonialWidget extends WP_Widget
 					
 					<p>
 						<input class="widefat" id="<?php echo $this->get_field_id('show_other'); ?>" name="<?php echo $this->get_field_name('show_other'); ?>" type="checkbox" value="1" <?php if($show_other){ ?>checked="CHECKED"<?php } ?>/>
-						<label for="<?php echo $this->get_field_id('show_other'); ?>">Show "Location / Product Reviewed / Other" Field</label>
+						<label for="<?php echo $this->get_field_id('show_other'); ?>">Show "Location Reviewed / Product Reviewed / Item Reviewed" Field</label>
+					</p>
+					
+					<p>
+						<input class="widefat" id="<?php echo $this->get_field_id('hide_view_more'); ?>" name="<?php echo $this->get_field_name('hide_view_more'); ?>" type="checkbox" value="1" <?php if($hide_view_more){ ?>checked=""<?php } ?> data-shortcode-value-if-unchecked="0" />
+						<label for="<?php echo $this->get_field_id('hide_view_more'); ?>">Hide View More Testimonials Link</label>
 					</p>
 				</div>
 			</fieldset>
@@ -319,6 +326,7 @@ class cycledTestimonialWidget extends WP_Widget
 		$instance['show_other'] = $new_instance['show_other'];
 		$instance['show_testimonial_image'] = $new_instance['show_testimonial_image'];
 		$instance['display_pagers_above'] = $new_instance['display_pagers_above'];
+		$instance['hide_view_more'] = $new_instance['hide_view_more'];
 		return $instance;
 	}
 
@@ -346,6 +354,7 @@ class cycledTestimonialWidget extends WP_Widget
 		$width = empty($instance['width']) ? false : $instance['width'];
 		$auto_height = empty($instance['auto_height']) ? false : $instance['auto_height'];
 		$paused = empty($instance['paused']) ? false : $instance['paused'];
+		$hide_view_more = empty($instance['hide_view_more']) ? 0 : $instance['hide_view_more'];
 
 		
 		$show_testimonial_image = empty($instance['show_testimonial_image']) ? 0 : $instance['show_testimonial_image'];
@@ -393,7 +402,8 @@ class cycledTestimonialWidget extends WP_Widget
 			'show_thumbs' => $show_testimonial_image,
 			'theme' => $theme,
 			'show_other' => $show_other,
-			'display_pagers_above' => $display_pagers_above
+			'display_pagers_above' => $display_pagers_above,			
+			'hide_view_more' => $hide_view_more
 		);
 		
 		echo outputTestimonialsCycle( $args );

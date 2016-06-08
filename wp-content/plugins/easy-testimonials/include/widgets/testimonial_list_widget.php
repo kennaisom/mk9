@@ -51,7 +51,8 @@ class listTestimonialsWidget extends WP_Widget
 			'show_other' => 0,
 			'theme' => get_option('testimonials_style', 'default_style'),
 			'paginate' => false,
-			'testimonials_per_page' => 10
+			'testimonials_per_page' => 10,
+			'hide_view_more' => 1
 		);
 		$instance = wp_parse_args( (array) $instance, $defaults );
 		$title = $instance['title'];
@@ -68,6 +69,7 @@ class listTestimonialsWidget extends WP_Widget
 		$show_other = $instance['show_other'];
 		$theme = $instance['theme'];
 		$paginate = $instance['paginate'];
+		$hide_view_more = $instance['hide_view_more'];
 		$testimonials_per_page = $instance['testimonials_per_page'];
 		$testimonial_categories = get_terms( 'easy-testimonial-category', 'orderby=title&hide_empty=0' );				
 		$ip = isValidKey();
@@ -206,7 +208,12 @@ class listTestimonialsWidget extends WP_Widget
 					
 					<p>
 						<input class="widefat" id="<?php echo $this->get_field_id('show_other'); ?>" name="<?php echo $this->get_field_name('show_other'); ?>" type="checkbox" value="1" <?php if($show_other){ ?>checked="CHECKED"<?php } ?>/>
-						<label for="<?php echo $this->get_field_id('show_other'); ?>">Show "Location / Product Reviewed / Other" Field</label>
+						<label for="<?php echo $this->get_field_id('show_other'); ?>">Show "Location Reviewed / Product Reviewed / Item Reviewed" Field</label>
+					</p>
+					
+					<p>
+						<input class="widefat" id="<?php echo $this->get_field_id('hide_view_more'); ?>" name="<?php echo $this->get_field_name('hide_view_more'); ?>" type="checkbox" value="1" <?php if($hide_view_more){ ?>checked=""<?php } ?> data-shortcode-value-if-unchecked="0" />
+						<label for="<?php echo $this->get_field_id('hide_view_more'); ?>">Hide View More Testimonials Link</label>
 					</p>
 				</div>
 			</fieldset>
@@ -243,6 +250,7 @@ class listTestimonialsWidget extends WP_Widget
 		$instance['order'] = $new_instance['order'];
 		$instance['order_by'] = $new_instance['order_by'];
 		$instance['show_other'] = $new_instance['show_other'];
+		$instance['hide_view_more'] = $new_instance['hide_view_more'];
 		$instance['theme'] = $new_instance['theme'];
 		$instance['paginate'] = $new_instance['paginate'];
 		$instance['testimonials_per_page'] = $new_instance['testimonials_per_page'];
@@ -268,6 +276,7 @@ class listTestimonialsWidget extends WP_Widget
 		$order = empty($instance['order']) ? 'ASC' : $instance['order'];
 		$order_by = empty($instance['order_by']) ? 'date' : $instance['order_by'];
 		$show_other = empty($instance['show_other']) ? 0 : $instance['show_other'];
+		$hide_view_more = empty($instance['hide_view_more']) ? 0 : $instance['hide_view_more'];
 		$theme = empty($instance['theme']) ? '' : $instance['theme'];
 		$testimonials_link = empty($instance['testimonials_link']) ? get_option('testimonials_link') : $instance['testimonials_link'];
 		$paginate =  empty($instance['paginate']) ? false : $instance['paginate'];
@@ -297,7 +306,8 @@ class listTestimonialsWidget extends WP_Widget
 			'show_thumbs' => $show_testimonial_image,
 			'theme' => $theme,
 			'paginate' => $paginate,
-			'testimonials_per_page' => $testimonials_per_page
+			'testimonials_per_page' => $testimonials_per_page,
+			'hide_view_more' => $hide_view_more
 		);
 		
 		echo outputTestimonials( $args );

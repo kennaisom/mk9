@@ -3,8 +3,8 @@ Contributors: richardgabriel, ghuger
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=V7HR8DP4EJSYN
 Tags: testimonials, testimonial widget, testimonial feed, random testimonials
 Requires at least: 3.1
-Tested up to: 4.4.2
-Stable tag: 1.34.4
+Tested up to: 4.5
+Stable tag: 1.35.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -13,10 +13,6 @@ Easy Testimonials is a simple-to-use plugin for adding Testimonials to your Word
 == Description ==
 
 Easy Testimonials is an easy-to-use plugin that allows users to add Testimonials to the sidebar, as a widget, or to embed them into a Page or Post using the shortcode.  The Easy Testimonials plugin also allows you to insert a list of all Testimonials or output a Random Testimonial. Easy Testimonials allows you to include an image with each testimonial - this is a great feature for adding a photo of the testimonial author.
-
-= Premium Support =
-
-The GoldPlugins team does not provide direct support for the Easy Testimonials plugin on the WordPress.org forums. One on one email support is available to people who have purchased Easy Testimonials Pro only. Easy Testimonials Pro also includes tons of extra themes and advanced features including a Testimonial Collection Form, so you should [upgrade today!](https://goldplugins.com/our-plugins/easy-testimonials-details/upgrade-to-easy-testimonials-pro/ "Upgrade to Easy Testimonials Pro")
 
 = Easy Testimonials is a great plugin for: =
 * Adding a Random Testimonial to Your Sidebar
@@ -32,11 +28,15 @@ The GoldPlugins team does not provide direct support for the Easy Testimonials p
 * Custom Options Allow You to Link Your Testimonials to a Custom Page, Such As a Product Page
 * Testimonial Categories Allow You To Organize Testimonials in Many Ways!
 * Collect Testimonials: Front-End Testimonial Submission Form Allows Customers to Submit Testimonials on your Website!
+* Multiple Testimonial Forms: Implement multiple forms to send to specific Testimonial Categories!
+* Collection Form Spam Prevention: Pro Version includes support for Really Simple Captcha and ReCaptcha!
 * Its easy to use interface allows you to manage, edit, create, and delete Testimonials with no new knowledge
 
 Easy Testimonials includes options to set the URL of the View More Link, whether or not to display the Testimonial Image, and more!  You can set the URL of the Testimonials read more links for many purposes - such as directing visitors to the product info page that the testimonial is about.  Showing an Image next to a Testimonial is a great tool!
 
-Collecting Testimonials can be a tedious job - fortunately, in the Pro version of Easy Testimonials, adding a form to your website for users to submit Testimonials is a breeze!  Users can even upload an image with their Testimonial!  Easy Testimonials integrates with Really Simple Captcha to prevent spam form submissions.
+Easy Testimonials allows display of shortened Testimonials that link through to their full versions.  Display custom excerpts in your widgets that draw your visitors into your Testimonial archive!
+
+Collecting Testimonials can be a tedious job - fortunately, in the Pro version of Easy Testimonials, adding a form to your website for users to submit Testimonials is a breeze!  Users can even upload an image with their Testimonial!  Easy Testimonials integrates with Really Simple Captcha and ReCaptcha to prevent spam form submissions.
 
 = Why Do I Need Testimonials on My Website? =
 
@@ -47,6 +47,10 @@ Testimonials are a great thing to add to your website, for many reasons.
 * Testimonials, when used effectively, are a great tool to increase conversions rates on your website!
 
 The Easy Testimonials plugin is the easiest way to start adding your customer testimonials, right now!  Click the Download button now to get started.  The Easy Testimonials plugin will inherit the styling from your Theme - just install and get to work adding your testimonials!
+
+= Premium Support =
+
+The GoldPlugins team does not provide direct support for the Easy Testimonials plugin on the WordPress.org forums. One on one email support is available to people who have purchased Easy Testimonials Pro only. Easy Testimonials Pro also includes tons of extra themes and advanced features including a Testimonial Collection Form, so you should [upgrade today!](https://goldplugins.com/our-plugins/easy-testimonials-details/upgrade-to-easy-testimonials-pro/ "Upgrade to Easy Testimonials Pro")
 
 == Installation ==
 
@@ -115,6 +119,8 @@ You have a few things to pay attention to:
      [random_testimonial show_rating='stars']
 
     Possible values for show_rating are `show_rating=before`, for the rating to appear before the testimonial content, `show_rating=after`, for the rating to appear after the testimonial content, and `show_rating=stars`, to show the rating in stars format.
+	
+-   By default, the View More Testimonials link is displayed with Random Testimonials.  To hide this link, use the following shortcode: [random_testimonial hide_view_more=1]
 
 ### Output a List of Testimonials
 
@@ -137,6 +143,8 @@ You have a few things to pay attention to:
     Possible values for show_rating are `show_rating=before`, for the rating to appear before the testimonial content, `show_rating=after`, for the rating to appear after the testimonial content, and `show_rating=stars`, to show the rating in stars format.
 
 -   To paginate the list of Testimonials, use the following shortcode: [testimonials paginate='1' testimonials_per_page='5']
+
+-   By default, the View More Testimonials link is not displayed in the List of Testimonials.  To display this link, use the following shortcode: [testimonials hide_view_more=0]
 
 ### Output a Grid of Testimonials
 
@@ -170,6 +178,8 @@ You have a few things to pay attention to:
 
 -	To output a grid of Testimonials with 3 columns, spaced 3% apart, and each cell of the grid with the same height as others in it's row:
 	[testimonials_grid cols='3' grid_spacing="3%" equal_height_rows="true"]
+	
+-   By default, the View More Testimonials link is displayed with the Grid of Testimonials.  To hide this link, use the following shortcode: [testimonials_grid hide_view_more=1]
 
 ### Output a Random Testimonial in the Sidebar
 
@@ -213,6 +223,8 @@ You have a few things to pay attention to:
 	 [testimonials_cycle auto_height='calc']
 -   To show a Testimonial Cycle with 3 Testimonials per Slide and Pager Icons below the Slider, use the following shortcode: 
      [testimoanials_cycle pager='1' testimonials_per_slide='3']
+	 
+-   By default, the View More Testimonials link is displayed with the Testimonials Cycle.  To hide this link, use the following shortcode: [testimonials_cycle hide_view_more=1]
 
 ### Outputting a Testimonial Slider in the Sidebar
 
@@ -233,6 +245,8 @@ You have a few things to pay attention to:
 -   **NOTE:** This feature requires the [Pro version of Easy Testimonials](https://goldplugins.com/our-plugins/easy-testimonials-details/ "Easy Testimonials Pro").
 -   To display the Testimonial Submission Form, use the following shortcode: 
      [submit_testimonial]
+-   To display the Testimonial Submission Form and have it submit directly to a category, use the following shortcode: 
+     [submit_testimonial submit_to_category="desired-category-slug"]
 -   Any submissions will be added to your Testimonials list, on the back end, as pending Testimonials. Only Testimonials that you choose to publish will be displayed publicly.
 -   Captcha support is enabled with the installation of the [Really Simple Captcha plugin](https://wordpress.org/plugins/really-simple-captcha/ "Really Simple Captcha").
 -   Front End Image Submission is enabled via a checkbox on the Submission Form Options tab.
@@ -353,6 +367,37 @@ Easy!  Just add the attribute width=500px or width=33% (be sure to use the full 
 14. This is the Testimonial Grid Widget.
 
 == Changelog ==
+
+= 1.35.4 =
+* Address notice on some settings panels.
+* Update Typography to have better Reset to Default options.
+* Better alignment of text in Modern Theme.
+
+= 1.35.3 =
+* Address issues with unset font attributes in some themes causing crazy appearances.
+* Address issue causing rating input on submission form to error when more than one submission form is on a given page.
+* Minor submission form cleanup.
+* Adds option to set Global ItemReviewed value
+* Compatibile with WP 4.5
+
+= 1.35.2 =
+* Adds ability to pass category for submission form via shortcode.
+* Updates GP Media Button to prevent conflicts with multiple plugins using it.
+* Various admin interface updates.
+* Minor Cycled Testimonial updates and fixes.
+
+= 1.35.1 =
+* Fix improper image attribute in shortcodes generated by Cycle and Random testimonial widgets.
+* Update admin UI.
+* Update Cycle2 for compatibility with Avada, preventing slides from disappearing after first transition.
+* Add messaging for compatibility options when using Avada theme.
+
+= 1.35 =
+* Add options panel to allow customization of Submission Form Error Messages, better organizes submission options, uses better field descriptions.
+* Updates archive template compatibility with Avada.
+* Defaults Testimonials List to hide the View More Testimonials link, by default.
+* Updates Shortcode Generator to be more intuitive.
+* Minor fixes.
 
 = 1.34.4 =
 * Fix issue with wall of text generated during CSV import.
@@ -807,4 +852,4 @@ Easy!  Just add the attribute width=500px or width=33% (be sure to use the full 
 
 == Upgrade Notice ==
 
-= 1.34.4: CSV Import update.
+= 1.35.4: Style fixes and updates, fixes admin notice.

@@ -152,7 +152,7 @@ if (!class_exists('Easy_Testimonials_GoldPlugins_BikeShed'))
 								   'checked'		=> false,
 								   'value'			=> '',
 								   'values'			=> array(),
-								   'default_color'	=> '#fff',
+								   'default_color'	=> '',
 								   'class'			=> '',
 								   'disabled'		=> '',
 							);

@@ -22,9 +22,6 @@ $is_there_any_product_to_sell = false;
 				$product = new WC_Product( $ticket->ID );
 			}
 
-
-
-
 			if ( $ticket->date_in_range( current_time( 'timestamp' ) ) ) {
 
 				$is_there_any_product = true;

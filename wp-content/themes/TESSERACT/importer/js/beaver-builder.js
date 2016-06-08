@@ -3,7 +3,7 @@ jQuery(function ( $ ) {
 	$( '.fl-builder-bar-actions .fl-builder-tools-button' ).after(
 		'<span class="fl-builder-tesseract-blocks-button fl-builder-button">Content Blocks</span>'
 	);
-
+	if(FLBuilderConfig) FLBuilderConfig.upgradeUrl = 'https://www.wpbeaverbuilder.com/pricing/?fla=50&campaign=tesseracttheme';
 	// Set up the popup/modal using Beaver Builder's UI
 	var contentBlocksLightbox = new FLLightbox({
 		className: 'fl-builder-tesseract-blocks-lightbox'
@@ -21,7 +21,7 @@ jQuery(function ( $ ) {
 		} );
 
 		// Hook the content appending buttons up
-		$( document ).on( 'click', '.fl-builder-tesseract-blocks-lightbox .append-content-button', function ( e ) {
+		$( document ).one( 'click', '.fl-builder-tesseract-blocks-lightbox .append-content-button', function ( e ) {
 			e.preventDefault();
 
 			contentBlocksLightbox.close();

@@ -17,45 +17,12 @@
 	//array of pro themes that are available
 	//includes names
 	$pro_theme_array = array(
-		'bubble_style' => array(
-			'bubble_style' => 'Bubble Style',
-			'bubble_style-brown' => 'Bubble Style - Brown',
-			'bubble_style-pink' => 'Bubble Style - Pink',
-			'bubble_style-blue-orange' => 'Bubble Style - Blue Orange',
-			'bubble_style-red-grey' => 'Bubble Style - Red Grey',
-			'bubble_style-purple-green' => 'Bubble Style - Purple Green'
-		),
-		'avatar-left-style-50x50' => array(
-			'avatar-left-style-50x50' => 'Left Avatar - 50x50',
-			'avatar-left-style-50x50-blue-orange' => 'Left Avatar - 50x50 - Blue Orange',
-			'avatar-left-style-50x50-brown' => 'Left Avatar - 50x50 - Brown',
-			'avatar-left-style-50x50-pink' => 'Left Avatar - 50x50 - Pink',
-			'avatar-left-style-50x50-purple-green' => 'Left Avatar - 50x50 - Purple Green',
-			'avatar-left-style-50x50-red-grey' => 'Left Avatar - 50x50 - Red Grey'
-		),
-		'avatar-left-style' => array(
-			'avatar-left-style' => 'Left Avatar - 150x150',
-			'avatar-left-style-blue-orange' => 'Left Avatar - 150x150 - Blue Orange',
-			'avatar-left-style-pink' => 'Left Avatar - 150x150 - Pink',
-			'avatar-left-style-brown' => 'Left Avatar - 150x150 - Brown',
-			'avatar-left-style-red-grey' => 'Left Avatar - 150x150 - Red Grey',
-			'avatar-left-style-purple-green' => 'Left Avatar - 150x150 - Purple Green'
-		),
-		'avatar-right-style-50x50' => array(
-			'avatar-right-style-50x50' => 'Right Avatar - 50x50',
-			'avatar-right-style-50x50-blue-orange' => 'Right Avatar - 50x50 - Blue Orange',
-			'avatar-right-style-50x50-brown' => 'Right Avatar - 50x50 - Brown',
-			'avatar-right-style-50x50-pink' => 'Right Avatar - 50x50 - Pink',
-			'avatar-right-style-50x50-purple-green' => 'Right Avatar - 50x50 - Purple Green',
-			'avatar-right-style-50x50-red-grey' => 'Right Avatar - 50x50 - Red Grey'
-		),
-		'avatar-right-style' => array(
-			'avatar-right-style' => 'Right Avatar - 150x150',
-			'avatar-right-style-blue-orange' => 'Right Avatar - 150x150 - Blue Orange',
-			'avatar-right-style-pink' => 'Right Avatar - 150x150 - Pink',
-			'avatar-right-style-brown' => 'Right Avatar - 150x150 - Brown',
-			'avatar-right-style-red-grey' => 'Right Avatar - 150x150 - Red Grey',
-			'avatar-right-style-purple-green' => 'Right Avatar - 150x150 - Purple Green'
+		'modern_style' => array(
+			'modern_style-concept' => 'Modern Style - Concept',
+			'modern_style-money' => 'Modern Style - Money',
+			'modern_style-digitalism' => 'Modern Style - Digitalism',
+			'modern_style-power' => 'Modern Style - Power',
+			'modern_style-sleek' => 'Modern Style - Sleek'
 		),
 		'card_style' => array(
 			'card_style' => 'Card Style - Light Gray',
@@ -112,12 +79,45 @@
 			'business_style-red' => 'Business Style - Red',
 			'business_style-grey' => 'Business Style - Grey'
 		),
-		'modern_style' => array(
-			'modern_style-concept' => 'Modern Style - Concept',
-			'modern_style-money' => 'Modern Style - Money',
-			'modern_style-digitalism' => 'Modern Style - Digitalism',
-			'modern_style-power' => 'Modern Style - Power',
-			'modern_style-sleek' => 'Modern Style - Sleek'
+		'bubble_style' => array(
+			'bubble_style' => 'Bubble Style',
+			'bubble_style-brown' => 'Bubble Style - Brown',
+			'bubble_style-pink' => 'Bubble Style - Pink',
+			'bubble_style-blue-orange' => 'Bubble Style - Blue Orange',
+			'bubble_style-red-grey' => 'Bubble Style - Red Grey',
+			'bubble_style-purple-green' => 'Bubble Style - Purple Green'
+		),
+		'avatar-left-style-50x50' => array(
+			'avatar-left-style-50x50' => 'Left Avatar - 50x50',
+			'avatar-left-style-50x50-blue-orange' => 'Left Avatar - 50x50 - Blue Orange',
+			'avatar-left-style-50x50-brown' => 'Left Avatar - 50x50 - Brown',
+			'avatar-left-style-50x50-pink' => 'Left Avatar - 50x50 - Pink',
+			'avatar-left-style-50x50-purple-green' => 'Left Avatar - 50x50 - Purple Green',
+			'avatar-left-style-50x50-red-grey' => 'Left Avatar - 50x50 - Red Grey'
+		),
+		'avatar-left-style' => array(
+			'avatar-left-style' => 'Left Avatar - 150x150',
+			'avatar-left-style-blue-orange' => 'Left Avatar - 150x150 - Blue Orange',
+			'avatar-left-style-pink' => 'Left Avatar - 150x150 - Pink',
+			'avatar-left-style-brown' => 'Left Avatar - 150x150 - Brown',
+			'avatar-left-style-red-grey' => 'Left Avatar - 150x150 - Red Grey',
+			'avatar-left-style-purple-green' => 'Left Avatar - 150x150 - Purple Green'
+		),
+		'avatar-right-style-50x50' => array(
+			'avatar-right-style-50x50' => 'Right Avatar - 50x50',
+			'avatar-right-style-50x50-blue-orange' => 'Right Avatar - 50x50 - Blue Orange',
+			'avatar-right-style-50x50-brown' => 'Right Avatar - 50x50 - Brown',
+			'avatar-right-style-50x50-pink' => 'Right Avatar - 50x50 - Pink',
+			'avatar-right-style-50x50-purple-green' => 'Right Avatar - 50x50 - Purple Green',
+			'avatar-right-style-50x50-red-grey' => 'Right Avatar - 50x50 - Red Grey'
+		),
+		'avatar-right-style' => array(
+			'avatar-right-style' => 'Right Avatar - 150x150',
+			'avatar-right-style-blue-orange' => 'Right Avatar - 150x150 - Blue Orange',
+			'avatar-right-style-pink' => 'Right Avatar - 150x150 - Pink',
+			'avatar-right-style-brown' => 'Right Avatar - 150x150 - Brown',
+			'avatar-right-style-red-grey' => 'Right Avatar - 150x150 - Red Grey',
+			'avatar-right-style-purple-green' => 'Right Avatar - 150x150 - Purple Green'
 		)
 	);
 	

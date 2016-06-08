@@ -23,8 +23,7 @@ class easyTestimonialOptions
 		if(function_exists('add_action')){
 			//add a menu item
 			add_action('admin_menu', array($this, 'add_admin_menu_item'));
-			add_action('admin_init', 'hello_t_nag_ignore');
-				
+			add_action('admin_init', 'hello_t_nag_ignore');				
 		}
 	}
 	
@@ -56,8 +55,13 @@ class easyTestimonialOptions
 		register_setting( 'easy-testimonials-settings-group', 'easy_t_disable_cycle2' );
 		register_setting( 'easy-testimonials-settings-group', 'easy_t_use_cycle_fix' );
 		register_setting( 'easy-testimonials-settings-group', 'easy_t_apply_content_filter' );
+		register_setting( 'easy-testimonials-settings-group', 'easy_t_avada_filter_override' );
 		register_setting( 'easy-testimonials-settings-group', 'easy_t_show_in_search' );
 		register_setting( 'easy-testimonials-settings-group', 'easy_t_cache_buster', array($this, 'easy_t_bust_options_cache') );
+		
+		/* Item Reviewed */
+		register_setting( 'easy-testimonials-settings-group', 'easy_t_use_global_item_reviewed' );
+		register_setting( 'easy-testimonials-settings-group', 'easy_t_global_item_reviewed' );
 		
 		/* Shortcodes */
 		register_setting( 'easy-testimonials-settings-group', 'ezt_testimonials_shortcode' );
@@ -114,6 +118,10 @@ class easyTestimonialOptions
 		register_setting( 'easy-testimonials-submission_form_options-settings-group', 'easy_t_rating_field_description' );	
 		register_setting( 'easy-testimonials-submission_form_options-settings-group', 'easy_t_use_rating_field' );	
 		register_setting( 'easy-testimonials-submission_form_options-settings-group', 'easy_t_cache_buster', array($this, 'easy_t_bust_options_cache') );
+		register_setting( 'easy-testimonials-submission_form_options-settings-group', 'easy_t_general_error' );	
+		register_setting( 'easy-testimonials-submission_form_options-settings-group', 'easy_t_captcha_field_error' );	
+		register_setting( 'easy-testimonials-submission_form_options-settings-group', 'easy_t_body_field_error' );	
+		register_setting( 'easy-testimonials-submission_form_options-settings-group', 'easy_t_title_field_error' );	
 		
 		/* Import / Export */
 		register_setting( 'easy-testimonials-import-export-settings-group', 'easy_t_hello_t_json_url' );		
@@ -230,8 +238,6 @@ class easyTestimonialOptions
 		$message = "Easy Testimonials Settings Updated.";
 		
 		global $pagenow;
-		global $current_user;
-		get_currentuserinfo();
 	?>
 	<script type="text/javascript">
 	jQuery(function () {
@@ -245,6 +251,7 @@ class easyTestimonialOptions
 	<?php else: ?>
 	<div class="wrap easy_testimonials_admin_wrap not-pro">
 	<?php endif; ?>
+        <div id="icon-options-general" class="icon32"></div>
 		<h2><?php echo $title; ?></h2>
 		<style type="text/css">			
 			fieldset {
@@ -259,15 +266,6 @@ class easyTestimonialOptions
 				font-weight: bold;
 			}
 		</style>
-		<?php if(!isValidKey()): ?>		
-				<div id="signup_wrapper">
-					<?php $this->output_sidebar_coupon_form(); ?>
-					<p class="u_to_p"><a href="https://goldplugins.com/our-plugins/easy-testimonials-details/upgrade-to-easy-testimonials-pro/?utm_source=themes">Upgrade to Easy Testimonials Pro now</a> to remove banners like this one.</p>					
-					<?php $this->output_hello_t_banner(); ?>
-					<div style="clear:right;"></div>
-				</div>
-				
-		<?php endif; ?>
 		
 		<?php if (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true') : ?>
 		<div id="message" class="updated fade"><p><?php echo $message; ?></p></div>
@@ -276,62 +274,66 @@ class easyTestimonialOptions
 		$this->get_and_output_current_tab($pagenow);
 	}
 	
+	//builds the bottom of the settings page
+	//includes the signup form, if not pro
+	function settings_page_bottom(){
+		if(!isValidKey()): ?>		
+			<?php $this->output_sidebar_coupon_form(); ?>
+		<?php endif; ?>
+		</div>
+		<?php
+	}
+	
 	function output_sidebar_coupon_form()
 	{
-		global $current_user;
+		$current_user = wp_get_current_user();
 		?>
-		<div class="topper">
-			<h3>Save 10% on Easy Testimonials Pro!</h3>
-			<p class="pitch">Sign-up for our newsletter, and we’ll send you a coupon for 10% off your upgrade to Easy Testimonials Pro!</p>
-		</div>
-		<div id="mc_embed_signup">
-			<!--<form action="http://illuminatikarate.us2.list-manage.com/subscribe/post?u=403e206455845b3b4bd0c08dc&amp;id=a70177def0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>-->
-			<form action="https://goldplugins.com/atm/atm.php?u=403e206455845b3b4bd0c08dc&amp;id=a70177def0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-				<div class="fields_wrapper">
-					<label for="mce-NAME">Your Name:</label>
-					<input type="text" value="<?php echo (!empty($current_user->display_name) ?  $current_user->display_name : ''); ?>" name="NAME" class="name" id="mce-NAME" placeholder="Your Name">
-					<label for="mce-EMAIL">Your Email:</label>
-					<input type="email" value="<?php echo (!empty($current_user->user_email) ?  $current_user->user_email : ''); ?>" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
-					<!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-					<div style="position: absolute; left: -5000px;"><input type="text" name="b_403e206455845b3b4bd0c08dc_6ad78db648" tabindex="-1" value=""></div>
+		<div id="signup_wrapper">
+			<div class="topper yellow_orange_bg">
+				<h3>Upgrade To Easy Testimonials Pro!</h3>
+				<p class="pitch">When you upgrade, you'll instantly unlock the Testimonial Submission Form, 7 new transitions, 75+ professionally designed themes, Import &amp; Export functions, personalized support, and more!</p>
+				<a class="upgrade_link" href="https://goldplugins.com/our-plugins/easy-testimonials-details/?utm_source=cpn_box&utm_campaign=upgrade&utm_banner=learn_more" title="Learn More">Learn More About Easy Testimonials Pro &raquo;</a>
+			</div>
+			<div id="mc_embed_signup">
+				<div class="save_now">
+					<h3>Save 10% Now!</h3>
+					<p class="pitch">Subscribe to our newsletter now, and we’ll send you a coupon for 10% off your upgrade to the Pro version.</p>
 				</div>
-				<div class="clear"><input type="submit" value="Send Me The Coupon Now" name="subscribe" id="mc-embedded-subscribe" class="smallBlueButton"></div>
-				<p class="secure"><img src="<?php echo plugins_url( 'img/lock.png', __FILE__ ); ?>" alt="Lock" width="16px" height="16px" />We respect your privacy.</p>
-				
-				<input type="hidden" id="mc-upgrade-plugin-name" value="Easy Testimonials Pro" />
-				<input type="hidden" id="mc-upgrade-link-per" value="https://goldplugins.com/purchase/easy-testimonials-pro/single?promo=newsub10" />
-				<input type="hidden" id="mc-upgrade-link-biz" value="https://goldplugins.com/purchase/easy-testimonials-pro/business?promo=newsub10" />
-				<input type="hidden" id="mc-upgrade-link-dev" value="https://goldplugins.com/purchase/easy-testimonials-pro/developer?promo=newsub10" />
-
-				<div class="features">
-					<strong>When you upgrade, you'll instantly unlock:</strong>
-					<ul>
-						<li>75+ Professionally Designed Themes</li>
-						<li>Advanced styling and customization options</li>
-						<li>A customizable Testimonial submission form</li>
-						<li>7 new transitions for your testimonial widgets</li>
-						<li>Custom image sizes for your avatars</li>
-						<li>Import/Export your Testimonials</li>
-						<li>Outstanding support from our developers</li>
-						<li>Remove all banners from the admin area</li>
-						<li>And more! We add new features regularly.</li>
-					</ul>
-				</div>
-				
-				<div class="customer_testimonial">
-						<div class="stars">
-							<span class="dashicons dashicons-star-filled"></span>
-							<span class="dashicons dashicons-star-filled"></span>
-							<span class="dashicons dashicons-star-filled"></span>
-							<span class="dashicons dashicons-star-filled"></span>
-							<span class="dashicons dashicons-star-filled"></span>
-						</div>
-						“Tried and is great. This is light and has all the features I need and more! Awesome!”
-						<p class="author">&mdash; davidwalt  <a href="https://wordpress.org/support/topic/excellent-plugin-941" target="_blank">via WordPress.org</a></p>
-				</div>
-				<input type="hidden" id="gold_plugins_already_subscribed" name="gold_plugins_already_subscribed" value="0" />
-			</form>
-		</div>			
+				<form action="https://goldplugins.com/atm/atm.php?u=403e206455845b3b4bd0c08dc&amp;id=a70177def0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+					<div class="fields_wrapper">
+						<label for="mce-NAME">Your Name:</label>
+						<input type="text" value="<?php echo (!empty($current_user->display_name) ?  $current_user->display_name : ''); ?>" name="NAME" class="name" id="mce-NAME" placeholder="Your Name">
+						<label for="mce-EMAIL">Your Email:</label>
+						<input type="email" value="<?php echo (!empty($current_user->user_email) ?  $current_user->user_email : ''); ?>" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
+						<!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+						<div style="position: absolute; left: -5000px;"><input type="text" name="b_403e206455845b3b4bd0c08dc_6ad78db648" tabindex="-1" value=""></div>
+					</div>
+					<div class="clear"><input type="submit" value="Send Me The Coupon" name="subscribe" id="mc-embedded-subscribe" class="smallBlueButton"></div>
+					<p class="secure"><img src="<?php echo plugins_url( 'img/lock.png', __FILE__ ); ?>" alt="Lock" width="16px" height="16px" />We respect your privacy.</p>
+					
+					<input type="hidden" id="mc-upgrade-plugin-name" value="Easy Testimonials Pro" />
+					<input type="hidden" id="mc-upgrade-link-per" value="https://goldplugins.com/purchase/easy-testimonials-pro/single?promo=newsub10" />
+					<input type="hidden" id="mc-upgrade-link-biz" value="https://goldplugins.com/purchase/easy-testimonials-pro/business?promo=newsub10" />
+					<input type="hidden" id="mc-upgrade-link-dev" value="https://goldplugins.com/purchase/easy-testimonials-pro/developer?promo=newsub10" />
+					
+					<div class="customer_testimonial">
+							<div class="stars">
+								<span class="dashicons dashicons-star-filled"></span>
+								<span class="dashicons dashicons-star-filled"></span>
+								<span class="dashicons dashicons-star-filled"></span>
+								<span class="dashicons dashicons-star-filled"></span>
+								<span class="dashicons dashicons-star-filled"></span>
+							</div>
+							“Tried and is great. This is light and has all the features I need and more! Awesome!”
+							<p class="author">&mdash; davidwalt  <a href="https://wordpress.org/support/topic/excellent-plugin-941" target="_blank">via WordPress.org</a></p>
+					</div>
+					<input type="hidden" id="gold_plugins_already_subscribed" name="gold_plugins_already_subscribed" value="0" />
+				</form>
+			</div>		
+			<p class="u_to_p"><a href="https://goldplugins.com/our-plugins/easy-testimonials-details/upgrade-to-easy-testimonials-pro/?utm_source=newsletter_signup_bottom_rm_banners">Upgrade to Easy Testimonials Pro now</a> to remove banners like this one.</p>
+			<?php $this->output_hello_t_banner(); ?>
+			<div style="clear:right;"></div>
+		</div>	
 		<?php			
 	}
 	
@@ -381,6 +383,17 @@ class easyTestimonialOptions
 			
 			<table class="form-table">
 				<tr valign="top">
+					<th scope="row"><label for="easy_t_show_in_search">Show in Search</label></th>
+					<td><input type="checkbox" name="easy_t_show_in_search" id="easy_t_show_in_search" value="1" <?php if(get_option('easy_t_show_in_search', true)){ ?> checked="CHECKED" <?php } ?>/>
+					<p class="description">If checked, we will Show your Testimonials in the public site search in WordPress.</p>
+					</td>
+				</tr>
+			</table>
+			
+			<h3 id="compatibility_options">Compatibility Options</h3>
+			<p class="description">Use these fields to troubleshoot suspected compatibility issues with your Theme or other Plugins.</p>
+			<table class="form-table">
+				<tr valign="top">
 					<th scope="row"><label for="easy_t_disable_cycle2">Disable Cycle2 Output</label></th>
 					<td><input type="checkbox" name="easy_t_disable_cycle2" id="easy_t_disable_cycle2" value="1" <?php if(get_option('easy_t_disable_cycle2', false)){ ?> checked="CHECKED" <?php } ?>/>
 					<p class="description">If checked, we won't include the Cycle2 JavaScript file.  If you suspect you are having JavaScript compatibility issues with our plugin, please try checking this box.</p>
@@ -406,11 +419,42 @@ class easyTestimonialOptions
 				</tr>
 			</table>
 			
+			<?php
+				/* Avada Check */
+				$my_theme = wp_get_theme();
+				$additional_message = "";
+				if( strpos( $my_theme->get('Name'), "Avada" ) === 0 ) {
+					// looks like we are using Avada! 
+					// make sure we have avada compatibility enabled. If not, show a warning!
+					if(!get_option('easy_t_avada_filter_override', false)){
+						$additional_classes = "has_avada";
+						$additional_message = "We have detected that you are using the Avada theme.  Please enable this option to ensure compatibility.";
+					}
+				}
+			?>
+			
+			<table class="form-table <?php echo $additional_classes; ?>">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_avada_filter_override">Override Avada Blog Post Content Filter on Testimonials</label></th>
+					<td><input type="checkbox" name="easy_t_avada_filter_override" id="easy_t_avada_filter_override" value="1" <?php if(get_option('easy_t_avada_filter_override', false)){ ?> checked="CHECKED" <?php } ?>/>
+					<?php if(strlen($additional_message)>0){ echo "<p class='error'><strong>$additional_message</strong></p>";}?>
+					<p class="description">If checked, we will attempt to prevent the Avada blog layouts from overriding our Testimonial themes.  If you are having issues getting your themes to display when viewing Testimonial Categories in the Avada theme, try toggling this option.</p>
+					</td>
+				</tr>
+			</table>
+			
+			<h3>Item Reviewed Options</h3>
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_show_in_search">Show in Search</label></th>
-					<td><input type="checkbox" name="easy_t_show_in_search" id="easy_t_show_in_search" value="1" <?php if(get_option('easy_t_show_in_search', true)){ ?> checked="CHECKED" <?php } ?>/>
-					<p class="description">If checked, we will Show your Testimonials in the public site search in WordPress.</p>
+					<th scope="row"><label for="easy_t_global_item_reviewed">Global Item Reviewed</label></th>
+					<td><input type="text" name="easy_t_global_item_reviewed" id="easy_t_global_item_reviewed" value="<?php echo get_option('easy_t_global_item_reviewed', ''); ?>"  style="width: 250px" />
+					<p class="description">If nothing is set on the individual Testimonial, this will be used as the itemReviewed value for the Testimonial.  This is so people, and Search Engines, know what your Testimonials are all about!</p>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_use_global_item_reviewed">Use Global Item Reviewed</label></th>
+					<td><input type="checkbox" name="easy_t_use_global_item_reviewed" id="easy_t_use_global_item_reviewed" value="1" <?php if(get_option('easy_t_use_global_item_reviewed', false)){ ?> checked="CHECKED" <?php } ?>/>
+					<p class="description">If checked, and an individual Testimonial does not have a value for the Item being Reviewed, we will use the Global Item Reviewed setting instead.</p>
 					</td>
 				</tr>
 			</table>
@@ -480,7 +524,7 @@ class easyTestimonialOptions
 				<input type="submit" class="button-primary" value="<?php _e('Save Changes', 'easy-testimonials') ?>" />
 			</p>
 		</form>
-		</div><?php 
+		<?php $this->settings_page_bottom();
 	}
 		
 	function style_settings_page(){
@@ -490,6 +534,7 @@ class easyTestimonialOptions
 		<?php include('theme_options.php'); ?>
 	
 		<?php 
+		$this->settings_page_bottom();
 	}
 
 	function display_settings_page(){
@@ -638,415 +683,40 @@ class easyTestimonialOptions
 		<p class="submit">
 			<input type="submit" class="button-primary" value="<?php _e('Save Changes', 'easy-testimonials') ?>" />
 		</p>
-	</form>
-	</div><?php 
+	</form><?php 
+	$this->settings_page_bottom();
 	}
 	
 	function shortcode_generator_page() {
-		$this->settings_page_top();
-		$testimonial_categories = get_terms( 'easy-testimonial-category', 'orderby=title&hide_empty=0' );
-		
-		//load options
-		include("lib/config.php");
-				
+		$this->settings_page_top();		
 		?>
 		
 		<h3>Shortcode Generator</h3>
 		
-		<p>Select the options you'd like, and then click the Generate button. You'll get a shortcode that you can copy and paste into any post or page.</p>
-		<p>This generator will create a shortcode for displaying a list of testimonials or a testimonial slider.  Also available is the <code>[single_testimonial]</code> shortcode, for displaying a specific Testimonial.  <a href="https://goldplugins.com/documentation/easy-testimonials-documentation/easy-testimonials-installation-and-usage-instructions/" target="_blank">Click here</a> for more information.</p>
+		<p>Using the buttons below, select your desired method and options for displaying Testimonials.</p>
+		<p>Instructions:</p>
+		<ol>
+			<li>Click the Testimonials button, below,</li>
+			<li>Pick from the available display methods listed, such as Grid of Testimonials,</li>
+			<li>Set the options for your desired method of display,</li>
+			<li>Click "Insert Now" to generate the shortcode.</li>
+			<li>The generated shortcode will appear in the textarea below - simply copy and paste this into the Page or Post where you would like Testimonials to appear!</li>
+		</ol>
 		
-		<form id="easy_t_shortcode_generator">
-			<table class="form-table">
-				<tbody>						
-					<tr>
-						<th scope="row">
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_count">Count</label>
-							</div>
-						</th>
-						<td>
-							<input type="text" class="valid_int" id="sc_gen_count" value="5" />
-							<p class="description">How many testimonials would you like to show?</p>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_order_by">Order By</label>
-							</div>
-						</th>
-						<td>
-							<div class="inline-select-wrapper">
-								<select id="sc_gen_order_by">
-									<option value="rand">Random</option>
-									<option value="id">ID</option>
-									<option value="author">Author</option>
-									<option value="title">Title</option>
-									<option value="name">Name</option>
-									<option value="date">Date</option>
-									<option value="modified">Last Modified</option>
-									<option value="parent">Parent ID</option>								
-								</select>
-							</div>
-							<div class="inline-select-wrapper">
-								<select id="sc_gen_order_dir">
-									<option value="asc">Ascending (ASC)</option>
-									<option value="desc">Descending (DESC)</option>
-								</select>
-							</div>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_category">Filter By Category</label>
-							</div>
-						</th>
-						<td>
-							<select id="sc_gen_category">
-								<option value="all">All Categories</option>
-								<?php foreach($testimonial_categories as $cat):?>
-								<option value="<?php echo $cat->slug?>"><?php echo htmlentities($cat->name)?></option>
-								<?php endforeach; ?>
-							</select>
-							<p class="description"><a href="<?php echo admin_url('edit-tags.php?taxonomy=easy-testimonial-category&post_type=testimonial'); ?>">Manage Testimonial Categories</a></p>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							Title
-						</th>
-						<td>
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_show_title">
-									<input type="checkbox" class="checkbox" id="sc_gen_show_title" value="yes" />
-									Show the titles?
-								</label>
-							</div>
-						</td>
-					</tr>	
-					
-					<tr>
-						<th scope="row">
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_width">Testimonial Width</label>
-							</div>
-						</th>
-						<td>
-							<input type="text" id="sc_gen_width" value="<?php echo get_option('easy_t_width',''); ?>" />
-							<p class="description">Set the desired width of the testimonial, here.  If none is set, Testimonials will attempt to size to the width of their container.  For example: 500px</p>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							Testimonial Length
-						</th>
-						<td>
-							<div class="sc_gen_control_group sc_gen_control_group_radio">
-								<label title="Use an excerpt for long testimonials">
-									<input type="radio" value="yes" id="sc_gen_use_excerpt_yes" name="sc_gen_use_excerpt" checked="checked">
-									<span>Use an excerpt for long testimonials</span>
-								</label>
-								<label title="Always display Testimonials at their full length">
-									<input type="radio" value="no" id="sc_gen_use_excerpt_no" name="sc_gen_use_excerpt">
-									<span>Always display Testimonials at their full length</span>
-								</label>
-							</div>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							Featured Images
-						</th>
-						<td>							
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_show_thumbs">
-									<input type="checkbox" class="checkbox" id="sc_gen_show_thumbs" value="yes" />
-									Show Featured Images?
-								</label>
-							</div>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							Show Publication Date
-						</th>
-						<td>							
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_show_date">
-									<input type="checkbox" class="checkbox" id="sc_gen_show_date" value="yes" />
-									Show Publication Date?
-								</label>
-							</div>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							Show "Location / Product Reviewed / Other" Field
-						</th>
-						<td>							
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_show_other">
-									<input type="checkbox" class="checkbox" id="sc_gen_show_other" value="yes" />
-									Show "Location / Product Reviewed / Other" Field?
-								</label>
-							</div>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							Ratings
-						</th>
-						<td>
-							<div class="sc_gen_control_group sc_gen_control_group_radio">
-								<label title="Hide Ratings">
-									<input type="radio" value="hide" id="sc_gen_show_ratings_hide" name="sc_gen_show_ratings" checked="checked">
-									<span>Hide Ratings</span>
-								</label>
-								<label title="Show Rating Before Testimonial">
-									<input type="radio" value="before" id="sc_gen_show_ratings_before" name="sc_gen_show_ratings">
-									<span>Show Rating Before The Testimonial</span>
-								</label>
-								<label title="Show Rating After Testimonial">
-									<input type="radio" value="after" id="sc_gen_show_ratings_after" name="sc_gen_show_ratings">
-									<span>Show Rating After The Testimonial</span>
-								</label>
-								<label title="Show Rating As Stars">
-									<input type="radio" value="stars" id="sc_gen_show_ratings_stars" name="sc_gen_show_ratings">
-									<span>Show Rating As Stars</span>
-								</label>
-							</div>
-						</td>
-					</tr>	
-
-					<tr>
-						<th scope="row">
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_theme">Select A Theme</label>
-							</div>
-						</th>
-						<td>
-							<select id="sc_gen_theme">
-								<optgroup label="Free Options">
-									<?php foreach($free_theme_array as $theme_slug => $theme_name): ?>
-									<option value="<?php echo $theme_slug; ?>" <?php if(get_option('testimonials_style', 'default_style') == $theme_slug){ ?> selected="selected" <?php } ?>><?php echo $theme_name; ?></option>
-									<?php endforeach; ?>
-								</optgroup>
-								<optgroup label="PRO Options">		
-									<?php foreach($pro_theme_array as $top_level_theme_name => $theme_array): ?>
-										<?php foreach($theme_array as $theme_slug => $theme_name): ?>
-											<option <?php if(!isValidKey()): ?>disabled="disabled" <?php endif; ?>value="<?php echo $theme_slug; ?>" <?php if(get_option('testimonials_style', 'default_style') == $theme_slug){ ?> selected="selected" <?php } ?>><?php echo $theme_name; ?></option>
-										<?php endforeach; ?>
-									<?php endforeach; ?>	
-								</optgroup>
-							</select>
-							<?php if(!isValidKey()): ?>
-							<p class="description"><a href="https://goldplugins.com/our-plugins/easy-testimonials-details/upgrade-to-easy-testimonials-pro/?utm_source=themes">Upgrade To Unlock All The Themes</a></p>
-							<?php endif; ?>
-						</td>
-					</tr>
-					
-					<tr>
-						<th scope="row">
-							Pagination
-						</th>
-						<td>
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_paginate">
-									<input type="checkbox" class="checkbox" id="sc_gen_paginate" value="yes" />
-									Paginate the Testimonials?
-								</label>
-							</div>
-						</td>
-					</tr>		
+		<div id="easy-t-shortcode-generator">
+		
+		<?php 
+			$content = "";//initial content displayed in the editor_id
+			$editor_id = "easy_t_shortcode_generator";//HTML id attribute for the textarea NOTE hyphens will break it
+			$settings = array(
+				//'tinymce' => false,//don't display tinymce
+				'quicktags' => false,
+			);
+			wp_editor($content, $editor_id, $settings); 
+		?>
 				
-					<tr class="pagination_option">
-						<th scope="row">
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_num_per_page">Testimonials Per Page</label>
-							</div>
-						</th>
-						<td>
-							<input type="text" class="valid_int" id="sc_gen_num_per_page" value="4" />
-							<p class="description">The number of Testimonials to show per page.</p>
-						</td>
-					</tr>	
-					
-					<tr>
-						<th scope="row">
-							Testimonial Slider
-						</th>
-						<td>							
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_use_slider">
-									<input type="checkbox" class="checkbox" id="sc_gen_use_slider" value="yes" />
-									Output your testimonials in a slider?
-								</label>
-							</div>
-						</td>
-					</tr>					
-
-					<tr class="slider_option">
-						<th scope="row">
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_transition">Select A Transition</label>
-							</div>
-						</th>
-						<td>
-							<select id="sc_gen_transition">
-								<optgroup label="Standard Options">
-									<option value="fade">Fade</option>
-									<option value="fadeout">Fade Out</option>
-									<option value="none">None</option>
-								</optgroup>
-								<optgroup label="PRO Options">								
-									<?php if(!isValidKey()): ?>
-									<option value="scrollVert" disabled="disabled">Scroll (Vertical)</option>
-									<option value="scrollHorz" disabled="disabled">Scroll (Horizontal)</option>
-									<option value="fade" disabled="disabled">Fade In</option>
-									<option value="fadeout" disabled="disabled">Fade Out</option>
-									<option value="flipHorz" disabled="disabled">Flip (Horizontal)</option>
-									<option value="flipVert" disabled="disabled">Flip (Vertical)</option>
-									<option value="tileSlide" disabled="disabled">Slide</option>
-									<?php else: ?>
-									<option value="scrollVert">Scroll (Vertical)</option>
-									<option value="scrollHorz">Scroll (Horizontal)</option>
-									<option value="fade">Fade In</option>
-									<option value="fadeout">Fade Out</option>
-									<option value="flipHorz">Flip (Horizontal)</option>
-									<option value="flipVert">Flip (Vertical)</option>
-									<option value="tileSlide">Slide</option>
-									<?php endif; ?>
-								</optgroup>
-							</select>
-							<?php if(!isValidKey()): ?>
-							<p class="description"><a href="https://goldplugins.com/our-plugins/easy-testimonials-details/upgrade-to-easy-testimonials-pro/?utm_source=transitions">Upgrade To Unlock All The Transitions</a></p>
-							<?php endif; ?>
-						</td>
-					</tr>
-				
-					<tr class="slider_option">
-						<th scope="row">
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_slider_timer">Time Between Slides</label>
-							</div>
-						</th>
-						<td>
-							<input type="text" class="valid_int" id="sc_gen_slider_timer" value="4" />
-							<p class="description">The number of seconds to pause on each Testimonial</p>
-						</td>
-					</tr>
-					
-					<tr class="slider_option">
-						<th scope="row">
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_slider_testimonials_per_slide">Testimonials Per Slide</label>
-							</div>
-						</th>
-						<td>
-							<input type="text" class="valid_int" id="sc_gen_slider_testimonials_per_slide" value="1" />
-							<p class="description">The number of Testimonials to show on each slide</p>
-						</td>
-					</tr>				
-					
-
-					<tr class="slider_option">
-						<th scope="row">
-							Pause On Hover
-						</th>
-						<td>							
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_pause_on_hover">
-									<input type="checkbox" class="checkbox" id="sc_gen_pause_on_hover" value="yes" />
-									Pause On Hover
-								</label>
-							</div>
-						</td>
-					</tr>
-
-					<tr class="slider_option">
-						<th scope="row">
-							Disable Auto Transition
-						</th>
-						<td>							
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_paused">
-									<input type="checkbox" class="checkbox" id="sc_gen_paused" value="yes" />
-									Disable Automatic Transitions (requires Pager Icons or Previous and Next Buttons to advance slides.)
-								</label>
-							</div>
-						</td>
-					</tr>						
-
-					<tr class="slider_option">
-						<th scope="row">
-							Show Pager Icons
-						</th>
-						<td>							
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_show_pager">
-									<input type="checkbox" class="checkbox" id="sc_gen_show_pager" value="yes" />
-									Show Pager Icons Below My Testimonials
-								</label>
-							</div>
-						</td>
-					</tr>					
-
-					<tr class="slider_option">
-						<th scope="row">
-							Show Previous and Next Buttons
-						</th>
-						<td>							
-							<div class="sc_gen_control_group">
-								<label for="sc_gen_show_prev_next">
-									<input type="checkbox" class="checkbox" id="sc_gen_show_prev_next" value="yes" />
-									Show Previous and Next Buttons Below My Slideshow
-								</label>
-							</div>
-						</td>
-					</tr>
-					
-					<tr class="slider_option">
-						<th scope="row">
-							Auto Height Options
-						</th>
-						<td>
-							<div class="sc_gen_control_group sc_gen_control_group_radio">
-								<label title="Auto Adjust Height">
-									<input type="radio" value="yes" id="sc_gen_auto_fit_container" name="sc_gen_auto_fit" checked="checked">
-									<span>Automatically adjust the height of the slider to fit each testimonial</span>
-								</label>
-								<label title="Calculate Tallest Height">
-									<input type="radio" value="no" id="sc_gen_auto_fit_calc" name="sc_gen_auto_fit">
-									<span>Automatically set the height of the slider to fit the tallest testimonial</span>
-								</label>
-							</div>
-						</td>
-					</tr>
-					
-				</tbody>
-			</table>
-			<p class="submit">
-				<button id="sc_generate" class="button button-primary" type="button">Build My Shortcode!</button>
-			</p>
-			
-			<div id="sc_gen_output_wrapper">
-				<textarea id="sc_gen_output" rows="4" cols="80"></textarea>
-			</div>
-			
-		</form>
-		
-		
-		</div><?php 
+		<?php 
+		$this->settings_page_bottom();
 	}
 		
 	function submission_settings_page(){
@@ -1063,200 +733,271 @@ class easyTestimonialOptions
 		
 		<div class="ezt_submission_form_settings">
 		
-		<p>Use the below options to control the look and feel of the testimonial submission form.</p>
+		<p>Use the below options to control the look, feel, and function of the testimonial submission form.</p>
 		
+		<ul class="gp-admin-quicknav-ul">
+			<li><a href="#field-labels-descriptions">Field Labels and Descriptions</a></li>
+			<li><a href="#submission-notification-options">Submission and Notification Options</a></li>
+			<li><a href="#spam-prevention-captcha">Spam Prevention / Captcha Options</a></li>
+			<li><a href="#error-messages">Error Messages</a></li>
+		</ul>
+		
+		<h3 id="field-labels-descriptions" class="gp-admin-quicknav-h3">Field Labels and Descriptions</h3>		
 		<fieldset>
-			<legend>Title Field:</legend>			
+			<legend><?php echo get_option('easy_t_title_field_label', 'Title'); ?> Field</legend>			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_title_field_label">"Title" Field Label</label></th>
+					<th scope="row"><label for="easy_t_title_field_label">Label</label></th>
 					<td><input type="text" name="easy_t_title_field_label" id="easy_t_title_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_title_field_label', 'Title'); ?>" />
-					<p class="description">This is the label of the first field in the form, which defaults to "Title".  Contents of this field will be passed through to the Title field inside WordPress.</p>
+					<p class="description">This is the label of the <?php echo get_option('easy_t_title_field_label', 'Title'); ?> field in the form, which defaults to "Title".  Contents of this field will be passed through to the Title field inside WordPress.</p>
 					</td>
 				</tr>
 			</table>
 			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_title_field_description">"Title" Field Description</label></th>
+					<th scope="row"><label for="easy_t_title_field_description">Description</label></th>
 					<td><textarea name="easy_t_title_field_description" id="easy_t_title_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_title_field_description', 'Please give your Testimonial a Title.'); ?></textarea>
-					<p class="description">This is the description below the first field in the form.</p>
+					<p class="description">This is the description below the <?php echo get_option('easy_t_title_field_label', 'Title'); ?> field in the form.</p>
 					</td>
 				</tr>
 			</table>
 		</fieldset>
 		
 		<fieldset>
-			<legend>Name Field:</legend>		
+			<legend><?php echo get_option('easy_t_name_field_label', 'Name'); ?> Field</legend>		
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_name_field_label">"Name" Field Label</label></th>
+					<th scope="row"><label for="easy_t_name_field_label">Label</label></th>
 					<td><input type="text" name="easy_t_name_field_label" id="easy_t_name_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_name_field_label', 'Name'); ?>" />
-					<p class="description">This is the label of the second field in the form, which defaults to "Name."  Contents of this field will be passed through to the Name field inside WordPress.</p>
+					<p class="description">This is the label of the <?php echo get_option('easy_t_name_field_label', 'Name'); ?> field in the form, which defaults to "Name".  Contents of this field will be passed through to the Client Name field inside WordPress.</p>
 					</td>
 				</tr>
 			</table>
 						
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_name_field_description">"Name" Field Description</label></th>
+					<th scope="row"><label for="easy_t_name_field_description">Description</label></th>
 					<td><textarea name="easy_t_name_field_description" id="easy_t_name_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_name_field_description', 'Please enter your Full Name.'); ?></textarea>
-					<p class="description">This is the description below the name field.</p>
+					<p class="description">This is the description below the <?php echo get_option('easy_t_name_field_label', 'Name'); ?> field.</p>
 					</td>
 				</tr>
 			</table>
 			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_hide_name_field">Disable "Name" Field Display</label></th>
+					<th scope="row"><label for="easy_t_hide_name_field">Disable Display</label></th>
 					<td><input type="checkbox" name="easy_t_hide_name_field" id="easy_t_hide_name_field" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="1" <?php if(get_option('easy_t_hide_name_field', 0)){ ?> checked="CHECKED" <?php } ?>/>
-					<p class="description">If checked, the name field will not be displayed in the form .</p>
+					<p class="description">If checked, the <?php echo get_option('easy_t_name_field_label', 'Name'); ?> field will not be displayed in the form .</p>
 					</td>
 				</tr>
 			</table>
 		</fieldset>
 		
 		<fieldset>
-			<legend>E-Mail Field:</legend>		
+			<legend><?php echo get_option('easy_t_email_field_label', 'Your E-Mail Address'); ?> Field</legend>		
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_email_field_label">"E-Mail" Field Label</label></th>
+					<th scope="row"><label for="easy_t_email_field_label">Label</label></th>
 					<td><input type="text" name="easy_t_email_field_label" id="easy_t_email_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_email_field_label', 'Your E-Mail Address'); ?>" />
-					<p class="description">This is the label of the client email field in the form, shown after the "Name" field, which defaults to "E-Mail."  Contents of this field will be passed through to the E-Mail Address field inside WordPress.</p>
+					<p class="description">This is the label of the <?php echo get_option('easy_t_email_field_label', 'Your E-Mail Address'); ?> field in the form, which defaults to "Your E-Mail Address".  Contents of this field will be passed through to the E-Mail Address field inside WordPress.</p>
 					</td>
 				</tr>
 			</table>
 						
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_email_field_description">"E-Mail" Field Description</label></th>
+					<th scope="row"><label for="easy_t_email_field_description">Description</label></th>
 					<td><textarea name="easy_t_email_field_description" id="easy_t_email_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_email_field_description', 'Please enter your e-mail address.  This information will not be publicly displayed.'); ?></textarea>
-					<p class="description">This is the description below the E-Mail field.</p>
+					<p class="description">This is the description below the <?php echo get_option('easy_t_email_field_label', 'Your E-Mail Address'); ?> field.</p>
 					</td>
 				</tr>
 			</table>
 			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_hide_email_field">Disable "E-Mail" Field Display</label></th>
+					<th scope="row"><label for="easy_t_hide_email_field">Disable Display</label></th>
 					<td><input type="checkbox" name="easy_t_hide_email_field" id="easy_t_hide_email_field" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="1" <?php if(get_option('easy_t_hide_email_field', 0)){ ?> checked="CHECKED" <?php } ?>/>
-					<p class="description">If checked, the E-Mail Address field will not be displayed in the form .</p>
+					<p class="description">If checked, the <?php echo get_option('easy_t_email_field_label', 'Your E-Mail Address'); ?> field will not be displayed in the form .</p>
 					</td>
 				</tr>
 			</table>
 		</fieldset>
 		
 		<fieldset>
-			<legend>Position / Web Address / Other Field:</legend>			
+			<legend><?php echo get_option('easy_t_position_web_other_field_label', 'Position / Web Address / Other'); ?> Field</legend>			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_position_web_other_field_label">"Position / Web Address / Other" Field Label</label></th>
+					<th scope="row"><label for="easy_t_position_web_other_field_label">Label</label></th>
 					<td><input type="text" name="easy_t_position_web_other_field_label" id="easy_t_position_web_other_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_position_web_other_field_label', 'Position / Web Address / Other'); ?>" />
-					<p class="description">This is the label of the third field in the form, which defaults to "Position / Web Address / Other."  Contents of this field will be passed through to the Position / Web Address / Other field inside WordPress.</p>
+					<p class="description">This is the label of the <?php echo get_option('easy_t_position_web_other_field_label', 'Position / Web Address / Other'); ?> field in the form, which defaults to "Position / Web Address / Other".  Contents of this field will be passed through to the Position / Web Address / Other field inside WordPress.</p>
 					</td>
 				</tr>
 			</table>
 						
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_position_web_other_field_description">"Position / Web Address / Other" Field Description</label></th>
+					<th scope="row"><label for="easy_t_position_web_other_field_description">Description</label></th>
 					<td><textarea name="easy_t_position_web_other_field_description" id="easy_t_position_web_other_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_position_web_other_field_description', 'Please enter your Job Title or Website address.'); ?></textarea>
-					<p class="description">This is the description below the third field in the form.</p>
+					<p class="description">This is the description below the <?php echo get_option('easy_t_position_web_other_field_label', 'Position / Web Address / Other'); ?> field in the form.</p>
 					</td>
 				</tr>
 			</table>
 			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_hide_position_web_other_field">Disable "Position / Web Address / Other" Field Display</label></th>
+					<th scope="row"><label for="easy_t_hide_position_web_other_field">Disable Display</label></th>
 					<td><input type="checkbox" name="easy_t_hide_position_web_other_field" id="easy_t_hide_position_web_other_field" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="1" <?php if(get_option('easy_t_hide_position_web_other_field')){ ?> checked="CHECKED" <?php } ?>/>
-					<p class="description">If checked, the third field in the form will not be displayed.</p>
+					<p class="description">If checked, the <?php echo get_option('easy_t_position_web_other_field_label', 'Position / Web Address / Other'); ?> field in the form will not be displayed.</p>
 					</td>
 				</tr>
 			</table>
 		</fieldset>
 		
 		<fieldset>
-			<legend>Location / Product Reviewed / Other Field:</legend>			
+			<legend><?php echo get_option('easy_t_other_other_field_label', 'Location Reviewed / Product Reviewed / Item Reviewed'); ?> Field</legend>			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_other_other_field_label">"Location / Product Reviewed / Other" Field Label</label></th>
-					<td><input type="text" name="easy_t_other_other_field_label" id="easy_t_other_other_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_other_other_field_label', 'Location / Product Reviewed / Other'); ?>" />
-					<p class="description">This is the label of the fourth field in the form, which defaults to "Location / Product Reviewed / Other."  Contents of this field will be passed through to the Location / Product Reviewed / Other field inside WordPress.</p>
+					<th scope="row"><label for="easy_t_other_other_field_label">Label</label></th>
+					<td><input type="text" name="easy_t_other_other_field_label" id="easy_t_other_other_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_other_other_field_label', 'Location Reviewed / Product Reviewed / Item Reviewed'); ?>" />
+					<p class="description">This is the label of the <?php echo get_option('easy_t_other_other_field_label', 'Location Reviewed / Product Reviewed / Item Reviewed'); ?> field in the form, which defaults to "Location Reviewed / Product Reviewed / Item Reviewed".  Contents of this field will be passed through to the Location Reviewed / Product Reviewed / Item Reviewed field inside WordPress.</p>
 					</td>
 				</tr>
 			</table>
 						
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_other_other_field_description">"Location / Product Reviewed / Other" Field Description</label></th>
-					<td><textarea name="easy_t_other_other_field_description" id="easy_t_other_other_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_other_other_field_description', 'Please enter your Location or the Product being Reviewed.'); ?></textarea>
-					<p class="description">This is the description below the fourth field in the form.</p>
+					<th scope="row"><label for="easy_t_other_other_field_description">Description</label></th>
+					<td><textarea name="easy_t_other_other_field_description" id="easy_t_other_other_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_other_other_field_description', 'Please enter the Location or the Product being Reviewed.'); ?></textarea>
+					<p class="description">This is the description below the <?php echo get_option('easy_t_other_other_field_label', 'Location Reviewed / Product Reviewed / Item Reviewed'); ?> field in the form.</p>
 					</td>
 				</tr>
 			</table>
 			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_hide_other_other_field">Disable "Location / Product Reviewed / Other" Field Display</label></th>
+					<th scope="row"><label for="easy_t_hide_other_other_field">Disable Display</label></th>
 					<td><input type="checkbox" name="easy_t_hide_other_other_field" id="easy_t_hide_other_other_field" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="1" <?php if(get_option('easy_t_hide_other_other_field')){ ?> checked="CHECKED" <?php } ?>/>
-					<p class="description">If checked, the fourth field in the form will not be displayed.</p>
+					<p class="description">If checked, the <?php echo get_option('easy_t_other_other_field_label', 'Location Reviewed / Product Reviewed / Item Reviewed'); ?> field in the form will not be displayed.</p>
 					</td>
 				</tr>
 			</table>
 		</fieldset>
 		
 		<fieldset>
-			<legend>Category Field:</legend>			
+			<legend><?php echo get_option('easy_t_category_field_label', 'Category'); ?> Field</legend>			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_category_field_label">"Category" Field Label</label></th>
-					<td><input type="text" name="easy_t_category_field_label" id="easy_t_category_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_category_field_label', 'Location / Product Reviewed / Other'); ?>" />
-					<p class="description">This is the label of the fifth field in the form, which defaults to "Category."  This field matches the Testimonial Categories inside WordPress.</p>
+					<th scope="row"><label for="easy_t_category_field_label">Label</label></th>
+					<td><input type="text" name="easy_t_category_field_label" id="easy_t_category_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_category_field_label', 'Category'); ?>" />
+					<p class="description">This is the label of the <?php echo get_option('easy_t_category_field_label', 'Category'); ?> field in the form, which defaults to "Category".  This field matches the Testimonial Categories inside WordPress.</p>
 					</td>
 				</tr>
 			</table>
 						
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_category_field_description">"Category" Field Description</label></th>
-					<td><textarea name="easy_t_category_field_description" id="easy_t_category_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_category_field_description', 'Please enter your Location or the Product being Reviewed.'); ?></textarea>
-					<p class="description">This is the description below the fifth field in the form.</p>
+					<th scope="row"><label for="easy_t_category_field_description">Description</label></th>
+					<td><textarea name="easy_t_category_field_description" id="easy_t_category_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_category_field_description', 'Please select the Category that best matches your Testimonial.'); ?></textarea>
+					<p class="description">This is the description below the <?php echo get_option('easy_t_category_field_label', 'Category'); ?> field in the form, a Select menu.</p>
 					</td>
 				</tr>
 			</table>
 			
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_hide_category_field">Disable "Category" Field Display</label></th>
+					<th scope="row"><label for="easy_t_hide_category_field">Disable Display</label></th>
 					<td><input type="checkbox" name="easy_t_hide_category_field" id="easy_t_hide_category_field" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="1" <?php if(get_option('easy_t_hide_category_field')){ ?> checked="CHECKED" <?php } ?>/>
-					<p class="description">If checked, the fifth field in the form will not be displayed.</p>
+					<p class="description">If checked, the <?php echo get_option('easy_t_category_field_label', 'Category'); ?> field in the form will not be displayed.</p>
 					</td>
 				</tr>
 			</table>
 		</fieldset>
 		
 		<fieldset>
-			<legend>Body Content Field:</legend>			
+			<legend><?php echo get_option('easy_t_rating_field_label', 'Your Rating'); ?> Field</legend>
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_body_content_field_label">"Body Content" Field Label</label></th>
-					<td><input type="text" name="easy_t_body_content_field_label" id="easy_t_body_content_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_body_content_field_label', 'Your Testimonial'); ?>" />
-					<p class="description">This is the label of the sixth field in the form, a textarea, which defaults to "Your Testimonial."  Contents of this field will be passed through to the Body field inside WordPress.</p>
+					<th scope="row"><label for="easy_t_rating_field_label">Label</label></th>
+					<td><input type="text" name="easy_t_rating_field_label" id="easy_t_rating_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_rating_field_label', 'Your Rating'); ?>" />
+					<p class="description">This is the label of the <?php echo get_option('easy_t_rating_field_label', 'Your Rating'); ?> Field in the form, which defaults to "Your Rating".</p>
 					</td>
 				</tr>
 			</table>
 						
 			<table class="form-table">
 				<tr valign="top">
-					<th scope="row"><label for="easy_t_body_content_field_description">Body Content Field Description</label></th>
-					<td><textarea name="easy_t_body_content_field_description" id="easy_t_body_content_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_body_content_field_description', 'Please enter your Testimonial.'); ?></textarea>
-					<p class="description">This is the description below the sixth field in the form, a textarea.</p>
+					<th scope="row"><label for="easy_t_rating_field_description">Description</label></th>
+					<td><textarea name="easy_t_rating_field_description" id="easy_t_rating_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_rating_field_description', '1 - 5 out of 5, where 5/5 is the best and 1/5 is the worst.'); ?></textarea>
+					<p class="description">This is the description below the <?php echo get_option('easy_t_rating_field_label', 'Your Rating'); ?> Field in the form.</p>
+					</td>
+				</tr>
+			</table>
+						
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_use_rating_field">Enable Ratings</label></th>
+					<td><input type="checkbox" name="easy_t_use_rating_field" id="easy_t_use_rating_field" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="1" <?php if(get_option('easy_t_use_rating_field')){ ?> checked="CHECKED" <?php } ?>/>
+					<p class="description">If checked, users will be allowed to add a 1 - 5 out of 5 rating along with their Testimonial.</p>
 					</td>
 				</tr>
 			</table>
 		</fieldset>
 		
+		<fieldset>
+			<legend><?php echo get_option('easy_t_body_content_field_label', 'Your Testimonial'); ?> Field</legend>			
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_body_content_field_label">Label</label></th>
+					<td><input type="text" name="easy_t_body_content_field_label" id="easy_t_body_content_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_body_content_field_label', 'Your Testimonial'); ?>" />
+					<p class="description">This is the label of the <?php echo get_option('easy_t_body_content_field_label', 'Your Testimonial'); ?> field in the form, a textarea, which defaults to "Your Testimonial".  Contents of this field will be passed through to the Body field inside WordPress.</p>
+					</td>
+				</tr>
+			</table>
+						
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_body_content_field_description">Description</label></th>
+					<td><textarea name="easy_t_body_content_field_description" id="easy_t_body_content_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_body_content_field_description', 'Please enter your Testimonial.'); ?></textarea>
+					<p class="description">This is the description below the <?php echo get_option('easy_t_body_content_field_label', 'Your Testimonial'); ?> field in the form, a textarea.</p>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+		
+		<fieldset>
+			<legend><?php echo get_option('easy_t_image_field_label', 'Your Image'); ?> Field</legend>
+		
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_image_field_label">Label</label></th>
+					<td><input type="text" name="easy_t_image_field_label" id="easy_t_image_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_image_field_label', 'Your Image'); ?>" />
+					<p class="description">This is the label of the <?php echo get_option('easy_t_image_field_label', 'Your Image'); ?> Field in the form, which defaults to "Your Image".</p>
+					</td>
+				</tr>
+			</table>
+						
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_image_field_description">Description</label></th>
+					<td><textarea name="easy_t_image_field_description" id="easy_t_image_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_image_field_description', 'You can select and upload 1 image along with your Testimonial.  Depending on the website\'s settings, this image may be cropped or resized.  Allowed file types are .gif, .jpg, .png, and .jpeg.'); ?></textarea>
+					<p class="description">This is the description below the <?php echo get_option('easy_t_image_field_label', 'Your Image'); ?> Field in the form.</p>
+					</td>
+				</tr>
+			</table>
+						
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_use_image_field">Enable Image Field</label></th>
+					<td><input type="checkbox" name="easy_t_use_image_field" id="easy_t_use_image_field" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="1" <?php if(get_option('easy_t_use_image_field')){ ?> checked="CHECKED" <?php } ?>/>
+					<p class="description">If checked, users will be allowed to upload 1 image along with their Testimonial.</p>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+		
+		
+		<h3 id="submission-notification-options" class="gp-admin-quicknav-h3">Submission and Notification Options</h3>
 		<fieldset>
 			<legend>Submission Options</legend>
 					
@@ -1306,69 +1047,10 @@ class easyTestimonialOptions
 			</table>
 		</fieldset>
 		
-		<fieldset>
-			<legend>Testimonial Image Field:</legend>
-		
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row"><label for="easy_t_image_field_label">Testimonial Image Field Label</label></th>
-					<td><input type="text" name="easy_t_image_field_label" id="easy_t_image_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_image_field_label', 'Your Image'); ?>" />
-					<p class="description">This is the label of the Testimonial Image Field in the form, which defaults to "Your Image".</p>
-					</td>
-				</tr>
-			</table>
-						
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row"><label for="easy_t_image_field_description">Testimonial Image Field Description</label></th>
-					<td><textarea name="easy_t_image_field_description" id="easy_t_image_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_image_field_description', 'You can select and upload 1 image along with your Testimonial.  Depending on the website\'s settings, this image may be cropped or resized.  Allowed file types are .gif, .jpg, .png, and .jpeg.'); ?></textarea>
-					<p class="description">This is the description below the Testimonial Image Field in the form.</p>
-					</td>
-				</tr>
-			</table>
-						
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row"><label for="easy_t_use_image_field">Enable Testimonial Image on Submission Form</label></th>
-					<td><input type="checkbox" name="easy_t_use_image_field" id="easy_t_use_image_field" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="1" <?php if(get_option('easy_t_use_image_field')){ ?> checked="CHECKED" <?php } ?>/>
-					<p class="description">If checked, users will be allowed to upload 1 image along with their Testimonial.</p>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
+		<h3 id="spam-prevention-captcha" class="gp-admin-quicknav-h3">Spam Prevention / Captcha Options</h3>
 		
 		<fieldset>
-			<legend>Testimonial Ratings Field:</legend>
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row"><label for="easy_t_rating_field_label">Testimonial Ratings Field Label</label></th>
-					<td><input type="text" name="easy_t_rating_field_label" id="easy_t_rating_field_label" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="<?php echo get_option('easy_t_rating_field_label', 'Your Rating'); ?>" />
-					<p class="description">This is the label of the Testimonial Rating Field in the form, which defaults to "Your Rating".</p>
-					</td>
-				</tr>
-			</table>
-						
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row"><label for="easy_t_rating_field_description">Testimonial Ratings Field Description</label></th>
-					<td><textarea name="easy_t_rating_field_description" id="easy_t_rating_field_description" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_rating_field_description', '1 - 5 out of 5, where 5/5 is the best and 1/5 is the worst.'); ?></textarea>
-					<p class="description">This is the description below the Testimonial Rating Field in the form.</p>
-					</td>
-				</tr>
-			</table>
-						
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row"><label for="easy_t_use_rating_field">Enable Testimonial Ratings on Submission Form</label></th>
-					<td><input type="checkbox" name="easy_t_use_rating_field" id="easy_t_use_rating_field" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?> value="1" <?php if(get_option('easy_t_use_rating_field')){ ?> checked="CHECKED" <?php } ?>/>
-					<p class="description">If checked, users will be allowed to add a 1 - 5 out of 5 rating along with their Testimonial.</p>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-		
-		<fieldset>
-			<legend>Captcha Field:</legend>
+			<legend>Captcha</legend>
 		
 			<table class="form-table">
 				<tr valign="top">
@@ -1441,12 +1123,51 @@ class easyTestimonialOptions
 				</tr>
 			</table>
 		</fieldset>
+		
+		<h3 id="error-messages" class="gp-admin-quicknav-h3">Error Messages</h3>
+		
+		<fieldset>
+			<legend>Error Messages</legend>
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_general_error">General Testimonial Submission Error</label></th>
+					<td><textarea name="easy_t_general_error" id="easy_t_general_error" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_general_error', 'There was an error with your submission.  Please check the fields and try again.'); ?></textarea>
+					<p class="description">This is the general error message displayed on the submission form when there is an error processing the submission.  This will be accompanied by more specific error messages about what went wrong.</p>
+					</td>
+				</tr>
+			</table>
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_title_field_error">Title Field Error</label></th>
+					<td><textarea name="easy_t_title_field_error" id="easy_t_title_field_error" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_title_field_error', 'Please give ' . strtolower(get_option('easy_t_body_content_field_label','your testimonial')) . ' a ' . strtolower(get_option('easy_t_title_field_label','title')) . '.'); ?></textarea>
+					<p class="description">This is the error message displayed when a user doesn't give their Testimonial a Title.</p>
+					</td>
+				</tr>
+			</table>
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_body_field_error">Body Field Error</label></th>
+					<td><textarea name="easy_t_body_field_error" id="easy_t_body_field_error" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_body_field_error', 'Please enter ' . strtolower(get_option('easy_t_body_content_field_label','your testimonial')) . '.'); ?></textarea>
+					<p class="description">This is the error message displayed when a Testimonial is not entered into the Body field.</p>
+					</td>
+				</tr>
+			</table>
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><label for="easy_t_captcha_field_error">Captcha Field Error</label></th>
+					<td><textarea name="easy_t_captcha_field_error" id="easy_t_captcha_field_error" <?php if(!isValidKey()): ?>disabled="disabled"<?php endif; ?>><?php echo get_option('easy_t_captcha_field_error', 'Captcha did not match.'); ?></textarea>
+					<p class="description">This is the error message displayed when the Captcha test was not passed.</p>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
 		<p class="submit">
 			<input type="submit" class="button-primary" value="<?php _e('Save Changes', 'easy-testimonials') ?>" />
 		</p>
 		</div><!-- end div.ezt_submission_form_settings -->
 	</form>
-	</div><?php 
+	<?php 
+	$this->settings_page_bottom();
 	}
 	
 	function get_recaptcha_languages()	
@@ -1516,6 +1237,7 @@ class easyTestimonialOptions
 	function help_settings_page(){
 		$this->settings_page_top();
 		include('pages/help.php');
+		$this->settings_page_bottom();
 	}	
 	
 	function import_export_settings_page(){				
@@ -1586,8 +1308,7 @@ class easyTestimonialOptions
 			</fieldset>
 		</form>
 		<?php endif; ?>
-		
-		</div><?php 
+		<?php 
 		
 		//schedule cron if enabled
 		if(get_option('easy_t_hello_t_enable_cron', 0)){
@@ -1614,6 +1335,7 @@ class easyTestimonialOptions
 				echo '<div id="message" class="updated fade"><p>Hello Testimonials Integration is disabled!  Please enable to Import Testimonials.</p></div>';
 			}
 		}
+		$this->settings_page_bottom();
 	}
 	
 	function typography_input($name, $label, $description)
@@ -1624,7 +1346,7 @@ class easyTestimonialOptions
 		$options['label'] = $label;
 		$options['description'] = $description;
 		$options['google_fonts'] = true;
-		$options['default_color'] = '#008800';
+		$options['default_color'] = '';
 		$options['values'] = $this->get_typography_values($name);		
 		$options['disabled'] = !isValidKey(); // typography inputs are Pro only
 		$EasyT_BikeShed->typography( $options );

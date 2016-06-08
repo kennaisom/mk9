@@ -50,7 +50,7 @@ function gp_insertWidgetIntoPost()
 			return true;
 		}
 		else if (jQuery(this).attr('type') == 'checkbox' && jQuery(this).attr('checked') != 'checked' ) {
-			if(!jQuery(this).data('shortcode-value-if-unchecked')){
+			if ( typeof( jQuery(this).data('shortcode-value-if-unchecked') ) == 'undefined' ) {
 				return true;
 			} else {
 				// if this is a checkbox and it has the value if unchecked data attribute
@@ -76,7 +76,7 @@ function gp_insertWidgetIntoPost()
 			}			
 		}
 
-		if (real_name && val.length > 0) {
+		if ( real_name && !gp_value_is_empty(val) ) {
 			output += ' ' + real_name + '="' + val + '"';
 		}
 		
@@ -87,6 +87,37 @@ function gp_insertWidgetIntoPost()
 	gp_hide_all_widget_popups();
 	gp_hide_all_media_button_menus();
 }
+
+var gp_value_is_empty = function (val) {
+	
+	// undefined and null are always considered empty
+	if(typeof(val) == 'undefined' || val === null) {
+		return true;
+	}
+ 	
+	// numbers and bools can never be empty
+	if(typeof(val) == 'number' || typeof(val) == 'boolean') { 
+		return false;
+	}
+	
+	// if the var has a length value, check it
+	if(typeof(val.length) != 'undefined') {
+		return val.length == 0;
+	}
+	
+	// check for empty array
+	for(var i in val)
+	{
+		if(val.hasOwnProperty(i))
+		{
+			// array is not empty
+			return false; 
+		}
+	}
+	
+	// no values in the array, so value is empty
+	return true;
+};
 
 var gp_hide_all_media_button_menus = function (button_group) {
 	jQuery('.gp_media_button_group_dropdown').css('display', 'none');

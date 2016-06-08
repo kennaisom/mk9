@@ -4,7 +4,7 @@
  */					 			
 			
    	$wp_customize->add_section( 'tesseract_blog' , array(
-    	'title'      		=> __('Blog Page Options', 'tesseract'),
+    	'title'      		=> __('Blog Post Options', 'tesseract'),
     	'priority'   		=> 1,
 		'panel' 			=> 'tesseract_layout'
 	) );						
@@ -31,8 +31,33 @@
 					)
 				)
 			);
+			
+	$wp_customize->add_setting( 'tesseract_blog_post_layout', array(
+				'sanitize_callback' => 'tesseract_sanitize_select_blog_post_layout_types',
+				'default' 			=> 'sidebar-left'
+		) );
 
-		$wp_customize->add_setting( 'tesseract_blog_display_featimg', array(
+			$wp_customize->add_control(
+				new WP_Customize_Control(
+					$wp_customize,
+					'tesseract_blog_post_layout_control',
+					array(
+						'label'         => __( 'Choose a layout type for the Blog Post page', 'tesseract' ),
+						'section'       => 'tesseract_blog',
+						'settings'      => 'tesseract_blog_post_layout',
+						'type'          => 'select',
+						'default'       => 'sidebar-left',
+						'choices'		=> array(
+							'sidebar-left'  	=> 	'Left Sidebar',
+							'sidebar-right'  	=> 	'Right Sidebar',
+							'fullwidth'			=>  'Full Width'
+						),
+						'priority' 		=> 2
+					)
+				)
+			);
+			
+	/*	$wp_customize->add_setting( 'tesseract_blog_display_featimg', array(
 				'sanitize_callback' => 'tesseract_sanitize_checkbox',
 				'default'			=> 0				
 		) );
@@ -46,7 +71,7 @@
 						'section'        => 'tesseract_blog',
 						'settings'       => 'tesseract_blog_display_featimg',
 						'type'           => 'checkbox',
-						'priority' 		 => 2	
+						'priority' 		 => 3	
 					)
 				)
 			);	
@@ -69,7 +94,7 @@
 							'above'  	=> 'Above the post title',
 							'below' 	=> 'Below the post title'
 						),
-						'priority' 		 => 3,
+						'priority' 		 => 4,
 						'active_callback' 	=> 'tesseract_blog_featimg_sizes_enable'										
 					)
 				)
@@ -97,7 +122,7 @@
 							'theater2' 	=> '2.35:1',
 							'pixel' 	=> 'I use my own pixel value'
 						),
-						'priority' 		 => 4,
+						'priority' 		 => 5,
 						'active_callback' 	=> 'tesseract_blog_featimg_sizes_enable'										
 					)
 				)
@@ -116,9 +141,9 @@
 						'section'        => 'tesseract_blog',
 						'settings'       => 'tesseract_blog_featimg_px_size',
 						'type'           => 'text',
-						'priority' 		 => 5,
+						'priority' 		 => 6,
 						'active_callback' 	=> 'tesseract_blog_featimg_px_size_enable'										
 					)
 				)
 			);						
-				
+				*/

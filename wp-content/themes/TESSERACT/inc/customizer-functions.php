@@ -24,6 +24,65 @@ if ( class_exists( 'WP_Customize_Control' ) ) :
             ); ?>
 
 			<h4><?php echo wp_kses( $this->label, $allowed_html ); ?></h4>
+            <span class="description"><?php echo wp_kses( $this->description, $allowed_html ); ?></span>
+
+<?php
+        }
+    }
+	
+	if (  !class_exists( 'Tesseract_Customize_Footer_Control' ) ) :
+	class Tesseract_Customize_Footer_Control extends WP_Customize_Control {
+
+        public function render_content() {
+
+            $allowed_html = array(
+                'a' => array(
+                    'href' => array(),
+                    'title' => array()
+                ),
+                'br' => array(),
+                'em' => array(),
+                'strong' => array(),
+				 'img' => array(
+				 	'src' => array(),
+				 ),
+            ); ?>
+
+			<h4><?php echo wp_kses( $this->label, $allowed_html ); ?></h4>
+            <span class="description"><?php echo wp_kses( $this->description, $allowed_html ); ?></span>
+
+<?php
+        }
+    }
+	endif;
+	
+	class Tesseract_Customize_Footer2_Control extends WP_Customize_Control {
+
+        public function render_content() {
+
+            $allowed_html = array(
+                'a' => array(
+                    'href' => array(),
+                    'title' => array(),
+					'target' => array()
+                ),
+                'br' => array(),
+                'em' => array(),
+                'strong' => array(),
+				 'img' => array(
+				 	'src' => array(),
+				 ),
+            ); ?>
+ 
+            <span class="description"><?php echo wp_kses( $this->description, $allowed_html ); ?></span>
+			<script language="javascript">
+			( function( $ ) {
+			  $('input[type=radio][name=_customize-radio-tesseract_footer_additional_content_right]').change(function() {
+				this.value == 'themeby' ? $('#customize-control-tesseract_footer_additional_content_right2').hide() : $('#customize-control-tesseract_footer_additional_content_right2').show().attr("tabindex",-1).focus();
+			  } );
+			  $('input[type=radio][name=_customize-radio-tesseract_footer_additional_content_right]').trigger('change');
+			} )( jQuery );			
+			</script>            
 
 <?php
         }
@@ -271,6 +330,7 @@ function tesseract_sanitize_radio_nextToMenu_left( $value ) {
     return $value;
 }
 
+
 function tesseract_sanitize_radio_mob_link_hover_background_color( $value ) {
 
 	if ( ! in_array( $value, array( 'dark', 'light', 'custom' ) ) ) :
@@ -375,6 +435,16 @@ function tesseract_sanitize_select_footer_width( $value ) {
 }
 
 function tesseract_sanitize_select_search_results_layout_types( $value ) {
+
+	if ( ! in_array( $value, array( 'sidebar-left', 'sidebar-right', 'fullwidth' ) ) ) :
+        $value = 'sidebar-left';
+	endif;
+
+    return $value;
+
+}
+
+function tesseract_sanitize_select_blog_post_layout_types( $value ) {
 
 	if ( ! in_array( $value, array( 'sidebar-left', 'sidebar-right', 'fullwidth' ) ) ) :
         $value = 'sidebar-left';

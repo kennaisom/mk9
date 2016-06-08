@@ -48,6 +48,7 @@
                 <?php endif; //EOF left menu - IS before content ?>
 
                 <?php $menuSelected = get_theme_mod('tesseract_footer_menu_select');
+ 
 				if ( $menuSelected !== 'none' ) : ?>
 
 					<section id="footer-horizontal-menu" class="cf <?php echo $footerNav_class; ?>"><?php tesseract_output_menu( FALSE, FALSE, 'secondary', 1 ); ?></section>

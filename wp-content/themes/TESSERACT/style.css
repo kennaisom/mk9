@@ -1,10 +1,10 @@
 /*
 Theme Name: Tesseract
-Theme URI: http://tyler.com/tesseract-theme/
-Author: Tyler Moore
-Author URI: http://tyler.com/
+Theme URI: http://tesseracttheme.com/
+Author: Tesseract Theme
+Author URI: http://tesseracttheme.com/
 Description: Tesseract is a beautiful theme from the fourth dimension. Tesseract makes it easy to create a website that you are proud to show off to the world. It is responsive, has simple and useful navigation, an amazing featured image with buttons and is simple to use.
-Version: 2.1.2
+Version: 2.5.2
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: tesseract
@@ -194,7 +194,7 @@ h1 {
  */
 
 mark {
-    background: #fff;
+    background: #ff0;
     color: #000;
 }
 
@@ -599,6 +599,32 @@ blockquote,
 	margin-bottom: 0;
 }
 
+.single.fullwidth #primary {
+
+    float: none;
+
+    width: 100%;
+
+    }
+
+
+
+.single.sidebar-right #primary {
+
+    float: left;
+
+    }
+
+
+
+.single.sidebar-right #secondary {
+
+    float: right;
+
+    padding: 0 0 0 60px;
+
+    }
+	
 ul ul,
 ol ol {
     margin-bottom: 0;
@@ -654,7 +680,7 @@ blockquote {
     border-bottom: 1px solid rgba(0, 0, 0 ,0.1);
     border-top: 1px solid rgba(0, 0, 0 ,0.1);
     font-family: 'Alegreya', Georgia, Time New Roman, serif;
-    font-size: 20px;
+    font-size: 36px;
     text-align: center;
     padding-bottom: 2px;
 }
@@ -1954,8 +1980,8 @@ figure {
 .home .entry-content { border: none; }
 
 .home .site-content {
-/*    padding: 70px;
-*/}
+    padding: 0;
+}
 
 .tesseract-featured .entry-content {
     margin-top: 480px;
@@ -2007,12 +2033,12 @@ figure {
     padding-right: 60px;
 }
 
+/*.single #primary,*/
 .blog #primary,
 .page-template-full-width-page #primary,
 .page-template-full-width-page-php #primary,
 .page-template-blog-php #primary,
 .error404 #primary,
-.single #primary,
 #primary.full-width-page { width: 100%; }
 
 .page-template-page-rightsidebar #primary {
