@@ -4,7 +4,7 @@
 Plugin Name: Spacer
 Plugin URI: http://www.clevelandwebdeveloper.com/wordpress-plugins/spacer
 Description: Adds a spacer button to the WYSIWYG visual editor which allows you to add precise custom spacing between lines in your posts and pages.
-Version: 3.0.1
+Version: 3.0.3
 Author: Justin Saad
 Author URI: http://www.clevelandwebdeveloper.com
 License: GPL2
@@ -111,19 +111,19 @@ class motech_spacer {
 		$user_id = get_current_user_id();
 		//there is no default spacer height set, and nag message not ignored...
 		//$checkdefault = get_option($this->plugin_slug . '_default_height_mobile','');
-		if ( ( ! get_user_meta($user_id, 'spacer3195_nag_ignore') ) && (current_user_can( 'manage_options' )) ) {
+		if ( ( ! get_user_meta($user_id, 'spacer4592_nag_ignore') ) && (current_user_can( 'manage_options' )) ) {
 			echo '<div id="message" class="updated fade notice"><p>';
-			echo "<b>".__('You can now preview the Visual Artist tool for your Spacers. Check it out!', 'motech-spacer')."</b>";
+			echo "<b>".__('Style your own panels (think alerts, info boxes) and use them in your posts and pages whenever they are needed, with the new Spacer add-on, Panels!', 'motech-spacer')."</b>";
 			echo "</p>";
-			echo "<p><strong><a href=\"".get_bloginfo( 'wpurl' ) . "/wp-admin/options-general.php?page=".$this->plugin_slug."-setting-admin\" target=\"_parent\">".__('Create Spacers &raquo;', 'motech-spacer')."</a> | <a class=\"dismiss-notice\" style=\"color:red;\" href=\"".get_bloginfo( 'wpurl' ) . "/wp-admin/options-general.php?page=".$this->plugin_slug."-setting-admin&spacer3195_nag_ignore=0\" target=\"_parent\">".__('I got it. Thanks.', 'motech-spacer')." [X]</a></strong></p></div>";
+			echo "<p><strong><a href=\"http://www.clevelandwebdeveloper.com/?p=931&amp;utm_medium=plugin&amp;utm_source=plugin-notice-msg&amp;utm_campaign=Spacer+Notice+Msg&amp;utm_content=Panels+Notice\" target=\"_blank\">".__('Create Panels &raquo;', 'motech-spacer')."</a> | <a class=\"dismiss-notice\" style=\"color:red;\" href=\"".get_bloginfo( 'wpurl' ) . "/wp-admin/options-general.php?page=".$this->plugin_slug."-setting-admin&spacer4592_nag_ignore=0\" target=\"_parent\">".__('I got it. Thanks.', 'motech-spacer')." [X]</a></strong></p></div>";
 		}
 	}
 	 
 	function adminmessage_init()
 	{
-		if ( isset($_GET['spacer3195_nag_ignore']) && '0' == $_GET['spacer3195_nag_ignore'] ) {
+		if ( isset($_GET['spacer4592_nag_ignore']) && '0' == $_GET['spacer4592_nag_ignore'] ) {
 			$user_id = get_current_user_id();
-			add_user_meta($user_id, 'spacer3195_nag_ignore', 'true', true);
+			add_user_meta($user_id, 'spacer4592_nag_ignore', 'true', true);
 			if (wp_get_referer()) {
 				/* Redirects user to where they were before */
 				wp_safe_redirect(wp_get_referer());
@@ -378,62 +378,187 @@ function activespacer($id="") { #return attributes for active spacer based on id
             
             
             <div id="green_ribbon">
-            
-            	<div id="green_ribbon_top">
-                	<div id="green_ribbon_left">
+                <div class="grwrap visualartist" style="display:none;">
+                    <div id="green_ribbon_top">
+                        <div id="green_ribbon_left">
+                        </div>
+                        <div id="green_ribbon_base">
+                            <span id="hms_get_premium" addonname="visualartist"><?php _e('NEW! Get Premium &raquo;', 'motech-spacer')?></span>
+                            <span class="hms_get_premium_meta"><?php _e('Visual Artist Add-On now available for as low as $20!', 'motech-spacer')?></span>
+                        </div>
+                        <div id="green_ribbon_right">
+                        </div>
                     </div>
-                    <div id="green_ribbon_base">
-                    	<span id="hms_get_premium"><?php _e('NEW! Get Premium &raquo;', 'motech-spacer')?></span>
-                        <span class="hms_get_premium_meta"><?php _e('Visual Artist Add-On now available for as low as $20!', 'motech-spacer')?></span>
-                    </div>
-                    <div id="green_ribbon_right">
+                    
+                    <div class="motech_premium_box">
+                    
+                    
+                        <div class="motech_premium_box_wrap">
+                            <h2><?php _e('Get Visual Artist', 'motech-spacer')?></h2>
+                            <div class="updated below-h2" style="margin-bottom: -20px !important;"><p><strong><?php _e('Purchase will be processed via PayPal.', 'motech-spacer')?></strong></p></div>
+                            <div class="updated below-h2"><p><strong><?php _e('Every license is valid for the lifetime of the website where it\'s installed.', 'motech-spacer')?></strong></p></div>
+                            <div class="motech_purchase_buttons">
+    
+                                <div class="motech_purchase_button unlimited_use">
+                                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input name="cmd" value="_s-xclick" type="hidden"><input name="hosted_button_id" value="FK8RLFRUBCL5N" type="hidden"><input type="hidden" name="page_style" value="visual_artist">
+                                        <button name="submit">
+                                            <div class="purchase_graphic"><?php _e('Buy', 'motech-spacer')?> <span><?php _e('Unlimited', 'motech-spacer')?></span></div>
+                                            <div class="purchase_bubble">
+                                                <div class="purchase_price">$50</div>
+                                                <div class="purchase_meta"><?php _e('Unlimited sites forever!', 'motech-spacer')?></div>
+                                            </div>
+                                        </button>
+                                        <img src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt="" border="0" height="1" width="1">
+                                    </form>
+                                </div>
+                                                        
+                                <div class="motech_purchase_button one_use">
+                                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input name="cmd" value="_s-xclick" type="hidden"><input name="hosted_button_id" value="C59XHASJBCHLQ" type="hidden"><input type="hidden" name="page_style" value="visual_artist">
+                                        <button name="submit">
+                                            <div class="purchase_graphic"><?php _e('Buy 1 Use', 'motech-spacer')?></div>
+                                            <div class="purchase_bubble">
+                                                <div class="purchase_price">$20</div>
+                                                <div class="purchase_meta"><?php _e('1 site license', 'motech-spacer')?></div>
+                                            </div>
+                                        </button>
+                                        <img src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt="" border="0" height="1" width="1">
+                                    </form>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="motech_premium_cancel"><span><?php _e('Cancel', 'motech-spacer')?></span></div>
+                            
+                        </div>
+    
                     </div>
                 </div>
                 
-                <div class="motech_premium_box">
-                	<div class="motech_premium_box_wrap">
-                        <h2><?php _e('Get Visual Artist', 'motech-spacer')?></h2>
-                        <div class="updated below-h2" style="margin-bottom: -20px !important;"><p><strong><?php _e('Purchase will be processed via PayPal.', 'motech-spacer')?></strong></p></div>
-                        <div class="updated below-h2"><p><strong><?php _e('Every license is valid for the lifetime of the website where it\'s installed.', 'motech-spacer')?></strong></p></div>
-                        <div class="motech_purchase_buttons">
-
-                            <div class="motech_purchase_button unlimited_use">
-                                <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input name="cmd" value="_s-xclick" type="hidden"><input name="hosted_button_id" value="FK8RLFRUBCL5N" type="hidden"><input type="hidden" name="page_style" value="visual_artist">
-                                    <button name="submit">
-                                        <div class="purchase_graphic"><?php _e('Buy', 'motech-spacer')?> <span><?php _e('Unlimited', 'motech-spacer')?></span></div>
-                                        <div class="purchase_bubble">
-                                            <div class="purchase_price">$50</div>
-                                            <div class="purchase_meta"><?php _e('Unlimited sites forever!', 'motech-spacer')?></div>
-                                        </div>
-                                    </button>
-                                    <img src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt="" border="0" height="1" width="1">
-                                </form>
-                            </div>
-                                                    
-                            <div class="motech_purchase_button one_use">
-                                <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input name="cmd" value="_s-xclick" type="hidden"><input name="hosted_button_id" value="C59XHASJBCHLQ" type="hidden"><input type="hidden" name="page_style" value="visual_artist">
-                                    <button name="submit">
-                                        <div class="purchase_graphic"><?php _e('Buy 1 Use', 'motech-spacer')?></div>
-                                        <div class="purchase_bubble">
-                                            <div class="purchase_price">$20</div>
-                                            <div class="purchase_meta"><?php _e('1 site license', 'motech-spacer')?></div>
-                                        </div>
-                                    </button>
-                                    <img src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt="" border="0" height="1" width="1">
-                                </form>
+                
+                <div class="grwrap lineonsidesheaders" style="display:none;">
+                
+                    <div id="green_ribbon_top">
+                        <div id="green_ribbon_left">
+                        </div>
+                        <div id="green_ribbon_base">
+                            <span id="hms_get_premium" addonname="lineonsidesheaders"><?php _e('NEW! Get Premium &raquo;', 'motech-spacer')?></span>
+                            <span class="hms_get_premium_meta"><?php _e('Header Add-On now available for as low as $10!', 'motech-spacer')?></span>
+                        </div>
+                        <div id="green_ribbon_right">
+                        </div>
+                    </div>
+                    
+                    <div class="motech_premium_box">
+                    
+                    
+                        <div class="motech_premium_box_wrap">
+                            <h2><?php _e('Get Line-On-Sides Headers', 'motech-spacer')?></h2>
+                            <div class="updated below-h2" style="margin-bottom: -20px !important;"><p><strong><?php _e('Purchase will be processed via PayPal.', 'motech-spacer')?></strong></p></div>
+                            <div class="updated below-h2"><p><strong><?php _e('Every license is valid for the lifetime of the website where it\'s installed.', 'motech-spacer')?></strong></p></div>
+                            <div class="motech_purchase_buttons">
+    
+                                <div class="motech_purchase_button unlimited_use">
+                                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input name="cmd" value="_s-xclick" type="hidden"><input name="hosted_button_id" value="D2R9YPYQHK63L" type="hidden">
+                                        <button name="submit">
+                                            <div class="purchase_graphic"><?php _e('Buy', 'motech-spacer')?> <span><?php _e('Unlimited', 'motech-spacer')?></span></div>
+                                            <div class="purchase_bubble">
+                                                <div class="purchase_price">$25</div>
+                                                <div class="purchase_meta"><?php _e('Unlimited sites forever!', 'motech-spacer')?></div>
+                                            </div>
+                                        </button>
+                                        <img src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt="" border="0" height="1" width="1">
+                                    </form>
+                                </div>
+                                                        
+                                <div class="motech_purchase_button one_use">
+                                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input name="cmd" value="_s-xclick" type="hidden"><input name="hosted_button_id" value="F2CNV7FMSGAN8" type="hidden">
+                                        <button name="submit">
+                                            <div class="purchase_graphic"><?php _e('Buy 1 Use', 'motech-spacer')?></div>
+                                            <div class="purchase_bubble">
+                                                <div class="purchase_price">$10</div>
+                                                <div class="purchase_meta"><?php _e('1 site license', 'motech-spacer')?></div>
+                                            </div>
+                                        </button>
+                                        <img src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt="" border="0" height="1" width="1">
+                                    </form>
+                                </div>
+                                
                             </div>
                             
-                    	</div>
-                        
-                        <div class="motech_premium_cancel"><span><?php _e('Cancel', 'motech-spacer')?></span></div>
-                        
+                            <div class="motech_premium_cancel"><span><?php _e('Cancel', 'motech-spacer')?></span></div>
+                            
+                        </div>
+    
                     </div>
                 </div>
+                
+
+                <div class="grwrap panels">
+                
+                    <div id="green_ribbon_top">
+                        <div id="green_ribbon_left">
+                        </div>
+                        <div id="green_ribbon_base">
+                            <span id="hms_get_premium" addonname="panels"><?php _e('NEW! Get Premium &raquo;', 'motech-spacer')?></span>
+                            <span class="hms_get_premium_meta"><?php _e('Panels Add-On now available for as low as $10!', 'motech-spacer')?></span>
+                        </div>
+                        <div id="green_ribbon_right">
+                        </div>
+                    </div>
+                    
+                    <div class="motech_premium_box">
+                    
+                    
+                        <div class="motech_premium_box_wrap">
+                            <h2><?php _e('Get Panels', 'motech-spacer')?></h2>
+                            <div class="updated below-h2" style="margin-bottom: -20px !important;"><p><strong><?php _e('Purchase will be processed via PayPal.', 'motech-spacer')?></strong></p></div>
+                            <div class="updated below-h2"><p><strong><?php _e('Every license is valid for the lifetime of the website where it\'s installed.', 'motech-spacer')?></strong></p></div>
+                            <div class="motech_purchase_buttons">
+    
+                                <div class="motech_purchase_button unlimited_use">
+                                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input name="cmd" value="_s-xclick" type="hidden"><input name="hosted_button_id" value="ZV77J555HXJTE" type="hidden">
+                                        <button name="submit">
+                                            <div class="purchase_graphic"><?php _e('Buy', 'motech-spacer')?> <span><?php _e('Unlimited', 'motech-spacer')?></span></div>
+                                            <div class="purchase_bubble">
+                                                <div class="purchase_price">$25</div>
+                                                <div class="purchase_meta"><?php _e('Unlimited sites forever!', 'motech-spacer')?></div>
+                                            </div>
+                                        </button>
+                                        <img src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt="" border="0" height="1" width="1">
+                                    </form>
+                                </div>
+                                                        
+                                <div class="motech_purchase_button one_use">
+                                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post"><input name="cmd" value="_s-xclick" type="hidden"><input name="hosted_button_id" value="GNBBYMDBN3UUE" type="hidden">
+                                        <button name="submit">
+                                            <div class="purchase_graphic"><?php _e('Buy 1 Use', 'motech-spacer')?></div>
+                                            <div class="purchase_bubble">
+                                                <div class="purchase_price">$10</div>
+                                                <div class="purchase_meta"><?php _e('1 site license', 'motech-spacer')?></div>
+                                            </div>
+                                        </button>
+                                        <img src="https://www.paypal.com/en_US/i/scr/pixel.gif" alt="" border="0" height="1" width="1">
+                                    </form>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="motech_premium_cancel"><span><?php _e('Cancel', 'motech-spacer')?></span></div>
+                            
+                        </div>
+    
+                    </div>
+                </div>                
+            
+                            
             </div>
+                        
             
 	<h2 class="nav-tab-wrapper">
             <a href="#defaultspacer" class="nav-tab nav-tab-active"><?php _e('Default', 'motech-spacer')?></a>
             <a href="#addspacers" class="nav-tab"><span class="dashicons dashicons-plus dashicons-plus-alt"></span> <?php _e('Add Spacers', 'motech-spacer')?></a>
+            <?php do_action( 'spacer_sectiontabhook' ); #use this hook to add additional section tabs ?>
+            <a href="#suggestionbox" class="nav-tab"><span class="dashicons dashicons-email-alt"></span> <?php _e('Suggestion Box', 'motech-spacer')?></a>
             <a href="#addons" class="nav-tab"><span class="dashicons dashicons-admin-plugins"></span> <?php _e('Add-Ons', 'motech-spacer')?></a>
             <a href="#licenses" class="nav-tab"><span class="dashicons dashicons-admin-network"></span> <?php _e('Licenses', 'motech-spacer')?></a>
 <?php /*?>            <a href="#privacy-settings" class="nav-tab">Privacy settings</a>
@@ -526,22 +651,59 @@ function activespacer($id="") { #return attributes for active spacer based on id
                         
 
                 </div>
+                <?php do_action( 'spacer_sectionshook' ); #use this hook to add additional sections ?>
                 <div id="addons" class="metabox-holder mainsection hidden wrap">
 <?php
-$actionbutton = '<a href="#" title="'.__('Buy Visual Artist', 'motech-spacer').'" class="button-primary msbutton buynowbutton">'.__('Buy Now', 'motech-spacer').'</a>';
+$actionbutton = '<a href="#" title="'.__('Buy Visual Artist', 'motech-spacer').'" class="button-primary msbutton buynowbutton" addonname="visualartist">'.__('Buy Now', 'motech-spacer').'</a>';
 if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 	$actionbutton = '<a href="javascript:void(0)" title="'.__('Active', 'motech-spacer').'" class="button-secondary msbutton">'.__('Active', 'motech-spacer').'</a>';
 } elseif( file_exists(plugin_dir_path(__FILE__) . '../spacer-visual-artist/index.php') ) {
 	$actionbutton = '<a href="javascript:void(0)" title="'.__('Installed', 'motech-spacer').'" class="button-secondary msbutton">'.__('Installed', 'motech-spacer').'</a>';
 }
 ?>
-<div class="msaddon mscol"><img src="<?php echo plugins_url( 'images/vart.png' , __FILE__ ) ?>"><h2><?php _e('Visual Artist', 'motech-spacer') ?></h2><div class="msaddon-content"><p><?php _e('Design fancy dividers, horizontal rules, and other ornate section breaks. Incorporate rich colors and images, all without mastering css.', 'motech-spacer') ?></p><div class="msaddon-buttons"><a href="http://www.clevelandwebdeveloper.com/?p=644&amp;utm_medium=plugin&amp;utm_source=plugin-addons-page&amp;utm_campaign=Spacers+Addons+Page&amp;utm_content=Spacer+Learn" target="_blank" class="button-secondary msdbutton"><?php _e('Learn More', 'motech-spacer') ?></a><?php echo $actionbutton ?></div></div></div>           
+<div class="msaddon mscol"><img src="<?php echo plugins_url( 'images/vart.png' , __FILE__ ) ?>"><h2><?php _e('Visual Artist', 'motech-spacer') ?></h2><div class="msaddon-content"><p><?php _e('Design fancy dividers, horizontal rules, and other ornate section breaks. Incorporate rich colors and images, all without mastering css.', 'motech-spacer') ?></p><div class="msaddon-buttons"><a href="http://www.clevelandwebdeveloper.com/?p=644&amp;utm_medium=plugin&amp;utm_source=plugin-addons-page&amp;utm_campaign=Spacers+Addons+Page&amp;utm_content=Spacer+Learn" target="_blank" class="button-secondary msdbutton"><?php _e('Learn More', 'motech-spacer') ?></a><?php echo $actionbutton ?></div></div></div>   
+
+<?php
+$actionbutton = '<a href="#" title="'.__('Buy Line-On-Sides Headers', 'motech-spacer').'" class="button-primary msbutton buynowbutton" addonname="lineonsidesheaders">'.__('Buy Now', 'motech-spacer').'</a>';
+if( is_plugin_active( 'spacer-lineonsides-headers/index.php' ) ) {
+	$actionbutton = '<a href="javascript:void(0)" title="'.__('Active', 'motech-spacer').'" class="button-secondary msbutton">'.__('Active', 'motech-spacer').'</a>';
+} elseif( file_exists(plugin_dir_path(__FILE__) . '../spacer-lineonsides-headers/index.php') ) {
+	$actionbutton = '<a href="javascript:void(0)" title="'.__('Installed', 'motech-spacer').'" class="button-secondary msbutton">'.__('Installed', 'motech-spacer').'</a>';
+}
+?>
+<div class="msaddon mscol"><img src="<?php echo plugins_url( 'images/lhart.png' , __FILE__ ) ?>"><h2><?php _e('Line-On-Sides Headers', 'motech-spacer') ?></h2><div class="msaddon-content"><p><?php _e('Create headers that really stand out with lines on the sides.', 'motech-spacer') ?></p><div class="msaddon-buttons"><a href="http://www.clevelandwebdeveloper.com/?p=868&amp;utm_medium=plugin&amp;utm_source=plugin-addons-page&amp;utm_campaign=Spacers+Addons+Page&amp;utm_content=Lineonsides+Learn" target="_blank" class="button-secondary msdbutton"><?php _e('Learn More', 'motech-spacer') ?></a><?php echo $actionbutton ?></div></div></div>
+
+<?php
+$actionbutton = '<a href="#" title="'.__('Buy Panels', 'motech-spacer').'" class="button-primary msbutton buynowbutton" addonname="panels">'.__('Buy Now', 'motech-spacer').'</a>';
+if( is_plugin_active( 'spacer-panels/index.php' ) ) {
+	$actionbutton = '<a href="javascript:void(0)" title="'.__('Active', 'motech-spacer').'" class="button-secondary msbutton">'.__('Active', 'motech-spacer').'</a>';
+} elseif( file_exists(plugin_dir_path(__FILE__) . '../spacer-panels/index.php') ) {
+	$actionbutton = '<a href="javascript:void(0)" title="'.__('Installed', 'motech-spacer').'" class="button-secondary msbutton">'.__('Installed', 'motech-spacer').'</a>';
+}
+?>
+<div class="msaddon mscol"><img src="<?php echo plugins_url( 'images/part.png' , __FILE__ ) ?>"><h2><?php _e('Panels', 'motech-spacer') ?></h2><div class="msaddon-content"><p><?php _e('Style your own panels (think alerts, info boxes) and use them in your posts and pages whenever they are needed.', 'motech-spacer') ?></p><div class="msaddon-buttons"><a href="http://www.clevelandwebdeveloper.com/?p=931&amp;utm_medium=plugin&amp;utm_source=plugin-addons-page&amp;utm_campaign=Spacers+Addons+Page&amp;utm_content=Panels+Learn" target="_blank" class="button-secondary msdbutton"><?php _e('Learn More', 'motech-spacer') ?></a><?php echo $actionbutton ?></div></div></div>   
+        
                 </div>
                 <div id="licenses" class="metabox-holder mainsection hidden wrap">
                     <div class="motech-spacer-options section general wrap">
                         <?php do_settings_sections($this->plugin_slug.'-setting-admin_licenses'); ?>
                     </div>                
                 </div>
+                <div id="suggestionbox" class="metabox-holder mainsection hidden wrap">
+                    <div class="motech-spacer-options section general wrap">
+                    	<h1>Have a good suggestion for a Spacer add-on or a feature request? Let's hear it...</h1>
+                        <?php
+global $current_user;
+wp_get_current_user();
+						?>
+                        <textarea style="width:100%;min-height:250px;" name="mysuggestion" placeholder="Suggestions go here"></textarea>
+                        <div style="font-size:20px;line-height:normal;margin: 25px 0px;margin-bottom: 35px;"><input type="checkbox" name="signmeup" value="yes" checked="checked">Yes, I want to subscribe to the Spacer newsletter and be the first to know of important Spacer news and upcoming releases. I want to stay notified about exclusive discounts and insider deals on premium features. My email address is: <input type="text" name="myemail" value="<?php echo $current_user->user_email ?>" /> <div style="font-size:14px;">(The Spacer newsletter is personally written and sent out about once a month (at most). It's not remotely annoying or spammy. We promise.)</div></div>
+                        <div class="sendhook">
+                        	<div class="newbutton readysend"><span class="dashicons dashicons-email-alt"></span> <span class="readysendlabel"><?php _e('SEND', 'motech-spacer') ?></span></div>
+                            <div class="responsehook" style="margin-top: -20px;padding: 15px;margin-left: 10px;margin-right: 10px;background: rgb(252, 248, 227);    color: rgb(138, 109, 59);border: 1px solid rgb(252, 220, 126);border-radius: 3px;display:none;"></div>
+                        </div>
+                    </div>                
+                </div>                
 		        <div class="wrap"><div class="savebutton"><button type="submit"><span class="dashicons dashicons-yes"></span> <?php _e('SAVE CHANGES!', 'motech-spacer') ?></button></div></div>
 		    </form>
 		</div>
@@ -756,7 +918,7 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 				$this->plugin_slug.'_setting_section',
 				array(								// The array of arguments to pass to the callback.
 					"id" => $field_id, //sends field id to callback
-					"desc" => __('Enter custom css to apply to all of your spacer elements. This is for advanced users. Just leave this empty if you\'re not sure what this means or if you don\'t have a use for it.<br><span style="color:red">NEW:</span> Want to create visually stunning divider elements, without needing to know any CSS? See <a href="http://www.clevelandwebdeveloper.com/wordpress-plugins/visual-artist/?utm_medium=plugin&amp;utm_source=plugin-settings-page&amp;utm_campaign=Spacers+Settings+Page&amp;utm_content=Spacer+Inline" target="_blank">examples of what you can do with the Visual Artist add-on &raquo;</a><br>Ready to make your own? <a href="#" class="buynowbutton">Buy It Now &raquo;</a>', 'motech-spacer'), //description of the field (optional)
+					"desc" => __('Enter custom css to apply to all of your spacer elements. This is for advanced users. Just leave this empty if you\'re not sure what this means or if you don\'t have a use for it.<br><span style="color:red">NEW:</span> Want to create visually stunning divider elements, without needing to know any CSS? See <a href="http://www.clevelandwebdeveloper.com/wordpress-plugins/visual-artist/?utm_medium=plugin&amp;utm_source=plugin-settings-page&amp;utm_campaign=Spacers+Settings+Page&amp;utm_content=Spacer+Inline" target="_blank">examples of what you can do with the Visual Artist add-on &raquo;</a><br>Ready to make your own? <a href="#" class="buynowbutton" addonname="visualartist">Buy It Now &raquo;</a>', 'motech-spacer'), //description of the field (optional)
 					"key" => $key,
 					"class" => 'msstyle',
 					"placeholder" => __('(for example)', 'motech-spacer').' border-top: solid 2px black; border-bottom: solid 2px black; margin-bottom: 25px;' //sets the field placeholder which appears when the field is empty (optional)
@@ -880,7 +1042,7 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 		    $this->plugin_slug.'_setting_section',
 		    array(								// The array of arguments to pass to the callback.
 				"id" => $field_id, //sends field id to callback
-				"desc" => __('Enter custom css to apply to all of your spacer elements. This is for advanced users. Just leave this empty if you\'re not sure what this means or if you don\'t have a use for it.<br><span style="color:red">NEW:</span> Want to create visually stunning divider elements, without needing to know any CSS? See <a href="http://www.clevelandwebdeveloper.com/wordpress-plugins/visual-artist/?utm_medium=plugin&amp;utm_source=plugin-settings-page&amp;utm_campaign=Spacers+Settings+Page&amp;utm_content=Spacer+Inline" target="_blank">examples of what you can do with the Visual Artist add-on &raquo;</a><br>Ready to make your own? <a href="#" class="buynowbutton">Buy It Now &raquo;</a>', 'motech-spacer'), //description of the field (optional)
+				"desc" => __('Enter custom css to apply to all of your spacer elements. This is for advanced users. Just leave this empty if you\'re not sure what this means or if you don\'t have a use for it.<br><span style="color:red">NEW:</span> Want to create visually stunning divider elements, without needing to know any CSS? See <a href="http://www.clevelandwebdeveloper.com/wordpress-plugins/visual-artist/?utm_medium=plugin&amp;utm_source=plugin-settings-page&amp;utm_campaign=Spacers+Settings+Page&amp;utm_content=Spacer+Inline" target="_blank">examples of what you can do with the Visual Artist add-on &raquo;</a><br>Ready to make your own? <a href="#" class="buynowbutton" addonname="visualartist">Buy It Now &raquo;</a>', 'motech-spacer'), //description of the field (optional)
 				"placeholder" => __('(for example)', 'motech-spacer').' border-top: solid 2px black; border-bottom: solid 2px black; margin-bottom: 25px;' //sets the field placeholder which appears when the field is empty (optional)
 			)				
 		);
@@ -903,6 +1065,8 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 		$this->DisplayMobileOptions();
 		$this->DisplayStyleOptions();
 		$this->DisplayAddSpacers();
+		do_action( 'spacer_sectionfieldhook', $this ); #use this hook to add additional field sections
+		
 		
         add_settings_section(
 	    $this->plugin_slug.'_setting_section',
@@ -1101,9 +1265,7 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 			$max_length_html = "";
 		}
 		if(isset($args["default"])) {
-			$default = $args["default"];
-		} else {
-			$default = false;
+			$usevalue = $args["default"];
 		}
 		if(!isset($args["class"])){
 			$args["class"] = "";
@@ -1111,10 +1273,13 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 		$key = $args["key"];
 		$getarray = get_option($args["id"]);
 		if(!isset($getarray[$key])){
-			$getarray[$key] = "";
+			//$getarray[$key] = "";
+			$usevalue = "";
+		} else {
+			$usevalue = $getarray[$key];
 		}
 		// Render the output
-		echo '<input type="text" '  . $placeholder_html . $max_length_html . ' class="' . $args["class"]. '" name="'  . $args["id"] . '['.$key.']"   value="' . $getarray[$key] . '" />';
+		echo '<input type="text" '  . $placeholder_html . $max_length_html . ' class="' . $args["class"]. '" name="'  . $args["id"] . '['.$key.']"   value="' . $usevalue . '" />';
 		//echo '<input type="text" ' . ' name="'  . $args["id"] . '['.$key.']"   value="' . $value . '" />';
 		if(isset($args["desc"])) {
 			echo "<p class='description'>".$args["desc"]."</p>";
@@ -1226,9 +1391,9 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 		$html = "";
 		//get default value if there is one
 		if(isset($args["default"])) {
-			$default = $args["default"];
+			$usevalue = $args["default"];
 		} else {
-			$default = false;
+			//$default = false;
 		}
 		if(isset($args["meta"])) {
 			$meta = $args["meta"];
@@ -1239,13 +1404,15 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 			$args["class"] = "";
 		}		
 		$key = $args["key"];
-		$getarray = get_option($args["id"], $default);
+		$getarray = get_option($args["id"]);
 		if(!isset($getarray[$key])){
-			$getarray[$key] = "";
-		}		
+			//$getarray[$key] = "";
+		} else {
+			$usevalue = $getarray[$key];	
+		}
 		$html .= '<select id="'  . $args["id"] . $args["key"] . '" class="' . $args["class"]. '" name="'  . $args["id"]. '['.$key.']" ' . $meta . '" >';
 			foreach($select_options as $select_option) {
-				$html .= '<option value="'.$select_option["value"].'" ' . selected( $select_option["value"], $getarray[$key], false) . '>'.$select_option["label"].'</option>';
+				$html .= '<option value="'.$select_option["value"].'" ' . selected( $select_option["value"], $usevalue, false) . '>'.$select_option["label"].'</option>';
 			}
 		$html .= '</select>';
 		if(isset($args["desc"])) {
@@ -1607,6 +1774,32 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 			?>
 				<script>
 					jQuery(function() {
+						
+						jQuery("body").on("click",".sendhook .newbutton.readysend", function() {
+							buttonelement = jQuery(this);
+							jQuery(this).find(".readysendlabel").html("SENDING...");
+							jQuery(this).removeClass("readysend").addClass("notreadysend").css("cursor","not-allowed");
+							suggestion = jQuery("textarea[name=mysuggestion]").val();
+							signmeup = jQuery("input[name=signmeup]:checked").val();
+							myemail = jQuery("input[name=myemail]").val();
+							
+							//user doesn't want to sign up for mailing list, email not sent
+							if(typeof signmeup == 'undefined'){
+								myemail = "";
+							}
+
+							jQuery.ajax({
+							   type: "POST",
+							   dataType: "json",
+							   url: "http://www.justinsaad.com/suggestions/response.php",
+							   data: { suggestion : suggestion, signmeup : signmeup, myemail : myemail },
+							   success: function(data) { //data is the response from the php page
+									 jQuery(".responsehook").text(data['response']).fadeIn('slow');
+									 buttonelement.find(".readysendlabel").html("SENT!");
+							   }
+						   });
+	
+						});
 
 						//jquery for color picker
 						jQuery('tr.motech-color-field').removeClass('motech-color-field');
@@ -1634,7 +1827,7 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 						<?php endif ?>
 						
 						jQuery("#hms_get_premium").click(function(){
-							jQuery(".motech_premium_box").slideToggle(200);
+							//jQuery(".motech_premium_box").slideToggle(200);
 						});
 						
 						jQuery(".motech_premium_cancel span").click(function(){
@@ -1648,13 +1841,25 @@ if( is_plugin_active( 'spacer-visual-artist/index.php' ) ) {
 							jQuery(".redeem_info").slideToggle(200);
 						});
 
-						jQuery("body").on('click', '.hms_get_premium, .buynowbutton', function(e) {
+						jQuery("body").on('click', '#hms_get_premium, .hms_get_premium, .buynowbutton', function(e) {
 							e.preventDefault();
 							jQuery("html, body").animate({ scrollTop: 0 }, 300, function() {
     							// Animation complete.
 								jQuery("#green_ribbon").show();
 								jQuery(".motech_premium_box").slideDown(200);
+								
   							});
+
+							//switch to different add on if set
+							var addonname = jQuery(this).attr('addonname');
+							console.log(addonname);
+							// For some browsers, `attr` is undefined; for others, `attr` is false. Check for both.
+							if (typeof addonname !== typeof undefined && addonname !== false) {
+							  // Element has this attribute
+							  jQuery(".grwrap").hide();
+							  jQuery(".grwrap."+addonname).show();
+							}
+								
 						});
 
 

@@ -158,6 +158,8 @@ class FLBuilderModule {
 		
 		// We need to normalize the paths here since path comparisons 
 		// break on Windows because they use backslashes.
+		$abspath                    = str_replace( '\\', '/', ABSPATH );
+		$fl_builder_dir             = str_replace( '\\', '/', FL_BUILDER_DIR );
 		$dir_path                   = str_replace( '\\', '/', $dir_path );
 		$stylesheet_directory       = str_replace( '\\', '/', get_stylesheet_directory() );
 		$stylesheet_directory_uri   = str_replace( '\\', '/', get_stylesheet_directory_uri() );
@@ -166,16 +168,24 @@ class FLBuilderModule {
 		
 		// Find the right paths.
 		if(is_child_theme() && stristr($dir_path, $stylesheet_directory)) {
-			$this->url = str_replace($stylesheet_directory, $stylesheet_directory_uri, $dir_path) . '/';
-			$this->dir = $dir_path . '/';
+			$this->url = trailingslashit(str_replace($stylesheet_directory, $stylesheet_directory_uri, $dir_path));
+			$this->dir = trailingslashit($dir_path);
 		}
 		else if(stristr($dir_path, $template_directory)) {
-			$this->url = str_replace($template_directory, $template_directory_uri, $dir_path) . '/';
-			$this->dir = $dir_path . '/';
+			$this->url = trailingslashit(str_replace($template_directory, $template_directory_uri, $dir_path));
+			$this->dir = trailingslashit($dir_path);
+		}
+		else if(isset($params['url']) && isset($params['dir'])) {
+			$this->url = trailingslashit($params['url']);
+			$this->dir = trailingslashit($params['dir']);
+		}
+		else if(!stristr($dir_path, $fl_builder_dir)) {
+			$this->url = trailingslashit(str_replace(trailingslashit($abspath), trailingslashit(home_url()), $dir_path));
+			$this->dir = trailingslashit($dir_path);
 		}
 		else {                
-			$this->url = isset($params['url']) ? $params['url'] : FL_BUILDER_URL . 'modules/' . $this->slug . '/';
-			$this->dir = isset($params['dir']) ? $params['dir'] : FL_BUILDER_DIR . 'modules/' . $this->slug . '/';
+			$this->url = trailingslashit(FL_BUILDER_URL . 'modules/' . $this->slug);
+			$this->dir = trailingslashit(FL_BUILDER_DIR . 'modules/' . $this->slug);
 		}
 	}
 
@@ -266,13 +276,29 @@ class FLBuilderModule {
 	}
 
 	/** 
-	 * Should be overridden by subclasses to
-	 * work with a module before it is deleted.
+	 * Should be overridden by subclasses to work with a module before 
+	 * it is deleted. Please note, this method is called when a module
+	 * is updated and when it's actually removed from the page and should
+	 * be used for things like clearing photo cache from the builder's 
+	 * cache directory. If only need to run logic when a module is 
+	 * actually removed from the page, use the remove method instead.
 	 *
 	 * @since 1.0
 	 * @return void
 	 */      
 	public function delete()
+	{
+
+	}
+
+	/**
+	 * Should be overridden by subclasses to work with a module when 
+	 * it is actually removed from the page.
+	 *
+	 * @since 1.0
+	 * @return void
+	 */
+	public function remove()
 	{
 
 	}

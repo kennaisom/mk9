@@ -1,8 +1,9 @@
 === Page Builder by SiteOrigin ===
 Tags: page builder, responsive, widget, widgets, builder, page, admin, gallery, content, cms, pages, post, css, layout, grid
 Requires at least: 4.0
-Tested up to: 4.4
-Stable tag: 2.2.1
+Tested up to: 4.6
+Stable tag: 2.4.13
+Build time: 2016-08-18T17:09:52+02:00
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/#donate
@@ -60,8 +61,6 @@ Read the [Page Builder developer docs](https://siteorigin.com/docs/page-builder/
 
 Through the efforts of both professional translators and our community, Page Builder is available in the following languages:  Afrikaans, Bulgarian, Chinese (simplified), Danish, Dutch, English, Finnish, French, German, Hindi, Italian, Japanese, Polish, Portuguese (BR), Russian, Spanish and Swedish.
 
-Join our [translation project](https://poeditor.com/join/project?hash=82847115cc12f5d35ec3d066495dca1a) if you'd like to help improve our translations or add more languages.
-
 == Installation ==
 
 1. Upload and install Page Builder in the same way you'd install any other plugin.
@@ -96,6 +95,106 @@ Page Builder is actively developed and updated, so generally I'd recommend that 
 We've tried to ensure that Page Builder is compatible with most plugin widgets. It's best to just download Page Builder and test for yourself.
 
 == Changelog ==
+
+= 2.4.13 - 18 August 2016 =
+* Fixed: layout directory imports in WordPress 4.6
+
+= 2.4.12 - 17 August 2016 =
+* Fixed layout directory requests for WordPress 4.6
+
+= 2.4.11 - 15 August 2016 =
+* Added esc_url to all add_query_arg calls.
+* Improved measurement style field to handle multiple values.
+* Hide empty columns after mobile collapse.
+
+= 2.4.10 - 4 July 2016 =
+* Made Live Editor quick link optional from Page Builder settings page.
+* Added option to specify parallax motion.
+* Fixed settings help link.
+* Renamed Prebuilt to Layouts
+* Reverted sidebars emulator change.
+* Skip empty attributes in CSS generator class.
+
+= 2.4.9 - May 26 2016 =
+* Improved parallax library to upscale images to ensure enough of a parallax.
+* Allow negative values in measurement fields.
+
+= 2.4.8 - May 13 2016 =
+* Reverted Wordfence fix from 2.4.7 - it raised other issues.
+
+= 2.4.7 - May 13 2016 =
+* Replaced parallax with custom implementation.
+* Added more filters and actions.
+* Allow other plugins to enable/disable certain builder functionality.
+* Added unique IDs (UUID) to all widgets.
+* Added fallback previewer for Live Editor.
+* Prevent double filtering of $panels_data.
+* Developer support for read-only widgets.
+* Fixed issue that resulted in Wordfence blocking some Page Builder requests.
+* Small interface improvements.
+
+= 2.4.6 - April 13 2016 =
+* Fixed Javascript errors with layout builder widget.
+
+= 2.4.5 - April 13 2016 =
+* Only trigger contextual menu for topmost dialog.
+* Improved design of Live Editor preview.
+* Added Live Editor link in the admin menu bar.
+
+= 2.4.4 - April 6 2016 =
+* Fixed ordering of new rows, widgets and cells in builder interface.
+* Fixed Layout Builder widget sanitization error. Was causing fatal error on older versions of PHP.
+
+= 2.4.3 - April 6 2016 =
+* Fixed measurement style fields.
+* Properly process raw widgets in Live Editor.
+* Remove empty widgets from raw widget processing.
+
+= 2.4.2 - April 4 2016 =
+* Improved error handling and reporting.
+* Don't add widget class for TwentySixteen theme.
+
+= 2.4.1 - April 2 2016 =
+* Fixed: Copying content from standard editor to Page Builder
+* Fixed: Plugin conflict with Jetpack Widget Visibility and other plugins.
+
+= 2.4 - April 1 2016 =
+* Created new Live Editor.
+* Changes to Page Builder admin HTML structure for Live Editor.
+* New layout for prebuilt dialog.
+* Now possible to append, prepend and replace layouts in prebuilt dialog.
+* Fixed contextual menu in Layout Builder widget.
+* Added row/widget actions to contextual menu.
+* Clarified functionality of "Switch to Editor" button by renaming to "Revert to Editor".
+* refreshPanelsData function is called more consistently.
+* Various background performance enhancements.
+* Full JS code refactoring.
+* Fixed cell bottom margins with reverse collapse order.
+* Improved window scroll locking for dialogs.
+* Added `in_widget_form` action when rendering widget forms
+* Custom home page now saves revisions.
+
+= 2.3.2 - March 11 2016 =
+* Fixed compatibility with WordPress 4.5
+
+= 2.3.1 - February 10 2016 =
+* Fixed fatal error on RTL sites.
+* Made setting to enable tablet layout. Disabled by default.
+
+= 2.3 - February 10 2016 =
+* Delete preview panels data if there are no widgets.
+* Added a collapse order field.
+* Added custom row ID field.
+* Fixed copy content setting.
+* Added tablet responsive level.
+* Fixed admin templates.
+* Fix to ensure live editor works with HTTPs admin requests.
+* Fix for Yoast SEO compatibility.
+* Removed use of filter_input for HHVM issues.
+* Added panelsStretchRows event after frontend row stretch event.
+* Minor performance enhancements.
+* Merged all separate JS files into a single Browserify compiled file.
+* Added version numbers to some JS files to ensure cache busting.
 
 = 2.2.2 - December 09 2015 =
 * Fix tab name for WordPress 4.4. Was displaying undefined.

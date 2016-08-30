@@ -46,4 +46,23 @@ jQuery(function ( $ ) {
 			});
 		});
 	});
+
+	if($(".fl-builder-modules-cta a").length){ 
+		stronclick = $(".fl-builder-modules-cta a").attr("onclick");		
+		if(typeof stronclick != "undefined" && stronclick.toLowerCase().indexOf("wpbeaverbuilder.com") >= 0){
+			$(".fl-builder-modules-cta a").prop('onclick', null) .off('click');		 
+		}
+	};		
+   $(document.body).on("click",".fl-builder-upgrade-button,.fl-builder-modules-cta a",function(e){
+		strhref = $(this).attr("href");
+		if(typeof strhref != "undefined" && strhref.toLowerCase().indexOf("wpbeaverbuilder.com") >= 0){
+			$(this).attr("href","https://www.wpbeaverbuilder.com/pricing/?fla=50&campaign=tesseracttheme");			 
+		}else{		
+			stronclick = $(this).attr("onclick");			
+			if(typeof stronclick != "undefined" && stronclick.toLowerCase().indexOf("wpbeaverbuilder.com") >= 0){
+				e.preventDefault();e.stopPropagation();
+				window.open('https://www.wpbeaverbuilder.com/pricing/?fla=50&campaign=tesseracttheme');				 
+			}
+		}
+	});	
 });

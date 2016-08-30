@@ -20,7 +20,7 @@ jQuery(document).ready(function($){
 				}				
 				//window.location.replace(tabContent);
 			}
-			if($(this).attr("href")=="#addons"){
+			if($(this).attr("href")=="#addons" || $(this).attr("href")=="#suggestionbox"){
 				$(".savebutton").hide();
 			}else{
 				$(".savebutton").show();
@@ -36,13 +36,13 @@ jQuery(document).ready(function($){
 		var hash = window.location.hash;
 		$('.nav-tab-wrapper a[href="'+hash+'"]').click();
 
-		$("body").on('click', '.removebutton', function(e) {
+		$("body").on('click', '.aspacerunit .removebutton', function(e) {
 			e.preventDefault();
 			element = $(this).closest(".addspacerunit.postbox");
 			element.fadeOut("fast", function() {
         		element.remove();
 				if($(".addspacerunit.postbox").length == 0){
-					$(".nothinghere").hide().removeClass(".hidden").fadeIn("fast");
+					$("#addspacers .nothinghere").hide().removeClass(".hidden").fadeIn("fast");
 				}
     		});
 		});
@@ -53,15 +53,15 @@ jQuery(document).ready(function($){
 			$(this).closest(".postbox").toggleClass("closed");
 		});
 		
-		$('body').on('input change', 'input.addingspacer', function() {
+		$('body').on('input change', 'input.addingspacer, input.addingheader, input.addingpanel', function() {
 			var newval = jQuery(this).val();
 			if(newval==""){
 				newval = "Untitled";
 			}
-			jQuery(this).closest(".addspacerunit.postbox").find(".hndle span").first().text(newval);
+			jQuery(this).closest(".addspacerunit.postbox, .aheaderunit.postbox, .apanelunit.postbox").find(".hndle span").first().text(newval);
 		});
 		
-		$('body').on('input change', '.aspacerunit input, .aspacerunit textarea, .aspacerunit select', function() {
+		$('body').on('.aspacerunit input change', '.aspacerunit input, .aspacerunit textarea, .aspacerunit select', function() {
 			spacerunit = $(this).closest(".aspacerunit");
 		 	motechSpacerPreview.core(spacerunit);
 		});
@@ -70,14 +70,14 @@ jQuery(document).ready(function($){
 	
 		
 		//perform function when element is clicked
-		jQuery(".newbutton").click(function(){
-			$(".nothinghere").fadeOut("fast", function() {
+		jQuery("#addspacers .newbutton").click(function(){
+			$("#addspacers .nothinghere").fadeOut("fast", function() {
 				if($(".addspacerunit").length != 0){
 					newspacer = $(".addspacerunit").last().clone();
 				}else{
 					newspacer = lastspacer.clone();
 				}
-				newspacer.hide().insertBefore(".newbutton").fadeIn("fast");
+				newspacer.hide().insertBefore("#addspacers .newbutton").fadeIn("fast");
 				newspacer.find(":input:not(select):not([type=button])").val("").trigger("change");
 				newspacer.find(":input").removeAttr("id");
 				newspacer.find("input.sheight").val("20");
@@ -177,7 +177,7 @@ jQuery(document).ready(function($){
 		lastspacer = $(".addspacerunit").last().clone(); //create a clone of the last spacer during initial load, store it for later...
 		if(lastspacer.find("input.addspacer_id").val()==""){ //delete initial add spacer if none exist...
 			$(".addspacerunit").last().remove();
-			$(".nothinghere").hide().removeClass(".hidden").fadeIn("fast");
+			$("#addspacers .nothinghere").hide().removeClass(".hidden").fadeIn("fast");
 		}
 		
 		$(".aspacerunit").each(function () {

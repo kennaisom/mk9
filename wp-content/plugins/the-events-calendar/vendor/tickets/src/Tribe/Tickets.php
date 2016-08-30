@@ -24,11 +24,33 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	abstract class Tribe__Tickets__Tickets {
 
 		/**
+		 * Flag used to track if the registration form link has been displayed or not.
+		 *
+		 * @var boolean
+		 */
+		private static $have_displayed_reg_link = false;
+
+		/**
 		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all child.
 		 *
 		 * @var array
 		 */
 		protected static $active_modules = array();
+
+		/**
+		 * Indicates if the frontend ticket form script has already been enqueued (or not).
+		 *
+		 * @var bool
+		 */
+		protected static $frontend_script_enqueued = false;
+
+		/**
+		 * Collection of ticket objects for which we wish to make global stock data available
+		 * on the frontend.
+		 *
+		 * @var array
+		 */
+		protected static $frontend_ticket_data = array();
 
 		/**
 		 * Name of this class. Note that it refers to the child class.
@@ -58,6 +80,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $pluginName;
 
 		/**
+		 * The name of the post type representing a ticket.
+		 * @var string
+		 */
+		public $ticket_object = '';
+
+		/**
 		 * Path of the child class
 		 * @var
 		 */
@@ -68,6 +96,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var
 		 */
 		protected $pluginUrl;
+
+		/**
+		 * Constant with the Transient Key for Attendees Cache
+		 */
+		const ATTENDEES_CACHE = 'tribe_attendees';
+
+		const ATTENDEE_USER_ID = '_tribe_tickets_attendee_user_id';
 
 		/**
 		 * Returns link to the report interface for sales for an event or
@@ -177,6 +212,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @abstract
 		 *
 		 * @param $attendee_id
+		 * @param $qr true if from QR checkin process
 		 *
 		 * @return mixed
 		 */
@@ -229,6 +265,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_price_html( $product ) {
 			return '';
+		}
+
+		/**
+		 * Indicates if the module/ticket provider supports a concept of global stock.
+		 *
+		 * For backward compatibility reasons this method has not been declared abstract but
+		 * implementaions are still expected to override it.
+		 *
+		 * @return bool
+		 */
+		public function supports_global_stock() {
+			return false;
 		}
 
 		/**
@@ -287,12 +335,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$post = get_post( $post );
 			}
 
-			$cap = "edit_{$post->post_type}";
-			if ( 'post' === $post->post_type || 'page' === $post->post_type ) {
-				$cap .= 's';
-			}
-
-			return ! empty( $data['nonce'] ) && wp_verify_nonce( $data['nonce'], $nonce_action ) && current_user_can( $cap );
+			return ! empty( $data['nonce'] ) && wp_verify_nonce( $data['nonce'], $nonce_action ) && current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts );
 		}
 
 		/* AJAX Handlers */
@@ -343,6 +386,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				do_action( 'tribe_tickets_ticket_added', $post_id );
 			}
 
+			$return = array( 'html' => $return );
+
+			/**
+			 * Filters the return data for ticket add
+			 *
+			 * @var array Array of data to return to the ajax call
+			 */
+			$return = apply_filters( 'event_tickets_ajax_ticket_add_data', $return, $post_id );
+
 			$this->ajax_ok( $return );
 		}
 
@@ -380,6 +432,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$ticket->provider_class = $this->className;
 
+			/**
+			 * Fired once a ticket has been created and added to a post
+			 *
+			 * @var $post_id Post ID
+			 * @var $ticket Ticket object
+			 * @var $data Submitted post data
+			 */
+			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
+
 			// Pass the control to the child object
 			return $this->save_ticket( $post_id, $ticket, $data );
 		}
@@ -408,9 +469,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$order_id = $_POST['order_ID'];
 
 			// Pass the control to the child object
-			$return = $this->checkin( $order_id );
+			$did_checkin = $this->checkin( $order_id );
 
-			$this->ajax_ok( $return );
+			$this->maybe_update_attendees_cache( $did_checkin );
+
+			$this->ajax_ok( $did_checkin );
 		}
 
 		/**
@@ -436,9 +499,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$order_id = $_POST['order_ID'];
 
 			// Pass the control to the child object
-			$return = $this->uncheckin( $order_id );
+			$did_uncheckin = $this->uncheckin( $order_id );
+		
+			$this->maybe_update_attendees_cache( $did_uncheckin );
 
-			$this->ajax_ok( $return );
+			$this->ajax_ok( $did_uncheckin );
 		}
 
 		/**
@@ -539,7 +604,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$return['description'] = htmlspecialchars_decode( $return['description'] );
 
 			ob_start();
-			$this->do_metabox_advanced_options( $post_id, $ticket_id );
+			/**
+			 * Fired to allow for the insertion of extra form data in the ticket admin form
+			 *
+			 * @var $post_id Post ID
+			 * @var $ticket_id Ticket ID
+			 */
+			do_action( 'tribe_events_tickets_metabox_advanced', $post_id, $ticket_id );
 			$extra = ob_get_contents();
 			ob_end_clean();
 
@@ -585,13 +656,42 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function get_event_attendees( $event_id ) {
 			$attendees = array();
+			if ( ! is_admin() ) {
+				$post_transient = Tribe__Post_Transient::instance();
+
+				$attendees = $post_transient->get( $event_id, self::ATTENDEES_CACHE );
+				if ( ! $attendees ) {
+					$attendees = array();
+				}
+
+				if ( is_array( $attendees ) && count( $attendees ) > 0 ) {
+					return $attendees;
+				}
+			}
 
 			foreach ( self::$active_modules as $class => $module ) {
 				$obj       = call_user_func( array( $class, 'get_instance' ) );
 				$attendees = array_merge( $attendees, $obj->get_attendees( $event_id ) );
 			}
 
+			if ( ! is_admin() ) {
+				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
+				$post_transient->set( $event_id, self::ATTENDEES_CACHE, $attendees, $expire );
+			}
+
 			return $attendees;
+		}
+
+		/**
+		 * Returns the total number of attendees for an event (regardless of provider).
+		 *
+		 * @param int $event_id
+		 *
+		 * @return int
+		 */
+		public static function get_event_attendees_count( $event_id ) {
+			$attendees = self::get_event_attendees( $event_id );
+			return count( $attendees );
 		}
 
 		/**
@@ -671,6 +771,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		// start Helpers
 
 		/**
+		 * Indicates if any of the currently available providers support global stock.
+		 *
+		 * @return bool
+		 */
+		public static function global_stock_available() {
+			foreach ( self::$active_modules as $class => $module ) {
+				$provider = call_user_func( array( $class, 'get_instance' ) );
+
+				if ( method_exists( $provider, 'supports_global_stock' ) && $provider->supports_global_stock() ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/**
 		 * Returns whether a class name is a valid active module/provider.
 		 *
 		 * @param $module
@@ -686,6 +803,109 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		protected function tr_class() {
 			echo 'ticket_advanced ticket_advanced_' . $this->className;
+		}
+
+		/**
+		 * Generates a select element listing the available global stock mode options.
+		 *
+		 * @param string $current_option
+		 *
+		 * @return string
+		 */
+		protected function global_stock_mode_selector( $current_option = '' ) {
+			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field'>\n";
+
+			// Default to using own stock unless the user explicitly specifies otherwise (important
+			// to avoid assuming global stock mode if global stock is enabled/disabled accidentally etc)
+			if ( empty( $current_option ) ) {
+				$current_option = Tribe__Tickets__Global_Stock::OWN_STOCK_MODE;
+			}
+
+			foreach ( $this->global_stock_mode_options() as $identifier => $name ) {
+				$identifier = esc_html( $identifier );
+				$name = esc_html( $name );
+				$selected = selected( $identifier === $current_option, true, false );
+				$output .= "\t<option value='$identifier' $selected> $name </option>\n";
+			}
+
+			return "$output</select>";
+		}
+
+		/**
+		 * Returns an array of standard global stock mode options that can be
+		 * reused by implementations.
+		 *
+		 * Format is: [ 'identifier' => 'Localized name', ... ]
+		 *
+		 * @return array
+		 */
+		protected function global_stock_mode_options() {
+			return array(
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => __( 'Use global stock', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE => __( 'Use global stock but cap sales', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => __( 'Independent (do not use global stock)', 'event-tickets' ),
+			);
+		}
+
+		/**
+		 * Tries to make data about global stock levels and global stock-enabled ticket objects
+		 * available to frontend scripts.
+		 *
+		 * @param array $tickets
+		 */
+		public static function add_frontend_stock_data( array $tickets ) {
+			// Add the frontend ticket form script as needed (we do this lazily since right now
+			// it's only required for certain combinations of event/ticket
+			if ( ! self::$frontend_script_enqueued ) {
+				$url = Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/js/frontend-ticket-form.js';
+				$url = Tribe__Template_Factory::getMinFile( $url, true );
+
+				wp_enqueue_script( 'tribe_tickets_frontend_tickets', $url, array( 'jquery' ), Tribe__Tickets__Main::VERSION, true );
+				add_action( 'wp_footer', array( __CLASS__, 'enqueue_frontend_stock_data' ), 1 );
+			}
+
+			self::$frontend_ticket_data += $tickets;
+		}
+
+		/**
+		 * Takes any global stock data and makes it available via a wp_localize_script() call.
+		 */
+		public static function enqueue_frontend_stock_data() {
+			$data = array(
+				'tickets'  => array(),
+				'events'   => array(),
+			);
+
+			foreach ( self::$frontend_ticket_data as $ticket ) {
+				/**
+				 * @var Tribe__Tickets__Ticket_Object $ticket
+				 */
+				$event_id = $ticket->get_event()->ID;
+				$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+				$stock_mode = $ticket->global_stock_mode();
+
+				$data[ 'tickets' ][ $ticket->ID ] = array(
+					'event_id' => $event_id,
+					'mode' => $stock_mode,
+				);
+
+				if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode ) {
+					$data[ 'tickets' ][ $ticket->ID ][ 'cap' ] = $ticket->global_stock_cap();
+				}
+
+				if (
+					Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
+					&& $ticket->managing_stock()
+				) {
+					$data[ 'tickets' ][ $ticket->ID ][ 'stock' ] = $ticket->stock();
+				}
+
+				$data[ 'events' ][ $event_id ] = array(
+					'stock' => $global_stock->get_stock_level()
+				);
+			}
+
+			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );
 		}
 
 		/**
@@ -987,12 +1207,124 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return (string) $attendee_event_key;
 		}
 
+		/**
+		 * Returns an availability slug based on all tickets in the provided collection
+		 *
+		 * The availability slug is used for CSS class names and filter helper strings
+		 *
+		 * @since 4.2
+		 *
+		 * @param array $tickets Collection of tickets
+		 * @param string $datetime Datetime string
+		 *
+		 * @return string
+		 */
+		public function get_availability_slug_by_collection( $tickets, $datetime = null ) {
+			if ( ! $tickets ) {
+				return;
+			}
+
+			if ( is_numeric( $datetime ) ) {
+				$timestamp = $datetime;
+			} elseif ( $datetime ) {
+				$timestamp = strtotime( $datetime );
+			} else {
+				$timestamp = current_time( 'timestamp' );
+			}
+
+			$collection_availability_slug = 'available';
+			$tickets_available = false;
+			$slugs = array();
+
+			foreach ( $tickets as $ticket ) {
+				$availability_slug = $ticket->availability_slug( $timestamp );
+
+				// if any ticket is available for this event, consider the availability slug as 'available'
+				if ( 'available' === $availability_slug ) {
+					// reset the collected slugs to "available" only
+					$slugs = array( 'available' );
+					break;
+				}
+
+				// track unique availability slugs
+				if ( ! in_array( $availability_slug, $slugs ) ) {
+					$slugs[] = $availability_slug;
+				}
+			}
+
+			if ( 1 === count( $slugs ) ) {
+				$collection_availability_slug = $slugs[0];
+			} else {
+				$collection_availability_slug = 'availability-mixed';
+			}
+
+			/**
+			 * Filters the availability slug for a collection of tickets
+			 *
+			 * @var string Availability slug
+			 * @var array Collection of tickets
+			 * @var string Datetime string
+			 */
+			return apply_filters( 'event_tickets_availability_slug_by_collection', $collection_availability_slug, $tickets, $datetime );
+		}
+
+		/**
+		 * Returns a tickets unavailable message based on the availability slug of a collection of tickets
+		 *
+		 * @since 4.2
+		 *
+		 * @param array $tickets Collection of tickets
+		 *
+		 * @return string
+		 */
+		public function get_tickets_unavailable_message( $tickets ) {
+			$availability_slug = $this->get_availability_slug_by_collection( $tickets );
+			$message = null;
+
+			if ( 'availability-future' === $availability_slug ) {
+				$message = __( 'Tickets are not yet available.', 'event-tickets' );
+			} elseif ( 'availability-past' === $availability_slug ) {
+				$message = __( 'Tickets are no longer available.', 'event-tickets' );
+			} elseif ( 'availability-mixed' === $availability_slug ) {
+				$message = __( 'There are no tickets available at this time.', 'event-tickets' );
+			}
+
+			/**
+			 * Filters the unavailability message for a ticket collection
+			 *
+			 * @var string Unavailability message
+			 * @var array Collection of tickets
+			 */
+			$message = apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
+
+			return $message;
+		}
 		// end Helpers
+
+		/**
+		 * Associates an attendee record with a user, typically the purchaser.
+		 *
+		 * The $user_id param is optional and when not provided it will default to the current
+		 * user ID.
+		 *
+		 * @param int $attendee_id
+		 * @param int $user_id
+		 */
+		protected function record_attendee_user_id( $attendee_id, $user_id = null ) {
+			if ( null === $user_id ) {
+				$user_id = get_current_user_id();
+			}
+
+			update_post_meta( $attendee_id, self::ATTENDEE_USER_ID, (int) $user_id );
+		}
 
 		public function front_end_tickets_form_in_content( $content ) {
 			global $post;
 
-			if ( is_admin() ) {
+			// Prevents firing more then it needs too outside of the loop
+			$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
+
+			if ( is_admin() || ! $in_the_loop ) {
 				return $content;
 			}
 
@@ -1024,6 +1356,52 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$content .= $form;
 
 			return $content;
+		}
+
+		/**
+		 * Indicates if the user must be logged in in order to obtain tickets.
+		 *
+		 * This should be regarded as an abstract method to be overridden by subclasses:
+		 * the reason it is not formally declared as abstract is to avoid breakages upon
+		 * update (for example, where Event Tickets is updated first but a dependent plugin
+		 * not yet implementing the abstract method remains at an earlier version).
+		 *
+		 * @return bool
+		 */
+		protected function login_required() {
+			return false;
+		}
+
+		/**
+		 * Provides a URL that can be used to direct users to the login form.
+		 *
+		 * @return string
+		 */
+		public static function get_login_url() {
+			$post_id   = get_the_ID();
+			$login_url = get_site_url( null, 'wp-login.php' );
+
+			if ( $post_id ) {
+				$login_url = add_query_arg( 'redirect_to', get_permalink( $post_id ), $login_url );
+			}
+
+			/**
+			 * Provides an opportunity to modify the login URL used within frontend
+			 * ticket forms (typically when they need to login before they can proceed).
+			 *
+			 * @param string $login_url
+			 */
+			return apply_filters( 'tribe_tickets_ticket_login_url', $login_url );
+		}
+
+		/**
+		 * @param $operation_did_complete
+		 */
+		private function maybe_update_attendees_cache( $operation_did_complete ) {
+			if ( $operation_did_complete && ! empty( $_POST['event_ID'] ) && tribe_is_event( $_POST['event_ID'] ) ) {
+				$post_transient = Tribe__Post_Transient::instance();
+				$post_transient->delete( $_POST['event_ID'], self::ATTENDEES_CACHE );
+			}
 		}
 	}
 }

@@ -209,8 +209,8 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 	}
 
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'so-tinymce-field', plugin_dir_url(__FILE__) . 'js/so-tinymce-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'editor', 'quicktags' ), SOW_BUNDLE_VERSION );
-		wp_enqueue_style( 'so-tinymce-field', plugin_dir_url(__FILE__) . 'css/so-tinymce-field.css', array(), SOW_BUNDLE_VERSION );
+		wp_enqueue_script( 'so-tinymce-field', plugin_dir_url(__FILE__) . 'js/tinymce-field' . SOW_BUNDLE_JS_SUFFIX . '.js', array( 'jquery', 'editor', 'quicktags' ), SOW_BUNDLE_VERSION );
+		wp_enqueue_style( 'so-tinymce-field', plugin_dir_url(__FILE__) . 'css/tinymce-field.css', array(), SOW_BUNDLE_VERSION );
 	}
 
 	protected function sanitize_field_input( $value, $instance ) {
@@ -225,8 +225,8 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 
 	public function sanitize_instance( $instance ) {
 		$selected_editor_name = $this->get_selected_editor_field_name( $this->base_name );
-		$selected_editor = $instance[ $selected_editor_name ];
-		if( ! empty( $selected_editor ) ) {
+		if( ! empty( $instance[ $selected_editor_name ] ) ) {
+			$selected_editor = $instance[ $selected_editor_name ];
 			$instance[ $selected_editor_name ] = in_array( $selected_editor, array( 'tinymce', 'tmce', 'html' ) ) ? $selected_editor : $this->default_editor;
 		}
 		return $instance;
@@ -236,7 +236,7 @@ class SiteOrigin_Widget_Field_TinyMCE extends SiteOrigin_Widget_Field_Text_Input
 		$v_name = $base_name;
 		if( strpos($v_name, '][') !== false ) {
 			// Remove this splitter
-			$v_name = substr( $v_name, strpos($v_name, '][') + 2 );
+			$v_name = substr( $v_name, strrpos($v_name, '][') + 2 );
 		}
 		return $v_name . '_selected_editor';
 	}

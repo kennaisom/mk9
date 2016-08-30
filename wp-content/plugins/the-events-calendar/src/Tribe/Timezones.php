@@ -153,10 +153,12 @@ class Tribe__Events__Timezones extends Tribe__Timezones {
 	 *
 	 * @param string $datetime
 	 * @param string $tzstring
+	 * @param string $format The optional format of the resulting date, defaults to 
+	 *                      `Tribe__Date_Utils::DBDATETIMEFORMAT`.
 	 *
 	 * @return string
 	 */
-	public static function to_utc( $datetime, $tzstring ) {
+	public static function to_utc( $datetime, $tzstring, $format = null ) {
 		if ( self::is_utc_offset( $tzstring ) ) {
 			return self::apply_offset( $datetime, $tzstring, true );
 		}
@@ -167,7 +169,9 @@ class Tribe__Events__Timezones extends Tribe__Timezones {
 		$new_datetime = date_create( $datetime, $local );
 
 		if ( $new_datetime && $new_datetime->setTimezone( $utc ) ) {
-			return $new_datetime->format( Tribe__Date_Utils::DBDATETIMEFORMAT );
+			$format = ! empty( $format ) ? $format : Tribe__Date_Utils::DBDATETIMEFORMAT;
+
+			return $new_datetime->format( $format );
 		}
 
 		// Fallback to the unmodified datetime if there was a failure during conversion
@@ -421,10 +425,52 @@ class Tribe__Events__Timezones extends Tribe__Timezones {
 	 */
 	public static function abbr( $date, $timezone_string ) {
 		try {
-			return date_create( $date, new DateTimeZone( $timezone_string ) )->format( 'T' );
+			$tz_date = date_create( $date, new DateTimeZone( $timezone_string ) );
+			return $tz_date->format( 'T' );
 		}
 		catch ( Exception $e ) {
 			return '';
 		}
+	}
+
+	/**
+	 * Try to figure out the Timezone name base on offset
+	 *
+	 * @since  4.0.7
+	 * @param  string|int|float $timezone The timezone
+	 *
+	 * @return string           The Guessed Timezone String
+	 */
+	public static function maybe_get_tz_name( $timezone ) {
+		if ( ! self::is_utc_offset( $timezone ) && ! is_numeric( $timezone ) ) {
+			return $timezone;
+		}
+
+		if ( ! is_numeric( $timezone ) ) {
+			$offset = str_replace( 'utc', '', trim( strtolower( $timezone ) ) );
+		} else {
+			$offset = $timezone;
+		}
+
+
+		// try to get timezone from gmt_offset, respecting daylight savings
+		$timezone = timezone_name_from_abbr( null, $offset * 3600, true );
+
+		// if that didn't work, maybe they don't have daylight savings
+		if ( false === $timezone ) {
+			$timezone = timezone_name_from_abbr( null, $offset * 3600, false );
+		}
+
+		// and if THAT didn't work, round the gmt_offset down and then try to get the timezone respecting daylight savings
+		if ( false === $timezone ) {
+			$timezone = timezone_name_from_abbr( null, (int) $offset * 3600, true );
+		}
+
+		// lastly if that didn't work, round the gmt_offset down and maybe that TZ doesn't do daylight savings
+		if ( false === $timezone ) {
+			$timezone = timezone_name_from_abbr( null, (int) $offset * 3600, false );
+		}
+
+		return $timezone;
 	}
 }

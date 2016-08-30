@@ -8,6 +8,17 @@
 final class FLBuilderLoop {
 
 	/**
+	 * Initializes hooks.
+	 *
+	 * @since 1.8
+	 * @return void
+	 */
+	static public function init()
+	{
+		add_filter( 'found_posts', __CLASS__ . '::found_posts', 1, 2 );
+	}
+
+	/**
 	 * Returns a new instance of WP_Query based on 
 	 * the provided module settings. 
 	 *
@@ -42,7 +53,7 @@ final class FLBuilderLoop {
 		}
 		
 		// Build the query args.
-		$args = array(
+		$args = apply_filters( 'fl_builder_loop_query_args', array(
 			'paged'					=> $paged,
 			'posts_per_page'		=> $posts_per_page,
 			'post_type'				=> $post_type,
@@ -55,7 +66,7 @@ final class FLBuilderLoop {
 			'fl_original_offset'	=> $offset,
 			'fl_builder_loop'		=> true,
 			'fields'				=> $fields
-		);
+		) );
 		
 		// Build the taxonomy query.
 		$taxonomies = self::taxonomies($post_type);
@@ -136,10 +147,13 @@ final class FLBuilderLoop {
 			if(!$current_page = $paged) {
 				$current_page = 1;
 			}
-		
+
 			if(empty($permalink_structure)) {
 				$format = '&paged=%#%';
-			} 
+			}
+			else if ("/" == substr($permalink_structure, -1)) {
+				$format = 'page/%#%/';
+			}
 			else {
 				$format = '/page/%#%/';
 			}
@@ -195,7 +209,7 @@ final class FLBuilderLoop {
 			$data[$tax_slug] = $tax;
 		}
 		
-		return $data;
+		return apply_filters( 'fl_builder_loop_taxonomies', $data, $taxonomies, $post_type );
 	}
 
 	/**
@@ -214,3 +228,5 @@ final class FLBuilderLoop {
 		the_time( $format );
 	}
 }
+
+FLBuilderLoop::init();

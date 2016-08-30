@@ -31,7 +31,7 @@ final class FLBuilderAJAXLayout {
 			FLBuilderModel::update_post_data( 'node_id', $node_id );
 		}
 		
-		// Render CSS and JS assets.
+		// Render the draft layout CSS that will be passed back.
 		FLBuilder::render_assets();
 
 		// Register scripts needed for shortcodes and widgets.
@@ -72,15 +72,21 @@ final class FLBuilderAJAXLayout {
 	 * @param string $cols The type of column layout to use.
 	 * @param int $position The position of the new row in the layout.
 	 * @param string $template_id The ID of a row template to render.
+	 * @param string $template_type The type of template. Either "user" or "core".
 	 * @return array
 	 */
-	static public function render_new_row( $cols = '1-col', $position = false, $template_id = null )
+	static public function render_new_row( $cols = '1-col', $position = false, $template_id = null, $template_type = 'user' )
 	{
 		// Add a row template?
-		if ( $template_id ) {
+		if ( null !== $template_id ) {
 			
-			// Add the row template.
-			$row = FLBuilderModel::apply_node_template( $template_id, null, $position );
+			if ( 'core' == $template_type ) {
+				$template = FLBuilderModel::get_template( $template_id, 'row' );
+				$row      = FLBuilderModel::apply_node_template( $template_id, null, $position, $template );
+			}
+			else {
+				$row = FLBuilderModel::apply_node_template( $template_id, null, $position );
+			}
 			
 			// Return the response.
 			return self::render( $row->node );
@@ -173,13 +179,21 @@ final class FLBuilderAJAXLayout {
 	 * @param int $position The new module position.
 	 * @param string $type The type of module.
 	 * @param string $template_id The ID of a module template to render.
+	 * @param string $template_type The type of template. Either "user" or "core".
 	 * @return array
 	 */
-	static public function render_new_module( $parent_id, $position = false, $type = null, $template_id = null )
+	static public function render_new_module( $parent_id, $position = false, $type = null, $template_id = null, $template_type = 'user' )
 	{
 		// Add a module template?
-		if ( $template_id ) {
-			$module = FLBuilderModel::apply_node_template( $template_id, $parent_id, $position );
+		if ( null !== $template_id ) {
+			
+			if ( 'core' == $template_type ) {
+				$template = FLBuilderModel::get_template( $template_id, 'module' );
+				$module   = FLBuilderModel::apply_node_template( $template_id, $parent_id, $position, $template );
+			}
+			else {
+				$module = FLBuilderModel::apply_node_template( $template_id, $parent_id, $position );	
+			}
 		}
 		// Add a standard module.
 		else {
@@ -393,6 +407,7 @@ final class FLBuilderAJAXLayout {
 		
 		// Render shortcodes.
 		if ( apply_filters( 'fl_builder_render_shortcodes', true ) ) {
+			$html = apply_filters( 'fl_builder_before_render_shortcodes', $html );
 			ob_start();
 			echo do_shortcode( $html );
 			$html = ob_get_clean();
@@ -463,6 +478,11 @@ final class FLBuilderAJAXLayout {
 	 */
 	static private function register_scripts()
 	{
+		// Running these isn't necessary and can cause performance issues.
+		remove_action( 'wp_enqueue_scripts', 'FLBuilder::register_layout_styles_scripts' );
+		remove_action( 'wp_enqueue_scripts', 'FLBuilder::enqueue_ui_styles_scripts' );
+		remove_action( 'wp_enqueue_scripts', 'FLBuilder::enqueue_all_layouts_styles_scripts' );
+		
 		ob_start();
 		do_action( 'wp_enqueue_scripts' );
 		ob_end_clean();

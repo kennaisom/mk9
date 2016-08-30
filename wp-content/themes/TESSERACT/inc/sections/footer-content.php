@@ -129,7 +129,7 @@
 					'settings'       => 'tesseract_footer_content_right',
 					'type'           => 'radio',
 					'choices' 		 => array(
-						'themeby' 	 => 'Theme by Tesseract',
+						'themeby' 	 => 'Theme by Kenna',
 						'nothing' 	 => 'Nothing',
 						'html' 	 	 => 'Text or HTML',
 						'logo' 		 => 'Logo',

@@ -59,6 +59,17 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 	}
 
 	/**
+	 * Get Event Label Singular lowercase
+	 *
+	 * Returns the singular version of the Event Label
+	 *
+	 * @return string
+	 */
+	function tribe_get_event_label_singular_lowercase() {
+		return apply_filters( 'tribe_event_label_singular_lowercase', esc_html__( 'event', 'the-events-calendar' ) );
+	}
+
+	/**
 	 * Get Event Label Plural
 	 *
 	 * Returns the plural version of the Event Label
@@ -67,6 +78,17 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 	 */
 	function tribe_get_event_label_plural() {
 		return apply_filters( 'tribe_event_label_plural', esc_html__( 'Events', 'the-events-calendar' ) );
+	}
+
+	/**
+	 * Get Event Label Plural lowercase
+	 *
+	 * Returns the plural version of the Event Label
+	 *
+	 * @return string
+	 */
+	function tribe_get_event_label_plural_lowercase() {
+		return apply_filters( 'tribe_event_label_plural_lowercase', esc_html__( 'events', 'the-events-calendar' ) );
 	}
 
 	/**
@@ -822,16 +844,34 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 			$post_id = get_the_ID();
 		}
 
-		$image_html     = get_the_post_thumbnail( $post_id, $size );
+		/**
+		 * Provides an opportunity to modify the featured image size.
+		 *
+		 * @param string $size
+		 * @param int    $post_id
+		 */
+		$image_html     = get_the_post_thumbnail( $post_id, apply_filters( 'tribe_event_featured_image_size', $size, $post_id ) );
 		$featured_image = '';
 
-		//if link is not specifically excluded, then include <a>
-		if ( ! empty( $image_html ) && $link ) {
+		/**
+		 * Controls whether the featured image should be wrapped in a link
+		 * or not.
+		 *
+		 * @param bool $link
+		 */
+		if ( ! empty( $image_html ) && apply_filters( 'tribe_event_featured_image_link', $link ) ) {
 			$featured_image .= '<div class="tribe-events-event-image"><a href="' . esc_url( tribe_get_event_link() ) . '">' . $image_html . '</a></div>';
 		} elseif ( ! empty( $image_html ) ) {
 			$featured_image .= '<div class="tribe-events-event-image">' . $image_html . '</div>';
 		}
 
+		/**
+		 * Provides an opportunity to modify the featured image HTML.
+		 *
+		 * @param string $featured_image
+		 * @param int    $post_id
+		 * @param string $size
+		 */
 		return apply_filters( 'tribe_event_featured_image', $featured_image, $post_id, $size );
 	}
 
@@ -1022,7 +1062,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 				$category_classes = tribe_events_event_classes( $event->ID, false );
 
 				$json['eventId'] = $event->ID;
-				$json['title'] = $event->post_title;
+				$json['title'] = wp_kses_post( $event->post_title );
 				$json['permalink'] = tribe_get_event_link( $event->ID );
 				$json['imageSrc'] = $image_src;
 				$json['dateDisplay'] = $date_display;
@@ -1313,17 +1353,48 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		 *
 		 * @var bool
 		 */
-		$allow_shortcode = apply_filters( 'tribe_events_excerpt_allow_shortcode', false );
+		$allow_shortcodes = apply_filters( 'tribe_events_excerpt_allow_shortcode', false );
+
+		/**
+		 * Filter to stop removal of shortcode markup in the Excerpt
+		 * This will remove all text that resembles a shortcode [shortcode 5]
+		 *
+		 * @var bool
+		 */
+		$remove_shortcodes = apply_filters( 'tribe_events_excerpt_shortcode_removal', true );
 
 		// Get the Excerpt or content based on what is available
 		if ( has_excerpt( $post->ID ) ) {
 			$excerpt = $post->post_excerpt;
 		} else {
 			$excerpt = $post->post_content;
+			// We will only trim Excerpt if it comes from Post Content
+
+			/**
+			 * Filter the number of words in an excerpt.
+			 *
+			 * @param int $number The number of words. Default 55.
+			 */
+			$excerpt_length = apply_filters( 'excerpt_length', 55 );
+
+			/**
+			 * Filter the string in the "more" link displayed after a trimmed excerpt.
+			 *
+			 * @param string $more_string The string shown within the more link.
+			 */
+			$excerpt_more = apply_filters( 'excerpt_more', ' [&hellip;]' );
+
+			// Now we actually trim it
+			$excerpt = wp_trim_words( $excerpt, $excerpt_length, $excerpt_more );
+		}
+
+		// If shortcode filter is enabled lets process them
+		if ( $allow_shortcodes ) {
+			$excerpt = do_shortcode( $excerpt );
 		}
 
 		// Remove all shortcode Content before removing HTML
-		if ( ! $allow_shortcode ) {
+		if ( $remove_shortcodes ) {
 			$excerpt = preg_replace( '#\[.+\]#U', '', $excerpt );
 		}
 
@@ -1331,23 +1402,12 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		$excerpt = wp_kses( $excerpt, $allowed_html );
 
 		/**
-		 * Filter the number of words in an excerpt.
+		 * Filter the event excerpt used in various views.
 		 *
-		 * @param int $number The number of words. Default 55.
+		 * @param string  $excerpt
+		 * @param WP_Post $post
 		 */
-		$excerpt_length = apply_filters( 'excerpt_length', 55 );
-
-		/**
-		 * Filter the string in the "more" link displayed after a trimmed excerpt.
-		 *
-		 * @param string $more_string The string shown within the more link.
-		 */
-		$excerpt_more = apply_filters( 'excerpt_more', ' [&hellip;]' );
-
-		// Now we actually trim it
-		$excerpt = wp_trim_words( $excerpt, $excerpt_length, $excerpt_more );
-
-		return wpautop( $excerpt );
+		return apply_filters( 'tribe_events_get_the_excerpt', wpautop( $excerpt ), $post );
 	}
 
 	/**
@@ -1370,7 +1430,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		}
 
 		// If not, try to determine now
-		Tribe__Events__Main::instance()->rebuild_known_range();
+		Tribe__Events__Dates__Known_Range::instance()->rebuild_known_range();
 		$latest = tribe_get_option( 'latest_date', false );
 		if ( false !== $latest ) {
 			return Tribe__Date_Utils::reformat( $latest, $format );
@@ -1399,7 +1459,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		}
 
 		// If not, try to determine now
-		Tribe__Events__Main::instance()->rebuild_known_range();
+		Tribe__Events__Dates__Known_Range::instance()->rebuild_known_range();
 		$earliest = tribe_get_option( 'earliest_date', false );
 		if ( false !== $earliest ) {
 			return Tribe__Date_Utils::reformat( $earliest, $format );
@@ -1475,7 +1535,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		$url  = plugins_url( Tribe__Events__Main::instance()->plugin_dir . $path );
 
 		/**
-		 * Deprected the tribe_events_resource_url filter in 4.0 in favor of tribe_resource_url. Remove in 5.0
+		 * Deprecated the tribe_events_resource_url filter in 4.0 in favor of tribe_resource_url. Remove in 5.0
 		 */
 		$url = apply_filters( 'tribe_events_resource_url', $url, $resource );
 

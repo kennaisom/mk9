@@ -4,7 +4,7 @@ Theme URI: http://tesseracttheme.com/
 Author: Tesseract Theme
 Author URI: http://tesseracttheme.com/
 Description: Tesseract is a beautiful theme from the fourth dimension. Tesseract makes it easy to create a website that you are proud to show off to the world. It is responsive, has simple and useful navigation, an amazing featured image with buttons and is simple to use.
-Version: 2.5.2
+Version: 2.5.5
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: tesseract
@@ -534,7 +534,7 @@ body {
     font-size: 16px;
     font-weight: 300;
     line-height: 1.8;
-    color: #757575;
+    color: transparent;
     position: relative;
 }
 
@@ -1465,7 +1465,12 @@ a:hover {
 
 .site-header {
     width: 100%;
+    background-color: rgba(238, 238, 34, 0)!important;
+    position: absolute;
+    top: 0;
+    left: 0;
     }
+
 
 .site-branding.hide-header-text .site-title {
   display: none !important;

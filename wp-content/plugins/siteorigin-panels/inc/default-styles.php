@@ -4,8 +4,8 @@
  * Register the custom styles scripts
  */
 function siteorigin_panels_default_styles_register_scripts(){
-	wp_register_script( 'siteorigin-panels-front-styles', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'js/styling' . SITEORIGIN_PANELS_JS_SUFFIX . '.js', array('jquery'), SITEORIGIN_PANELS_VERSION );
-	wp_register_script( 'siteorigin-panels-front-parallax', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'js/jquery.stellar' . SITEORIGIN_PANELS_JS_SUFFIX . '.js', array('jquery'), SITEORIGIN_PANELS_VERSION );
+	wp_register_script( 'siteorigin-panels-front-styles', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'js/styling' . SITEORIGIN_PANELS_VERSION_SUFFIX . SITEORIGIN_PANELS_JS_SUFFIX . '.js', array('jquery'), SITEORIGIN_PANELS_VERSION );
+	wp_register_script( 'siteorigin-parallax', plugin_dir_url(SITEORIGIN_PANELS_BASE_FILE) . 'js/siteorigin-parallax' . SITEORIGIN_PANELS_JS_SUFFIX . '.js', array('jquery'), SITEORIGIN_PANELS_VERSION );
 	wp_localize_script( 'siteorigin-panels-front-styles', 'panelsStyles', array(
 		'fullContainer' => apply_filters( 'siteorigin_panels_full_width_container', siteorigin_panels_setting('full-width-container') )
 	) );
@@ -40,6 +40,14 @@ class SiteOrigin_Panels_Default_Styling {
 	static function row_style_fields($fields) {
 		// Add the attribute fields
 
+		$fields['id'] = array(
+			'name' => __('Row ID', 'siteorigin-panels'),
+			'type' => 'text',
+			'group' => 'attributes',
+			'description' => __('A custom ID used for this row.', 'siteorigin-panels'),
+			'priority' => 4,
+		);
+
 		$fields['class'] = array(
 			'name' => __('Row Class', 'siteorigin-panels'),
 			'type' => 'text',
@@ -60,7 +68,7 @@ class SiteOrigin_Panels_Default_Styling {
 			'name' => __('CSS Styles', 'siteorigin-panels'),
 			'type' => 'code',
 			'group' => 'attributes',
-			'description' => __('CSS Styles, given as one per row.', 'siteorigin-panels'),
+			'description' => __('One style attribute per line.', 'siteorigin-panels'),
 			'priority' => 10,
 		);
 
@@ -70,7 +78,7 @@ class SiteOrigin_Panels_Default_Styling {
 			'name' => __('Bottom Margin', 'siteorigin-panels'),
 			'type' => 'measurement',
 			'group' => 'layout',
-			'description' => __('Space below the row.', 'siteorigin-panels'),
+			'description' => sprintf( __('Space below the row. Default is %spx.', 'siteorigin-panels'), siteorigin_panels_setting( 'margin-bottom' ) ),
 			'priority' => 5,
 		);
 
@@ -78,7 +86,7 @@ class SiteOrigin_Panels_Default_Styling {
 			'name' => __('Gutter', 'siteorigin-panels'),
 			'type' => 'measurement',
 			'group' => 'layout',
-			'description' => __('Amount of space between columns.', 'siteorigin-panels'),
+			'description' => sprintf( __('Amount of space between columns. Default is %spx.', 'siteorigin-panels'), siteorigin_panels_setting( 'margin-sides' ) ),
 			'priority' => 6,
 		);
 
@@ -101,6 +109,18 @@ class SiteOrigin_Panels_Default_Styling {
 				'full-stretched' => __('Full Width Stretched', 'siteorigin-panels'),
 			),
 			'priority' => 10,
+		);
+
+		$fields['collapse_order'] = array(
+			'name' => __('Collapse Order', 'siteorigin-panels'),
+			'type' => 'select',
+			'group' => 'layout',
+			'options' => array(
+				'' => __('Default', 'siteorigin-panels'),
+				'left-top' => __('Left on Top', 'siteorigin-panels'),
+				'right-top' => __('Right on Top', 'siteorigin-panels'),
+			),
+			'priority' => 15,
 		);
 
 		// How lets add the design fields
@@ -160,7 +180,7 @@ class SiteOrigin_Panels_Default_Styling {
 			'name' => __('CSS Styles', 'siteorigin-panels'),
 			'type' => 'code',
 			'group' => 'attributes',
-			'description' => __('CSS Styles, given as one per row.', 'siteorigin-panels'),
+			'description' => __('One style attribute per line.', 'siteorigin-panels'),
 			'priority' => 10,
 		);
 
@@ -222,6 +242,14 @@ class SiteOrigin_Panels_Default_Styling {
 			'priority' => 15,
 		);
 
+		$fields['link_color'] = array(
+			'name' => __('Links Color', 'siteorigin-panels'),
+			'type' => 'color',
+			'group' => 'design',
+			'description' => __('Color of links inside this widget.', 'siteorigin-panels'),
+			'priority' => 16,
+		);
+
 		return $fields;
 	}
 
@@ -254,18 +282,26 @@ class SiteOrigin_Panels_Default_Styling {
 			$attributes['style'] .= 'background-color:' . $args['background']. ';';
 		}
 
-		if( !empty($args['background_display']) && !empty( $args['background_image_attachment'] ) ) {
+		if( !empty( $args['background_display'] ) && !empty( $args['background_image_attachment'] ) ) {
+
+			if( $args['background_display'] == 'parallax' || $args['background_display'] == 'parallax-original' ) {
+				wp_enqueue_script('siteorigin-panels-front-styles');
+			}
+
 			$url = wp_get_attachment_image_src( $args['background_image_attachment'], 'full' );
 
 			if( !empty($url) ) {
 
 				if( $args['background_display'] == 'parallax' || $args['background_display'] == 'parallax-original' ) {
-					wp_enqueue_script('siteorigin-panels-front-parallax');
-					$attributes['data-stellar-background-ratio'] = '0.5';
-					$attributes['style'] .= 'background-image: url(' . $url[0] . '); background-position: center; background-repeat: no-repeat;';
-					if( $args['background_display'] == 'parallax' ) {
-						$attributes['style'] .= 'background-size: cover;';
-					}
+					wp_enqueue_script('siteorigin-parallax');
+					$parallax_args = array(
+						'backgroundUrl' => $url[0],
+						'backgroundSize' => array( $url[1], $url[2] ),
+						'backgroundSizing' => $args['background_display'] == 'parallax-original' ? 'original' : 'scaled',
+						'limitMotion' => siteorigin_panels_setting( 'parallax-motion' ) ? floatval( siteorigin_panels_setting( 'parallax-motion' ) ) : 'auto',
+					);
+					$attributes['data-siteorigin-parallax'] = json_encode( $parallax_args );
+					$attributes['style'] .= 'background-image: url(' . $url[0] . '); background-position: center center; background-repeat: no-repeat;';
 				}
 				else {
 					$attributes['style'] .= 'background-image: url(' . $url[0] . ');';
@@ -327,15 +363,21 @@ class SiteOrigin_Panels_Default_Styling {
 		if( !empty($args['background_display']) && !empty( $args['background_image_attachment'] ) ) {
 			$url = wp_get_attachment_image_src( $args['background_image_attachment'], 'full' );
 
+			if( $args['background_display'] == 'parallax' || $args['background_display'] == 'parallax-original' ) {
+				wp_enqueue_script('siteorigin-panels-front-styles');
+			}
+
 			if( !empty($url) ) {
 
 				if( $args['background_display'] == 'parallax' || $args['background_display'] == 'parallax-original' ) {
-					wp_enqueue_script('siteorigin-panels-front-parallax');
-					$attributes['data-stellar-background-ratio'] = '0.5';
-					$attributes['style'] .= 'background-image: url(' . $url[0] . '); background-position: center; background-repeat: no-repeat;';
-					if( $args['background_display'] == 'parallax' ) {
-						$attributes['style'] .= 'background-size: cover;';
-					}
+					wp_enqueue_script('siteorigin-parallax');
+					$parallax_args = array(
+						'backgroundUrl' => $url[0],
+						'backgroundSize' => array( $url[1], $url[2] ),
+						'backgroundSizing' => $args['background_display'] == 'parallax-original' ? 'original' : 'scaled',
+					);
+					$attributes['data-siteorigin-parallax'] = json_encode( $parallax_args );
+					$attributes['style'] .= 'background-image: url(' . $url[0] . '); background-position: center center; background-repeat: no-repeat;';
 				}
 				else {
 					$attributes['style'] .= 'background-image: url(' . $url[0] . ');';

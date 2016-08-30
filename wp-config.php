@@ -88,6 +88,10 @@ if ( !defined('ABSPATH') )
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
 
+define('WP_HOME','http://52.26.126.43');
+define('WP_SITEURL','http://52.26.126.43');
+
+/**
 define('WP_HOME','http://www.maligatork9.com');
 define('WP_SITEURL','http://www.maligatork9.com');
-
+*/

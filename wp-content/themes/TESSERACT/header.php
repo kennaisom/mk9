@@ -24,8 +24,6 @@
   </style>
 <![endif]-->
 
-<meta name="google-site-verification" content="P_hgLIsPObLyKZg8iLO7SsZGKxT4luWlVytLSOhiTcI" />
-
 </head>
 
 <?php // Additional body classes
