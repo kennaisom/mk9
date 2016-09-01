@@ -89,7 +89,7 @@
 			);
 		endif;
  
-		if(!class_exists('Tesseract_Remove_Branding_Customizer')):
+		if(class_exists('Tesseract_Remove_Branding_Customizer')):
 		
 		$wp_customize->add_setting( 'tesseract_footer_content_right', array(
 			'default'           => 'themeby',
@@ -151,7 +151,7 @@
 			'tesseract_footer_additional_content_right2',
 			array(
 				'label' =>  __('Right Footer Area:', 'tesseract' ),
-				'description' =>  __('<a href="http://tesseracttheme.com/unbranding-plugin-3/" target="_blank"><img src="https://s3.amazonaws.com/tesseracttheme/unlock.png" /></a>', 'tesseract' ),
+				'description' =>  __('<a href="http://atesseracttheme.com/unbranding-plugin-3/" target="_blank"><img src="https://s3.amazonaws.com/tesseracttheme/unlock.png" /></a>', 'tesseract' ),
 				'section' => 'tesseract_footer_content',
 				'settings' => 'tesseract_footer_content_right',
 				'priority' => 	5

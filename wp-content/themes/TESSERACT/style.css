@@ -1,8 +1,8 @@
 /*
-Theme Name: Tesseract
-Theme URI: http://tesseracttheme.com/
-Author: Tesseract Theme
-Author URI: http://tesseracttheme.com/
+Theme Name: Kenna 
+Theme URI: http://kenna.com/
+Author: Kenna Theme
+Author URI: http://kenna.com/
 Description: Tesseract is a beautiful theme from the fourth dimension. Tesseract makes it easy to create a website that you are proud to show off to the world. It is responsive, has simple and useful navigation, an amazing featured image with buttons and is simple to use.
 Version: 2.5.5
 License: GNU General Public License v2 or later
@@ -534,7 +534,6 @@ body {
     font-size: 16px;
     font-weight: 300;
     line-height: 1.8;
-    color: transparent;
     position: relative;
 }
 
@@ -1436,7 +1435,7 @@ th {
 -------------------------------------------------------------- */
 
 a {
-    color: #199cd8;
+    color: #19c297;
     text-decoration: none;
 }
 

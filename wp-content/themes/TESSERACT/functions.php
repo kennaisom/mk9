@@ -2045,7 +2045,7 @@ function display_notice() {
     });
     </script>';
 
-	if ( ! class_exists( 'Tesseract_Remove_Branding' ) ) {
+	if (  class_exists( 'Tesseract_Remove_Branding' ) ) {
 
 		if ( false === ( $dismissed = get_transient( 'dismiss_unbranding' ) ) ) {
 
