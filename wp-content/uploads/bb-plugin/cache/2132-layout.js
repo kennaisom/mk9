@@ -42,9 +42,10 @@ vid.css({'left':newLeft+'px','top':newTop+'px','height':newHeight+'px','width':n
 {if(typeof jQuery.fn.waypoint!=='undefined'&&!FLBuilderLayout._isMobile()){$('.fl-animation').waypoint({offset:'80%',handler:FLBuilderLayout._doModuleAnimation});}},_doModuleAnimation:function()
 {var module=$(this.element),delay=parseFloat(module.data('animation-delay'));if(!isNaN(delay)&&delay>0){setTimeout(function(){module.addClass('fl-animated');},delay*1000);}
 else{module.addClass('fl-animated');}},_initHash:function()
-{var hash=window.location.hash.replace('#','').split('/').shift(),element=null,tabs=null,responsiveLabel=null,tabIndex=null,label=null;if(''!==hash){element=$('#'+hash);if(element.length>0){if(element.hasClass('fl-accordion-item')){setTimeout(function(){element.find('.fl-accordion-button').trigger('click');},100);}
+{var hash=window.location.hash.replace('#','').split('/').shift(),element=null,tabs=null,responsiveLabel=null,tabIndex=null,label=null;if(''!==hash){try{element=$('#'+hash);if(element.length>0){if(element.hasClass('fl-accordion-item')){setTimeout(function(){element.find('.fl-accordion-button').trigger('click');},100);}
 if(element.hasClass('fl-tabs-panel')){setTimeout(function(){tabs=element.closest('.fl-tabs');responsiveLabel=element.find('.fl-tabs-panel-label');tabIndex=responsiveLabel.data('index');label=tabs.find('.fl-tabs-labels .fl-tabs-label[data-index='+tabIndex+']');if(responsiveLabel.is(':visible')){responsiveLabel.trigger('click');}
-else{FLBuilderLayout._scrollToElement(label);label.trigger('click');}},100);}}}},_initAnchorLinks:function()
+else{FLBuilderLayout._scrollToElement(label);label.trigger('click');}},100);}}}
+catch(e){}}},_initAnchorLinks:function()
 {$('a').each(FLBuilderLayout._initAnchorLink);},_initAnchorLink:function()
 {var link=$(this),href=link.attr('href'),loc=window.location,id=null,element=null;if('undefined'!=typeof href&&href.indexOf('#')>-1){if(loc.pathname.replace(/^\//,'')==this.pathname.replace(/^\//,'')&&loc.hostname==this.hostname){try{id=href.split('#').pop();element=$('#'+id);if(element.length>0){if(link.hasClass('fl-scroll-link')||element.hasClass('fl-row')||element.hasClass('fl-col')||element.hasClass('fl-module')){$(link).on('click',FLBuilderLayout._scrollToElementOnLinkClick);}
 if(element.hasClass('fl-accordion-item')){$(link).on('click',FLBuilderLayout._scrollToAccordionOnLinkClick);}

@@ -13,9 +13,9 @@ class Tribe__Tickets_Plus__Commerce__WooCommerce__Email extends WC_Email {
 
 		$this->id          = 'wootickets';
 		$this->title       = __( 'Tickets', 'event-tickets-plus' );
-		$this->description = __( 'Email the user will receive after a completed order with the tickets he purchased.', 'event-tickets-plus' );
+		$this->description = __( 'Email the user will receive after a completed order with the tickets they purchased.', 'event-tickets-plus' );
 
-		$this->subject = __( 'Your tickets from {sitename}', 'event-tickets-plus' );
+		$this->subject = __( 'Your tickets from {site_title}', 'event-tickets-plus' );
 
 
 		// Triggers for this email
@@ -36,10 +36,6 @@ class Tribe__Tickets_Plus__Commerce__WooCommerce__Email extends WC_Email {
 		if ( $order_id ) {
 			$this->object    = new WC_Order( $order_id );
 			$this->recipient = $this->object->billing_email;
-
-			$this->find[]    = '{sitename}';
-			$this->replace[] = get_option( 'blogname' );
-
 		}
 
 		if ( ! $this->is_enabled() || ! $this->get_recipient() ) {
@@ -76,13 +72,18 @@ class Tribe__Tickets_Plus__Commerce__WooCommerce__Email extends WC_Email {
 		$attendees = array();
 
 		foreach ( $query->posts as $post ) {
-
-			$attendees[] = array(
+			$product = get_post( get_post_meta( $post->ID, $wootickets->atendee_product_key, true ) );
+			$ticket_unique_id = get_post_meta( $post->ID, '_unique_id', true );
+			$ticket_unique_id = $ticket_unique_id === '' ? $post->ID : $ticket_unique_id;
+			
+			$attendees[]      = array(
 				'event_id'      => get_post_meta( $post->ID, $wootickets->atendee_event_key, true ),
-				'ticket_name'   => get_post( get_post_meta( $post->ID, $wootickets->atendee_product_key, true ) )->post_title,
+				'product_id'    => $product->ID,
+				'ticket_name'   => $product->post_title,
 				'holder_name'   => get_post_meta( $this->object->id, '_billing_first_name', true ) . ' ' . get_post_meta( $this->object->id, '_billing_last_name', true ),
 				'order_id'      => $this->object->id,
-				'ticket_id'     => $post->ID,
+				'ticket_id'     => $ticket_unique_id,
+				'qr_ticket_id'  => $post->ID,
 				'security_code' => get_post_meta( $post->ID, $wootickets->security_code, true ),
 			);
 		}

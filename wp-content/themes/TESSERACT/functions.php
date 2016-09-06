@@ -1244,7 +1244,7 @@ add_action('wp_head', 'tesseract_noscript');
 
 function tesseract_footer_branding() {
 
-	do_action( 'tesseract_footer_branding' );
+	//do_action( 'tesseract_footer_branding' );
 
 	}
 
@@ -1282,7 +1282,7 @@ function tesseract_footer_branding_output() {
 
 	
 
-	echo '<div id="'.$str_foobid.'" class="'.$str_foobclass.'"><div class="table"><div class="table'.'-cell"><strong>';
+//	echo '<div id="'.$str_foobid.'" class="'.$str_foobclass.'"><div class="table"><div class="table'.'-cell"><strong>';
 
 	
 
@@ -1308,7 +1308,7 @@ function tesseract_footer_branding_output() {
 
 
 
-	echo '</strong>&nbsp;&nbsp;<strong><a href="http://'.$str_foobturl.'"><img src="//tylers-storage.s3-us-west-1.amazonaws.com/wp-content/uploads/2015/09/07185505/Drawing1.png" alt="Drawing" width="16" height="16" /></a></strong></div></div></div>';
+//	echo '</strong>&nbsp;&nbsp;<strong><a href="http://'.$str_foobturl.'"><img src="//tylers-storage.s3-us-west-1.amazonaws.com/wp-content/uploads/2015/09/07185505/Drawing1.png" alt="Drawing" width="16" height="16" /></a></strong></div></div></div>';
 
 
 
@@ -1590,7 +1590,7 @@ function tesseract_set_menu_location_menuupdate() {
 
 	//Location 'secondary_right' is available ONLY if the branding removal plugin is installed
 
-	if ( is_plugin_active('tesseract-remove-branding/tesseract-remove-branding.php') ) {
+	if ( !is_plugin_active('tesseract-remove-branding/tesseract-remove-branding.php') ) {
 
 		$selectorLocs = array_merge($selectorLocs, array('tesseract_footer_right_menu_select' => 'secondary_right'));
 
@@ -1698,7 +1698,7 @@ function tesseract_set_menu_location_customizerupdate() {
 
 	//Location 'secondary_right' is available ONLY if the branding removal plugin is installed
 
-	if ( is_plugin_active('tesseract-remove-branding/tesseract-remove-branding.php') ) {
+	if (!is_plugin_active('tesseract-remove-branding/tesseract-remove-branding.php') ) {
 
 		$selectorLocs = array_merge($selectorLocs, array('tesseract_footer_right_menu_select' => 'secondary_right'));
 
@@ -2047,7 +2047,7 @@ function display_notice() {
 
 	if (  class_exists( 'Tesseract_Remove_Branding' ) ) {
 
-		if ( false === ( $dismissed = get_transient( 'dismiss_unbranding' ) ) ) {
+		if ( true === ( $dismissed = get_transient( 'dismiss_unbranding' ) ) ) {
 
 ?>
 

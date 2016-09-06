@@ -1,4 +1,11 @@
 <?php
+/**
+ * Renders the Shopp tickets table/form
+ *
+ * @version 4.2
+ *
+ * @var bool $must_login
+ */
 $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
 
@@ -18,7 +25,7 @@ ob_start();
 				echo sprintf( '<input type="hidden" name="product_id[]" value="%d">', esc_attr( $ticket->ID ) );
 
 				echo '<tr>';
-				echo '<td width="75" class="shopp">';
+				echo '<td width="75" class="shopp quantity" data-product-id="' . esc_attr( $ticket->ID ) . '">';
 
 				if ( $in_stock ) {
 
@@ -54,6 +61,18 @@ ob_start();
 				echo '</td>';
 
 				echo '</tr>';
+
+				echo
+					'<tr class="tribe-tickets-attendees-list-optout">' .
+						'<td colspan="4">' .
+							'<input type="checkbox" name="tribe_shopp_optout" id="tribe-tickets-attendees-list-optout-shopp">' .
+							'<label for="tribe-tickets-attendees-list-optout-shopp">' .
+								esc_html__( 'Don\'t list me on the public attendee list', 'event-tickets' ) .
+							'</label>' .
+						'</td>' .
+					'</tr>';
+
+				include Tribe__Tickets_Plus__Main::instance()->get_template_hierarchy( 'meta.php' );
 			}
 		}
 
@@ -63,8 +82,12 @@ ob_start();
 			<?php if ( $is_there_any_product_to_sell ) { ?>
 				<tr>
 					<td colspan="4" class='shopp'>
-						<input type="hidden" name="cart" value="add" />
-						<button type="submit" class="button alt"><?php esc_html_e( 'Add to cart', 'event-tickets-plus' );?></button>
+						<?php if ( $must_login ): ?>
+							<?php include Tribe__Tickets_Plus__Main::instance()->get_template_hierarchy( 'login-to-purchase' ); ?>
+						<?php else: ?>
+							<input type="hidden" name="cart" value="add" />
+							<button type="submit" class="button alt"><?php esc_html_e( 'Add to cart', 'event-tickets-plus' );?></button>
+						<?php endif; ?>
 					</td>
 				</tr>
 				<?php
@@ -78,4 +101,17 @@ ob_start();
 $contents = ob_get_clean();
 if ( $is_there_any_product_to_sell ) {
 	echo $contents;
+} else {
+	$unavailability_message = $this->get_tickets_unavailable_message( $tickets );
+
+	// if there isn't an unavailability message, bail
+	if ( ! $unavailability_message ) {
+		return;
+	}
+
+	?>
+	<div class="tickets-unavailable">
+		<?php echo esc_html( $unavailability_message ); ?>
+	</div>
+	<?php
 }

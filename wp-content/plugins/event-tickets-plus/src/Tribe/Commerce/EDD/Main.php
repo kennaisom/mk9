@@ -4,7 +4,7 @@ if ( class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) || ! class_exist
 	return;
 }
 
-class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
+class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets_Plus__Tickets {
 	/**
 	 * Value indicating there is no limit on the number of tickets that can be sold.
 	 */
@@ -79,7 +79,7 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 * Meta key that stores if an attendee has checked in to an event
 	 * @var string
 	 */
-	public static $checkin_key = '_tribe_eddticket_checkedin';
+	public $checkin_key = '_tribe_eddticket_checkedin';
 
 	/**
 	 * Meta key that relates Attendees and Products.
@@ -127,6 +127,12 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
+	 * Meta key that holds if the attendee has opted out of the front-end listing
+	 * @var string
+	 */
+	const ATTENDEE_OPTOUT_KEY = '_tribe_eddticket_attendee_optout';
+
+	/**
 	 * Holds an instance of the Tribe__Tickets_Plus__Commerce__EDD__Email class
 	 * @var Tribe__Tickets_Plus__Commerce__EDD__Email
 	 */
@@ -138,6 +144,16 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 * @var Tribe__Tickets_Plus__Commerce__EDD__Stock_Control
 	 */
 	protected $stock_control;
+
+	/**
+	 * @var Tribe__Tickets_Plus__Commerce__EDD__Global_Stock
+	 */
+	protected static $global_stock;
+
+	/**
+	 * Instance of Tribe__Tickets_Plus__Commerce__EDD__Meta
+	 */
+	private static $meta;
 
 	/**
 	 * Class constructor
@@ -156,7 +172,8 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 		parent::__construct();
 
 		$this->hooks();
-
+		$this->meta();
+		$this->global_stock();
 	}
 
 	/**
@@ -176,12 +193,79 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 		add_action( 'edd_checkout_error_checks', array( $this, 'checkout_errors' ) );
 		add_action( 'template_redirect', array( $this, 'render_ticket_print_view' ), 10, 2 );
 
+		add_filter( 'edd_url_token_allowed_params', array( $this, 'add_allowed_param' ) );
 		add_filter( 'edd_purchase_receipt', array( $this, 'add_tickets_msg_to_email' ), 10, 3 );
 		add_filter( 'post_type_link', array( $this, 'hijack_ticket_link' ), 10, 4 );
 		add_filter( 'edd_item_quantities_enabled', '__return_true' );
 		add_filter( 'edd_download_files', array( $this, 'ticket_downloads' ), 10, 2 );
 		add_filter( 'edd_download_file_url_args', array( $this, 'print_ticket_url' ), 10 );
 
+		add_filter( 'edd_add_to_cart_item', array( $this, 'set_attendee_optout_choice' ), 10 );
+		add_filter( 'tribe_tickets_settings_post_types', array( $this, 'exclude_product_post_type' ) );
+	}
+
+	/**
+	 * Provides a copy of the global stock integration object.
+	 *
+	 * @since 4.1
+	 *
+	 * @return Tribe__Tickets_Plus__Commerce__EDD__Global_Stock
+	 */
+	public function global_stock() {
+		if ( ! self::$global_stock ) {
+			self::$global_stock = new Tribe__Tickets_Plus__Commerce__EDD__Global_Stock;
+		}
+
+		return self::$global_stock;
+	}
+
+	/**
+	 * Indicates if global stock support is enabled (for Easy Digital Downloads the
+	 * default is true).
+	 *
+	 * @return bool
+	 */
+	public function supports_global_stock() {
+		/**
+		 * Allows the declaration of global stock support for Easy Digital Downloads
+		 * tickets to be overridden.
+		 *
+		 * @param bool $enable_global_stock_support
+		 */
+		return (bool) apply_filters( 'tribe_tickets_edd_enable_global_stock', true );
+	}
+
+	/**
+	 * Configure the option optout from attendees
+	 *
+	 * @param array $item Cart Item
+	 */
+	public function set_attendee_optout_choice( $item ) {
+		$is_ticket = get_post_meta( $item['id'], self::$event_key, true );
+
+		if ( ! $is_ticket ) {
+			return $item;
+		}
+
+		$optout = isset( $_POST[ 'optout_' . $item['id'] ] ) ? (bool) $_POST[ 'optout_' . $item['id'] ] : false;
+		$item['options'][ self::ATTENDEE_OPTOUT_KEY ] = $optout;
+
+		return $item;
+	}
+
+	/**
+	 * Custom meta integration object accessor method
+	 *
+	 * @since 4.1
+	 *
+	 * @return Tribe__Tickets_Plus__Commerce__EDD__Meta
+	 */
+	public function meta() {
+		if ( ! self::$meta ) {
+			self::$meta = new Tribe__Tickets_Plus__Commerce__EDD__Meta;
+		}
+
+		return self::$meta;
 	}
 
 	/**
@@ -241,7 +325,6 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 * @param $order_id
 	 */
 	public function generate_tickets( $order_id ) {
-
 		// Bail if we already generated the info for this order
 		$done = get_post_meta( $order_id, self::$order_has_tickets, true );
 		if ( ! empty( $done ) ) {
@@ -261,8 +344,10 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 
 		// Iterate over each product
 		foreach ( (array) $order_items as $item ) {
+			$order_attendee_id = 0;
 
 			$product_id = isset( $item['id'] ) ? $item['id'] : false;
+			$optout = (bool) isset( $item['item_number']['options'][ self::ATTENDEE_OPTOUT_KEY ] ) ? $item['item_number']['options'][ self::ATTENDEE_OPTOUT_KEY ] : false;
 
 			// Get the event this tickets is for
 			$event_id = get_post_meta( $product_id, self::$event_key, true );
@@ -289,6 +374,30 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 					update_post_meta( $attendee_id, self::ATTENDEE_ORDER_KEY, $order_id );
 					update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $event_id );
 					update_post_meta( $attendee_id, self::$security_code, $this->generate_security_code( $order_id, $attendee_id ) );
+					update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, $optout );
+
+					/**
+					 * Easy Digital Downloads specific action fired when an EDD-driven attendee ticket for an event is generated
+					 *
+					 * @param $attendee_id ID of attendee ticket
+					 * @param $event_id ID of event
+					 * @param $order_id Easy Digital Downloads order ID
+					 * @param $product_id Easy Digital Downloads product ID
+					 */
+					do_action( 'event_ticket_edd_attendee_created', $attendee_id, $event_id, $order_id, $product_id );
+
+					/**
+					 * Action fired when an attendee ticket is generated
+					 *
+					 * @param $attendee_id ID of attendee ticket
+					 * @param $order EDD order ID
+					 * @param $product_id Product ID attendee is "purchasing"
+					 * @param $order_attendee_id Attendee # for order
+					 */
+					do_action( 'event_tickets_edd_ticket_created', $attendee_id, $order_id, $product_id, $order_attendee_id );
+
+					$this->record_attendee_user_id( $attendee_id );
+					$order_attendee_id++;
 				}
 			}
 		}
@@ -384,8 +493,12 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function save_ticket( $event_id, $ticket, $raw_data = array() ) {
+		// assume we are updating until we find out otherwise
+		$save_type = 'update';
 
 		if ( empty( $ticket->ID ) ) {
+			$save_type = 'create';
+
 			/* Create main product post */
 			$args = array(
 				'post_status'  => 'publish',
@@ -416,8 +529,26 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 
 		update_post_meta( $ticket->ID, 'edd_price', $ticket->price );
 
-		$ticket_edd_stock = trim( $raw_data['ticket_edd_stock'] );
-		update_post_meta( $ticket->ID, '_stock', $ticket_edd_stock );
+		$global_stock_mode = isset( $raw_data['ticket_global_stock'] )
+			? filter_var( $raw_data['ticket_global_stock'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH )
+			: '';
+
+		$global_stock_cap = isset( $raw_data['ticket_edd_global_stock_cap'] )
+			? (int) $raw_data['ticket_edd_global_stock_cap']
+			: 0;
+
+		update_post_meta( $ticket->ID, '_global_stock_mode', $global_stock_mode );
+		update_post_meta( $ticket->ID, '_global_stock_cap', $global_stock_cap );
+
+		if ( 'global' === $global_stock_mode || 'capped' === $global_stock_mode ) {
+			$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+			$stock = $global_stock->get_stock_level();
+		}
+		else {
+			$stock = trim( $raw_data['ticket_edd_stock'] );;
+		}
+
+		update_post_meta( $ticket->ID, '_stock', $stock );
 
 		if ( isset( $raw_data['ticket_edd_sku'] ) )
 			update_post_meta( $ticket->ID, '_sku', $raw_data['ticket_edd_sku'] );
@@ -436,11 +567,35 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 
 		wp_set_object_terms( $ticket->ID, 'Ticket', 'download_category', true );
 
+		/**
+		 * Generic action fired after saving a ticket (by type)
+		 *
+		 * @param int Post ID of post the ticket is tied to
+		 * @param Tribe__Tickets__Ticket_Object Ticket that was just saved
+		 * @param array Ticket data
+		 * @param string Commerce engine class
+		 */
+		do_action( 'event_tickets_after_' . $save_type . '_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+
+		/**
+		 * Generic action fired after saving a ticket
+		 *
+		 * @param int Post ID of post the ticket is tied to
+		 * @param Tribe__Tickets__Ticket_Object Ticket that was just saved
+		 * @param array Ticket data
+		 * @param string Commerce engine class
+		 */
+		do_action( 'event_tickets_after_save_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+
 		return true;
 	}
 
 	/**
-	 * Deletes a ticket
+	 * Deletes a ticket.
+	 *
+	 * Note that the total sales/purchases figure maintained by EDD is not adjusted on the
+	 * basis that deleting an attendee does not mean the sale didn't go through; this is
+	 * a change in behaviour from the 4.0.x releases.
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
@@ -457,10 +612,6 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 		if ( is_wp_error( $delete ) ) {
 			return false;
 		}
-
-		// Decrement the sales figure
-		$sales = (int) get_post_meta( $product_id, '_edd_download_sales', true );
-		update_post_meta( $product_id, '_edd_download_sales', --$sales );
 
 		do_action( 'eddtickets_ticket_deleted', $ticket_id, $event_id, $product_id );
 		return true;
@@ -532,6 +683,11 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
+		$global_stock = new Tribe__Tickets__Global_Stock( $post->ID );
+		$global_stock_enabled = $global_stock->is_enabled();
+		Tribe__Tickets__Tickets::add_frontend_stock_data( $tickets );
+
+		$must_login = ! is_user_logged_in() && $this->login_required();
 		include $this->getTemplateHierarchy( 'eddtickets/tickets' );
 	}
 
@@ -539,6 +695,8 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 * Grabs the submitted front end tickets form and adds the products to the cart.
 	 */
 	public function process_front_end_tickets_form() {
+		parent::process_front_end_tickets_form();
+
 		// We're only interested in EDD Tickets submissions
 		if ( ! isset( $_GET['eddtickets_process'] ) || empty( $_POST['product_id'] ) ) {
 			return;
@@ -594,13 +752,12 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets an individual ticket
 	 *
-	 * @param $unused_event_id
+	 * @param $event_id
 	 * @param $ticket_id
 	 *
 	 * @return null|Tribe__Tickets__Ticket_Object
 	 */
-	public function get_ticket( $unused_event_id, $ticket_id ) {
-
+	public function get_ticket( $event_id, $ticket_id ) {
 		$product = edd_get_download( $ticket_id );
 
 		if ( ! $product ) {
@@ -624,13 +781,65 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 
 		$pending = $this->stock_control->count_incomplete_order_items( $ticket_id );
 
+		// Ticket stock is a simple reflection of remaining inventory for this item...
+		$stock = $stock - $purchased - $pending;
+
+		// ...With some exceptions for global stock tickets
+		$stock = $this->set_stock_level_for_global_stock_tickets( $stock, $event_id, $ticket_id );
+
 		$return->manage_stock( (boolean) $stock );
-		$return->stock( $stock - $purchased - $pending );
+		$return->global_stock_mode( get_post_meta( $ticket_id, '_global_stock_mode', true ) );
+		$return->global_stock_cap( get_post_meta( $ticket_id, '_global_stock_cap', true ) );
+
+		$return->stock( $stock );
 		$return->qty_sold( $purchased );
 		$return->qty_pending( $pending );
 
 		return $return;
+	}
 
+	/**
+	 * This method is used to lazily set and correct stock levels for tickets which
+	 * draw on the global event inventory.
+	 *
+	 * It's required because, currently, there is a discrepancy between how individual
+	 * tickets are created and saved (ie, via ajax) and how event-wide settings such as
+	 * global stock are saved - which means a ticket may be saved before the global
+	 * stock level and save_tickets() will set the ticket inventory to zero. To avoid
+	 * the out-of-stock issues that might otherwise result, we lazily correct this
+	 * once the global stock level is known.
+	 *
+	 * @param int $existing_stock
+	 * @param int $event_id
+	 * @param int $ticket_id
+	 *
+	 * @return int
+	 */
+	protected function set_stock_level_for_global_stock_tickets( $existing_stock, $event_id, $ticket_id ) {
+		$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+
+		// If this event does not have a global stock then do not modify the existing stock level
+		if ( ! $global_stock->is_enabled() ) {
+			return $existing_stock;
+		}
+
+		// If this specific ticket maintains its own independent stock then again do not interfere
+		if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === get_post_meta( $ticket_id, '_global_stock_mode', true ) ) {
+			return $existing_stock;
+		}
+
+		// Otherwise the ticket stock ought to match the current global stock
+		$product_stock = edd_get_download( $ticket_id )->_stock;
+		$actual_stock  = ( '' === $product_stock ) ? Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK : $product_stock;
+		$global_stock  = $global_stock->get_stock_level();
+
+		// Look out for and correct discrepancies where the actual stock is zero but the global stock is non-zero
+		if ( 0 == $actual_stock && 0 < $global_stock ) {
+			update_post_meta( $ticket_id, '_stock', $global_stock );
+			update_post_meta( $ticket_id, '_stock_status', 'instock' );
+		}
+
+		return $global_stock;
 	}
 
 	/**
@@ -655,7 +864,7 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		if ( in_array( get_post_type( $event ), Tribe__Tickets__Main::instance()->post_types ) ) {
+		if ( in_array( get_post_type( $event ), Tribe__Tickets__Main::instance()->post_types() ) ) {
 			return get_post( $event );
 		}
 
@@ -700,41 +909,46 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 		$attendees = array();
 
 		foreach ( $attendees_query->posts as $attendee ) {
-
 			$order_id   = get_post_meta( $attendee->ID, self::ATTENDEE_ORDER_KEY, true );
-			$checkin    = get_post_meta( $attendee->ID, self::$checkin_key, true );
+			$checkin    = get_post_meta( $attendee->ID, $this->checkin_key, true );
 			$security   = get_post_meta( $attendee->ID, self::$security_code, true );
 			$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
+			$optout     = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
+			$user_id    = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
 
-			$user_info  = edd_get_payment_meta_user_info( $order_id );
-
-			$name       = $user_info['first_name'] . ' ' . $user_info['last_name'];
-			$email      = $user_info['email'];
-
-			$order_status = get_post_field( 'post_status', $order_id );
-			$status_label = edd_get_payment_status( get_post( $order_id ), true );
-			$order_warning = 'publish' !== $order_status;
-
-			if ( empty( $product_id ) )
+			if ( empty( $product_id ) ) {
 				continue;
+			}
 
 			$product = get_post( $product_id );
-
 			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'eddtickets' );
 
-			$attendees[] = array(
-				'order_id'           => $order_id,
-				'order_status'       => $status_label,
-				'order_warning'      => $order_warning,
-				'purchaser_name'     => $name,
-				'purchaser_email'    => $email,
-				'ticket'             => $product_title,
-				'attendee_id'        => $attendee->ID,
-				'security'           => $security,
-				'product_id'         => $product_id,
-				'check_in'           => $checkin,
-				'provider'           => __CLASS__,
+			// Add the Attendee Data to the Order data
+			$attendee_data = array_merge(
+				$this->get_order_data( $order_id ),
+				array(
+					'ticket'      => $product_title,
+					'attendee_id' => $attendee->ID,
+					'optout'      => $optout,
+					'security'    => $security,
+					'product_id'  => $product_id,
+					'check_in'    => $checkin,
+					'user_id'     => $user_id,
+				)
 			);
+
+			/**
+			 * Allow users to filter the Attendee Data
+			 *
+			 * @param array An associative array with the Information of the Attendee
+			 * @param string What Provider is been used
+			 * @param WP_Post Attendee Object
+			 * @param int Event ID
+			 *
+			 */
+			$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'edd', $attendee, $event_id );
+
+			$attendees[] = $attendee_data;
 		}
 
 		return $attendees;
@@ -742,15 +956,82 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Retreive only order related information
+	 *
+	 *     order_id
+	 *     order_status
+	 *     order_warning
+	 *     purchaser_name
+	 *     purchaser_email
+	 *     provider
+	 *     provider_slug
+	 *
+	 * @param int $order_id
+	 * @return array
+	 */
+	public function get_order_data( $order_id ) {
+		$user_info     = edd_get_payment_meta_user_info( $order_id );
+		$name          = $user_info['first_name'] . ' ' . $user_info['last_name'];
+		$email         = $user_info['email'];
+		$order_status  = get_post_field( 'post_status', $order_id );
+		$status_label  = edd_get_payment_status( get_post( $order_id ), true );
+		$order_warning = 'publish' !== $order_status;
+
+		$data = array(
+			'order_id'        => $order_id,
+			'order_status'    => $status_label,
+			'order_warning'   => $order_warning,
+			'purchaser_name'  => $name,
+			'purchaser_email' => $email,
+			'provider'        => __CLASS__,
+			'provider_slug'   => 'edd',
+			'purchase_time'   => get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $order_id ),
+		);
+
+		/**
+		 * Allow users to filter the Order Data
+		 *
+		 * @param array An associative array with the Information of the Order
+		 * @param string What Provider is been used
+		 * @param int Order ID
+		 *
+		 */
+		$data = apply_filters( 'tribe_tickets_order_data', $data, 'edd', $order_id );
+
+		return $data;
+	}
+
+	/**
 	 * Marks an attendee as checked in for an event
 	 *
+	 * Because we must still support our legacy ticket plugins, we cannot change the abstract
+	 * checkin() method's signature. However, the QR checkin process needs to move forward
+	 * so we get around that problem by leveraging func_get_arg() to pass a second argument.
+	 *
+	 * It is hacky, but we'll aim to resolve this issue when we end-of-life our legacy ticket plugins
+	 * OR write around it in a future major release
+	 *
 	 * @param $attendee_id
+	 * @param $qr true if from QR checkin process (NOTE: this is a param-less parameter for backward compatibility)
 	 *
 	 * @return bool
 	 */
 	public function checkin( $attendee_id ) {
-		update_post_meta( $attendee_id, self::$checkin_key, 1 );
-		do_action( 'eddtickets_checkin', $attendee_id );
+		$qr = null;
+
+		update_post_meta( $attendee_id, $this->checkin_key, 1 );
+
+		if ( func_num_args() > 1 && $qr = func_get_arg( 1 ) ) {
+			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
+		}
+
+		/**
+		 * Fires a checkin action
+		 *
+		 * @param int $attendee_id
+		 * @param bool|null $qr
+		 */
+		do_action( 'eddtickets_checkin', $attendee_id, $qr );
 
 		return true;
 	}
@@ -763,7 +1044,8 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function uncheckin( $attendee_id ) {
-		delete_post_meta( $attendee_id, self::$checkin_key );
+		delete_post_meta( $attendee_id, $this->checkin_key );
+		delete_post_meta( $attendee_id, '_tribe_qr_status' );
 		do_action( 'eddtickets_uncheckin', $attendee_id );
 
 		return true;
@@ -777,14 +1059,18 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function do_metabox_advanced_options( $event_id, $ticket_id ) {
-
 		$url = $stock = $sku = '';
+		$global_stock_mode   = '';
+		$global_stock_cap    = 0;
 
 		if ( ! empty( $ticket_id ) ) {
 			$ticket = $this->get_ticket( $event_id, $ticket_id );
+
 			if ( ! empty( $ticket ) ) {
 				$stock = $ticket->managing_stock() ? $ticket->stock() : '';
 				$sku   = get_post_meta( $ticket_id, '_sku', true );
+				$global_stock_mode = $ticket->global_stock_mode();
+				$global_stock_cap  = $ticket->global_stock_cap();
 			}
 		}
 
@@ -935,6 +1221,8 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 * Ensure out of stock tickets cannot be purchased even if they manage to get added to the cart
 	 */
 	public function checkout_errors() {
+		Tribe__Tickets_Plus__Commerce__EDD__Main::get_instance()->global_stock()->check_stock();
+
 		foreach ( (array) edd_get_cart_contents() as $item ) {
 			$remaining = $this->stock_control->available_units( $item['id'] );
 
@@ -1047,7 +1335,8 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function render_ticket_print_view() {
-		// Is this a print-ticket request?
+
+ 		// Is this a print-ticket request?
 		if ( ! isset( $_GET['eddfile'] ) || ! isset( $_GET['edd_action'] ) || $_GET['edd_action'] !== 'print_ticket' ) {
 			return;
 		}
@@ -1090,13 +1379,18 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 		$attendees = array();
 
 		foreach ( $query->posts as $ticket_id ) {
+			$product = get_post( get_post_meta( $ticket_id, self::ATTENDEE_PRODUCT_KEY, true ) );
+			$ticket_unique_id = get_post_meta( $ticket_id, '_unique_id', true );
+			$ticket_unique_id = $ticket_unique_id === '' ? $ticket_id : $ticket_unique_id;
 
 			$attendees[] = array(
 				'event_id'      => get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true ),
-				'ticket_name'   => get_post( get_post_meta( $ticket_id, self::ATTENDEE_PRODUCT_KEY, true ) )->post_title,
+				'product_id'    => $product->ID,
+				'ticket_name'   => $product->post_title,
 				'holder_name'   => $user_info['first_name'] . ' ' . $user_info['last_name'],
 				'order_id'      => $payment_id,
-				'ticket_id'     => $ticket_id,
+				'ticket_id'     => $ticket_unique_id,
+				'qr_ticket_id'  => $ticket_id,
 				'security_code' => get_post_meta( $ticket_id, self::$security_code, true ),
 			);
 		}
@@ -1107,9 +1401,25 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 		exit;
 	}
 
+	/**
+	 * Add edd_action as a possible param in EDD print url
+	 *
+	 * @param array $params Arrat of allowed params
+	 * @return array
+	 */
+	public function add_allowed_param( $params ) {
+		$params[] = 'edd_action';
+		return $params;
+	}
+
 	protected function passed_token_validation( array $url_query ) {
 		$query  = array_map( 'urlencode', $url_query );
-		$result = edd_validate_url_token( add_query_arg( $query, untrailingslashit( home_url() ) ) );
+
+		$url = untrailingslashit( home_url() );
+		$url = add_query_arg( $query, $url );
+
+		$result = edd_validate_url_token( $url );
+
 		return apply_filters( 'edd_tickets_passed_token_validation', $result );
 	}
 
@@ -1118,6 +1428,24 @@ class Tribe__Tickets_Plus__Commerce__EDD__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function stock() {
 		return $this->stock_control;
+	}
+
+
+	/**
+	 * Excludes EDD product post types from the list of supported post types that Tickets can be attached to
+	 *
+	 * @since 4.0.5
+	 *
+	 * @param array $post_types Array of supported post types
+	 *
+	 * @return array
+	 */
+	public function exclude_product_post_type( $post_types ) {
+		if ( isset( $post_types['download'] ) ) {
+			unset( $post_types['download'] );
+		}
+
+		return $post_types;
 	}
 
 	/********** SINGLETON FUNCTIONS **********/
