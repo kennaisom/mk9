@@ -194,7 +194,7 @@ h1 {
  */
 
 mark {
-    background: #ff0;
+    background: transparent;
     color: #000;
 }
 
