@@ -633,7 +633,7 @@ birch_ns( 'birchschedule.view.bookingform', function( $ns ) {
 ?>
                 <ul>
                 <li class="birs_form_field birs_appointment_section">
-                    <h2 class="birs_section"><?php _e( 'Appointment Info', 'birchschedule' ); ?></h2>
+                    <h2 class="birs_section"><?php _e( 'Schedule Appointment', 'birchschedule' ); ?></h2>
                 </li>
                 <li class="birs_form_field birs_appointment_location">
                     <label><?php echo $labels['location']; ?></label>
