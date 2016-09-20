@@ -1,0 +1,355 @@
+# Copyright (C) 2016 Catch Themes
+# This file is distributed under the GNU General Public License v3.
+msgid ""
+msgstr ""
+"Project-Id-Version: To Top\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/tags/_s\n"
+"POT-Creation-Date: 2016-08-17 09:30+0545\n"
+"PO-Revision-Date: 2016-08-17 09:30+0545\n"
+"Last-Translator: Sakin Shrestha <info@catchthemes.com>\n"
+"Language-Team: Catch Themes <info@catchthemes.com>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 1.7.1\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;esc_attr_e;esc_attr__;_nx;"
+"esc_html__;esc_html_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../admin/class-to-top-admin.php:133
+msgid "Settings"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:146
+#: ../admin/partials/to-top-admin-display.php:20
+msgid "To Top Settings"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:155
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:283
+msgid "To Top Options"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:290
+#: ../admin/partials/to-top-admin-display.php:88
+msgid "Basic Settings"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:301
+#: ../admin/partials/to-top-admin-display.php:93
+msgid "Scroll Offset (px)"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:302
+#: ../admin/partials/to-top-admin-display.php:98
+msgid "Number of pixels to be scrolled before the button appears"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:322
+#: ../admin/partials/to-top-admin-display.php:104
+msgid "Icon Opacity (%)"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:342
+#: ../admin/partials/to-top-admin-display.php:113
+msgid "Style"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:347
+#: ../admin/partials/to-top-admin-display.php:118
+msgid "Icon Using Dashicons"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:348
+#: ../admin/partials/to-top-admin-display.php:119
+msgid "Icon Using Genericons"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:349
+#: ../admin/partials/to-top-admin-display.php:120
+msgid "Icon Using Font Awesome Icons"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:350 ../admin/class-to-top-admin.php:449
+#: ../admin/partials/to-top-admin-display.php:121
+#: ../admin/partials/to-top-admin-display.php:205
+msgid "Image"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:362
+#: ../admin/partials/to-top-admin-display.php:138
+msgid "Select Icon Type"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:377
+#: ../admin/partials/to-top-admin-display.php:155
+msgid "Icon Color"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:392
+#: ../admin/partials/to-top-admin-display.php:165
+msgid "Icon Background Color"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:407
+#: ../admin/partials/to-top-admin-display.php:175
+msgid "Icon Size (px)"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:427
+#: ../admin/partials/to-top-admin-display.php:184
+msgid "Border Radius (%)"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:428
+#: ../admin/partials/to-top-admin-display.php:189
+msgid "0 will make the icon background square, 50 will make it a circle"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:465
+#: ../admin/partials/to-top-admin-display.php:213
+msgid "Image Width (px)"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:486
+#: ../admin/partials/to-top-admin-display.php:222
+msgid "Image Alt"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:501
+#: ../admin/partials/to-top-admin-display.php:235
+msgid "Advanced Settings"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:512
+#: ../admin/partials/to-top-admin-display.php:240
+msgid "Location"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:518
+#: ../admin/partials/to-top-admin-display.php:245
+msgid "Bottom Right"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:519
+#: ../admin/partials/to-top-admin-display.php:246
+msgid "Bottom Left"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:520
+#: ../admin/partials/to-top-admin-display.php:247
+msgid "Top Right"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:521
+#: ../admin/partials/to-top-admin-display.php:248
+msgid "Top Left"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:533
+#: ../admin/partials/to-top-admin-display.php:255
+msgid "Margin X (px)"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:553
+#: ../admin/partials/to-top-admin-display.php:264
+msgid "Margin Y (px)"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:573
+msgid "Check to show on WP-ADMIN"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:574
+#: ../admin/partials/to-top-admin-display.php:278
+msgid "Button will be shown on admin section"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:588
+msgid "Check to Enable Auto Hide"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:603
+#: ../admin/partials/to-top-admin-display.php:294
+msgid "Auto Hide Time (secs)"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:604
+#: ../admin/partials/to-top-admin-display.php:299
+msgid "Button will be auto hidden after this duration in seconds, if enabled"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:624
+msgid "Check to Hide on Small Devices"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:625
+#: ../admin/partials/to-top-admin-display.php:310
+msgid "Button will be hidden on small devices when the width below matches"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:639
+#: ../admin/partials/to-top-admin-display.php:316
+msgid "Small Device Max Width (px)"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:640
+#: ../admin/partials/to-top-admin-display.php:321
+msgid "Button will be hidden on devices with lesser or equal width"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:659
+#: ../admin/partials/to-top-admin-display.php:331
+msgid "Reset Settings"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:670
+#: ../admin/partials/to-top-admin-display.php:340
+msgid "Check to Reset All Settings"
+msgstr ""
+
+#: ../admin/class-to-top-admin.php:671
+msgid ""
+"Caution: All data will be lost. Refresh the page after save to view full "
+"effects."
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:23
+msgid "Plugin Options Saved."
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:35
+msgid "Follow @catchthemes"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:42
+msgid "https://catchthemes.com/"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:42
+#: ../admin/partials/to-top-admin-display.php:44
+msgid "Catch Themes"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:52
+msgid "https://catchthemes.com/forum/to-top/"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:52
+msgid "Support Forum"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:55
+msgid "https://catchthemes.com/wp-plugins/to-top/"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:55
+msgid "Plugin Details"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:58
+msgid "https://www.facebook.com/catchthemes/"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:58
+msgid "Like Catch Themes on Facebook"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:58
+msgid "Facebook"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:61
+msgid "https://twitter.com/catchthemes/"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:61
+msgid "Follow Catch Themes on Twitter"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:61
+msgid "Twitter"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:64
+msgid "https://wordpress.org/support/view/plugin-reviews/to-top"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:64
+msgid "Rate us 5 Star on WordPress"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:64
+msgid "5 Star Rating"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:78
+msgid "Customizer"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:80
+msgid "Want Live Preview? Change the settings from "
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:129
+#: ../admin/partials/to-top-admin-display.php:195
+#: ../admin/partials/to-top-admin-display.php:231
+#: ../admin/partials/to-top-admin-display.php:328
+#: ../admin/partials/to-top-admin-display.php:348
+msgid "Save Changes"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:133
+msgid "Icon Settings"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:200
+msgid "Image Settings"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:208
+msgid "Insert Image"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:208
+msgid "Change Image"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:273
+msgid "Show on WP-ADMIN?"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:277
+#: ../admin/partials/to-top-admin-display.php:288
+#: ../admin/partials/to-top-admin-display.php:309
+msgid "Check to Enable"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:284
+msgid "Enable Auto Hide"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:305
+msgid "Hide on Small Devices?"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:336
+msgid "Reset All Settings"
+msgstr ""
+
+#: ../admin/partials/to-top-admin-display.php:341
+msgid "Caution: All data will be lost"
+msgstr ""
+
+#: ../public/class-to-top-public.php:136
+#: ../public/class-to-top-public.php:149
+#: ../public/class-to-top-public.php:162
+msgid "Scroll Up"
+msgstr ""

@@ -730,7 +730,7 @@ function tesseract_scripts() {
 
 	.sidr ul li ul li:hover > span {
 
-		background: " . $mobmenu_linkHoverBckColor . ";
+		background: " . $mobmenu_linkHoverBckColor . "be-bar-form;
 
 
 
@@ -739,7 +739,10 @@ function tesseract_scripts() {
 
 
 	/* Shadows and Separators */
-
+.nav-menu {
+    /*background-color: #666;*/
+    padding: 11px;
+}
 
 
 	.sidr ul li > a,
@@ -2176,3 +2179,9 @@ function disable_wp_emojicons() {
 }
 
 add_action( 'init', 'disable_wp_emojicons' );
+
+
+add_action( 'init', 'jk_remove_wc_breadcrumbs' );
+function jk_remove_wc_breadcrumbs() {
+    remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20, 0 );
+}
